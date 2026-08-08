@@ -21,6 +21,7 @@ import SoilCalculatorCard from '../../components/SoilCalculatorCard';
 import SustainabilityAnalyticsCard from '../../components/SustainabilityAnalyticsCard';
 import CommodityTrendChart from '../../components/CommodityTrendChart';
 import SubsidyFinderCard from '../../components/SubsidyFinderCard';
+import EquipmentRentalCard from '../../components/EquipmentRentalCard';
 import { MOCK_COMMODITY_PRICES } from '../../constants/mockData';
 
 const safeBg = (COLORS && COLORS.background) || '#F4F7F4';
@@ -232,6 +233,9 @@ export default function HomeScreen() {
 
         {/* Soil Health & Fertilizer Dosage Calculator Widget */}
         <SoilCalculatorCard />
+
+        {/* Farm Machinery, Tractors & Drone Bio-Sprayer Rental Hub */}
+        <EquipmentRentalCard />
 
         {/* AI Doctor & Soil Advisor Quick Banner */}
         <Card bg="#E8F5E9" style={styles.aiCard} elevation="small">
