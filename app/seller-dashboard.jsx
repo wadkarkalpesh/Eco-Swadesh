@@ -17,7 +17,6 @@ import Button from '../components/ui/Button';
 import CertificateUploaderModal from '../components/CertificateUploaderModal';
 
 const safeBg = (COLORS && COLORS.background) || '#F4F7F4';
-const safePrimary = (COLORS && COLORS.primary) || '#1E4D2B';
 const safePrimaryDark = (COLORS && COLORS.primaryDark) || '#12361C';
 const safeTextLight = (COLORS && COLORS.textLight) || '#FFFFFF';
 const safeTextPrimary = (COLORS && COLORS.textPrimary) || '#1A2E1E';

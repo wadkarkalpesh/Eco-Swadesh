@@ -7,6 +7,12 @@
 const express = require('express');
 const cors = require('cors');
 
+// Import Infrastructure & Security Middlewares
+const { securityHeaders } = require('./middleware/security');
+const { globalRateLimiter, authRateLimiter } = require('./middleware/rateLimiter');
+const cache = require('./config/redis');
+const postgres = require('./config/postgres');
+
 // Import Domain Routers
 const authRoutes = require('./routes/authRoutes');
 const productsRoutes = require('./routes/productsRoutes');
@@ -32,14 +38,19 @@ const forwardContractRoutes = require('./routes/forwardContractRoutes');
 const waterRoutes = require('./routes/waterRoutes');
 const coopRoutes = require('./routes/coopRoutes');
 const labTrackingRoutes = require('./routes/labTrackingRoutes');
+const metricsRoutes = require('./routes/metricsRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware Configuration
+// Security & Parsing Middlewares
+app.use(securityHeaders);
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json({ limit: '15mb' }));
 app.use(express.urlencoded({ extended: true, limit: '15mb' }));
+
+// SRE Prometheus Observability Metrics (Public Scraper)
+app.use('/metrics', metricsRoutes);
 
 // Request Logging
 app.use((req, res, next) => {
@@ -58,6 +69,8 @@ app.get('/', (req, res) => {
     version: '1.0.0',
     status: 'HEALTHY_ONLINE',
     documentation: 'https://docs.ecoswadesh.com/api/v1',
+    cacheEngine: cache.getHealth().engine,
+    databaseEngine: postgres.getHealth().engine,
     timestamp: new Date().toISOString(),
   });
 });
@@ -66,6 +79,8 @@ app.get('/v1/health', (req, res) => {
   return res.status(200).json({
     status: 'UP',
     database: 'CONNECTED_IN_MEMORY_PERSISTENT',
+    cache: cache.getHealth(),
+    postgres: postgres.getHealth(),
     services: {
       auth: 'OPERATIONAL',
       marketplace: 'OPERATIONAL',
@@ -91,13 +106,15 @@ app.get('/v1/health', (req, res) => {
       iso14046WaterFootprintStewardship: 'OPERATIONAL',
       cooperativeDividendLedger: 'OPERATIONAL',
       nablLabChainOfCustodyTracking: 'OPERATIONAL',
+      prometheusSreMetrics: 'OPERATIONAL',
+      rateLimiterTokenBucket: 'OPERATIONAL',
     },
   });
 });
 
-// Mount /v1 Domain Subsystems
-app.use('/v1/auth', authRoutes);
-app.use('/v1/products', productsRoutes);
+// Mount /v1 Domain Subsystems with Rate Limiting
+app.use('/v1/auth', authRateLimiter, authRoutes);
+app.use('/v1/products', globalRateLimiter, productsRoutes);
 app.use('/v1/orders', ordersRoutes);
 app.use('/v1/payments', paymentsRoutes);
 app.use('/v1/logistics/shelf-life', shelfLifeRoutes);

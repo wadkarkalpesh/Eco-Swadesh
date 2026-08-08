@@ -11,7 +11,6 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { COLORS, RADIUS, SPACING } from '../constants/theme';
-import { useApp } from '../context/AppContext';
 import Button from './ui/Button';
 import Badge from './ui/Badge';
 
@@ -26,11 +25,9 @@ const safeBorder = (COLORS && COLORS.border) || '#E2E8E2';
 const safePrimary = (COLORS && COLORS.primary) || '#1E4D2B';
 const safeTextPrimary = (COLORS && COLORS.textPrimary) || '#1A2E1E';
 const safeTextSecondary = (COLORS && COLORS.textSecondary) || '#5A6E5D';
-const safeTextLight = (COLORS && COLORS.textLight) || '#FFFFFF';
 const safeSuccess = (COLORS && COLORS.success) || '#2E7D32';
 
 export default function QRScannerModal({ visible, onClose, certData }) {
-  const { t } = useApp();
   const [scanned, setScanned] = useState(false);
   const [scanning, setScanning] = useState(false);
   const [scannedImage, setScannedImage] = useState(null);

@@ -6,10 +6,8 @@ import { useApp } from '../context/AppContext';
 import Card from './ui/Card';
 import Badge from './ui/Badge';
 
-const safeCard = (COLORS && COLORS.card) || '#FFFFFF';
 const safeBackground = (COLORS && COLORS.background) || '#F4F7F4';
 const safeRadiusFull = (RADIUS && RADIUS.full) || 9999;
-const safeRadiusMd = (RADIUS && RADIUS.md) || 14;
 const safeSpacingSm = (SPACING && SPACING.sm) || 8;
 const safeSpacingXs = (SPACING && SPACING.xs) || 4;
 const safeBorder = (COLORS && COLORS.border) || '#E2E8E2';

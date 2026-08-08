@@ -7,7 +7,6 @@ const safeBg = (COLORS && COLORS.background) || '#F4F7F4';
 const safeCard = (COLORS && COLORS.card) || '#FFFFFF';
 const safePrimary = (COLORS && COLORS.primary) || '#1E4D2B';
 const safePrimaryDark = (COLORS && COLORS.primaryDark) || '#12361C';
-const safeTextPrimary = (COLORS && COLORS.textPrimary) || '#1A2E1E';
 const safeTextMuted = (COLORS && COLORS.textMuted) || '#8A9E8C';
 const safeTextLight = (COLORS && COLORS.textLight) || '#FFFFFF';
 const safeRadiusMd = (RADIUS && RADIUS.md) || 14;

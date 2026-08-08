@@ -29,7 +29,6 @@ const safeTextMuted = (COLORS && COLORS.textMuted) || '#8A9E8C';
 const safeCard = (COLORS && COLORS.card) || '#FFFFFF';
 const safeBorder = (COLORS && COLORS.border) || '#E2E8E2';
 const safeOverlay = (COLORS && COLORS.overlay) || 'rgba(18, 30, 21, 0.5)';
-const safeRadiusMd = (RADIUS && RADIUS.md) || 14;
 const safeRadiusXl = (RADIUS && RADIUS.xl) || 28;
 const safeRadiusFull = (RADIUS && RADIUS.full) || 9999;
 const safeSpacingXs = (SPACING && SPACING.xs) || 4;

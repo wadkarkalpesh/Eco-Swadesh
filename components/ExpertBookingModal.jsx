@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, RADIUS, SPACING } from '../constants/theme';
-import { useApp } from '../context/AppContext';
 import Button from './ui/Button';
 import Badge from './ui/Badge';
 
@@ -27,7 +26,6 @@ const safeTextPrimary = (COLORS && COLORS.textPrimary) || '#1A2E1E';
 const safeTextSecondary = (COLORS && COLORS.textSecondary) || '#5A6E5D';
 
 export default function ExpertBookingModal({ visible, onClose, expertData }) {
-  const { t } = useApp();
   const [booked, setBooked] = useState(false);
 
   const expert = expertData || {

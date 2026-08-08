@@ -24,7 +24,6 @@ const safePrimary = (COLORS && COLORS.primary) || '#1E4D2B';
 const safePrimaryDark = (COLORS && COLORS.primaryDark) || '#12361C';
 const safeTextLight = (COLORS && COLORS.textLight) || '#FFFFFF';
 const safeTextPrimary = (COLORS && COLORS.textPrimary) || '#1A2E1E';
-const safeTextSecondary = (COLORS && COLORS.textSecondary) || '#5A6E5D';
 const safeTextMuted = (COLORS && COLORS.textMuted) || '#8A9E8C';
 const safeCard = (COLORS && COLORS.card) || '#FFFFFF';
 const safeBorder = (COLORS && COLORS.border) || '#E2E8E2';

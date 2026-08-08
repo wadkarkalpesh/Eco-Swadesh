@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  ecoswadesh-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ecoswadesh-api-server
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+      - POSTGRES_URL=postgresql://ecoswadesh:secure_eco_pass_2026@postgres:5432/ecoswadesh_db
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=eco_swadesh_production_jwt_secret_2026_secure
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - ecoswadesh-network
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: ecoswadesh-postgres-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=ecoswadesh
+      - POSTGRES_PASSWORD=secure_eco_pass_2026
+      - POSTGRES_DB=ecoswadesh_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - ecoswadesh-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: ecoswadesh-redis-cache
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - ecoswadesh-network
+
+networks:
+  ecoswadesh-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:

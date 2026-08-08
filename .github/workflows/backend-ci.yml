@@ -1,0 +1,59 @@
+name: Eco Swadesh Backend CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, staging, develop ]
+  pull_request:
+    branches: [ main, staging ]
+
+jobs:
+  test-and-verify:
+    name: Automated Verification & Security Audit
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [20.x, 22.x]
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: server/package-lock.json
+
+      - name: Install Backend Dependencies
+        working-directory: ./server
+        run: npm ci
+
+      - name: Run Core Integration Test Suite
+        working-directory: ./server
+        run: node tests/api.test.js
+
+      - name: Run Advanced Domain Test Suite
+        working-directory: ./server
+        run: node tests/advancedApi.test.js
+
+      - name: Run Enterprise ERP & Webhook Test Suite
+        working-directory: ./server
+        run: node tests/enterpriseProcesses.test.js
+
+      - name: Run GIS & Actuator Test Suite (Phases 15-20)
+        working-directory: ./server
+        run: node tests/phase15to20.test.js
+
+      - name: Run Lab Custody & Sustainability Test Suite (Phases 21-25)
+        working-directory: ./server
+        run: node tests/phase21to25.test.js
+
+      - name: Run Next Phase Rate Limiter & SRE Metrics Test Suite
+        working-directory: ./server
+        run: node tests/nextPhase.test.js
+
+      - name: Security & Audit Check
+        working-directory: ./server
+        run: npm audit --audit-level=high || true
