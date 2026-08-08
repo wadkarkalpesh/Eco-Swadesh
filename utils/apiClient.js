@@ -684,6 +684,79 @@ export const gisApi = {
     request(`/farms/parcels/${farmId}`, { method: 'GET' }),
 };
 
+// ----------------------------------------------------
+// 20. Active IoT Telematics Actuator Control
+// ----------------------------------------------------
+export const actuatorApi = {
+  sendCommand: (commandType, payload = {}, containerId = 'CONT-REEFER-9921') =>
+    request('/iot/actuators/send-command', {
+      method: 'POST',
+      body: JSON.stringify({ containerId, commandType, payload }),
+    }),
+  getStatus: (containerId) =>
+    request(`/iot/actuators/${containerId}/status`, { method: 'GET' }),
+};
+
+// ----------------------------------------------------
+// 21. Pre-Harvest Forward Contracts & Futures Hedging
+// ----------------------------------------------------
+export const contractsApi = {
+  create: (data) =>
+    request('/contracts/forward/create', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+  fundMargin: (id, transactionProofId) =>
+    request(`/contracts/forward/${id}/fund-margin`, {
+      method: 'POST',
+      body: JSON.stringify({ transactionProofId }),
+    }),
+  getById: (id) =>
+    request(`/contracts/forward/${id}`, { method: 'GET' }),
+  list: () =>
+    request('/contracts/forward', { method: 'GET' }),
+};
+
+// ----------------------------------------------------
+// 22. ISO 14046 Water Footprint & Stewardship Auditor
+// ----------------------------------------------------
+export const waterApi = {
+  audit: (data) =>
+    request('/sustainability/water-audit', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+};
+
+// ----------------------------------------------------
+// 23. Cooperative Farmer Shareholder Dividend Ledger
+// ----------------------------------------------------
+export const coopApi = {
+  calculateDividends: (data) =>
+    request('/coop/dividends/calculate', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+  disburseDividends: (data) =>
+    request('/coop/dividends/disburse', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+};
+
+// ----------------------------------------------------
+// 24. NABL Lab Chain-of-Custody Barcode Tracker
+// ----------------------------------------------------
+export const labApi = {
+  scan: (data) =>
+    request('/lab/custody-tracking/scan', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+  getCustody: (sampleCode) =>
+    request(`/lab/custody-tracking/${sampleCode}`, { method: 'GET' }),
+};
+
 export default {
   auth: authApi,
   products: productsApi,
@@ -704,4 +777,9 @@ export default {
   voice: voiceApi,
   credit: creditApi,
   gis: gisApi,
+  actuator: actuatorApi,
+  contracts: contractsApi,
+  water: waterApi,
+  coop: coopApi,
+  lab: labApi,
 };

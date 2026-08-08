@@ -27,6 +27,11 @@ const shelfLifeRoutes = require('./routes/shelfLifeRoutes');
 const voiceRoutes = require('./routes/voiceRoutes');
 const creditRoutes = require('./routes/creditRoutes');
 const gisRoutes = require('./routes/gisRoutes');
+const actuatorRoutes = require('./routes/actuatorRoutes');
+const forwardContractRoutes = require('./routes/forwardContractRoutes');
+const waterRoutes = require('./routes/waterRoutes');
+const coopRoutes = require('./routes/coopRoutes');
+const labTrackingRoutes = require('./routes/labTrackingRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -81,6 +86,11 @@ app.get('/v1/health', (req, res) => {
       vernacularVoiceAgronomy: 'OPERATIONAL',
       alternativeEcoAgriCredit: 'OPERATIONAL',
       satelliteGisBoundaryBuffer: 'OPERATIONAL',
+      iotActuatorCompressorControl: 'OPERATIONAL',
+      preHarvestForwardContracts: 'OPERATIONAL',
+      iso14046WaterFootprintStewardship: 'OPERATIONAL',
+      cooperativeDividendLedger: 'OPERATIONAL',
+      nablLabChainOfCustodyTracking: 'OPERATIONAL',
     },
   });
 });
@@ -106,6 +116,11 @@ app.use('/v1/webhooks', webhookRoutes);
 app.use('/v1/procurement', procurementRoutes);
 app.use('/v1/credit', creditRoutes);
 app.use('/v1/farms', gisRoutes);
+app.use('/v1/iot/actuators', actuatorRoutes);
+app.use('/v1/contracts/forward', forwardContractRoutes);
+app.use('/v1/sustainability', waterRoutes);
+app.use('/v1/coop', coopRoutes);
+app.use('/v1/lab', labTrackingRoutes);
 
 // 404 Catch-All Handler
 app.use((req, res) => {
