@@ -32,7 +32,7 @@ export const setAuthToken = (token) => {
       } else {
         window.localStorage.removeItem('@eco_swadesh_auth_token');
       }
-    } catch (e) {}
+    } catch (_e) {}
   }
 };
 
@@ -41,7 +41,7 @@ export const getAuthToken = () => {
   if (typeof window !== 'undefined' && window.localStorage) {
     try {
       cachedToken = window.localStorage.getItem('@eco_swadesh_auth_token');
-    } catch (e) {}
+    } catch (_e) {}
   }
   return cachedToken;
 };
@@ -617,6 +617,7 @@ export const webhooksApi = {
 
   getSubscriptions: () =>
     request('/webhooks/subscriptions', { method: 'GET' }),
+};
 
 // ----------------------------------------------------
 // 15. Farmer FPO Group-Buying Procurement

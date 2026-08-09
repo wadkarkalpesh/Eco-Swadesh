@@ -140,15 +140,19 @@ export function AppProvider({ children }) {
         certFilter,
         setCertFilter,
         products,
+        setProducts,
         cart,
         addToCart,
         removeFromCart,
         updateCartQuantity,
         clearCart,
         shipments,
+        setShipments,
         communityPosts,
+        setCommunityPosts,
         addCommunityPost,
         certifications,
+        setCertifications,
       }}
     >
       {children}
