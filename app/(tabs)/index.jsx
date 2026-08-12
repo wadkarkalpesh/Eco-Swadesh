@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import { useRouter, useRootNavigationState } from 'expo-router';
 import { COLORS, RADIUS, SPACING } from '../../constants/theme';
 import { useApp } from '../../context/AppContext';
 import LanguagePicker from '../../components/ui/LanguagePicker';
@@ -59,6 +59,7 @@ const PERSONAS = [
 
 export default function HomeScreen() {
   const router = useRouter();
+  const rootNavigationState = useRootNavigationState();
   const {
     t,
     persona,
@@ -74,10 +75,14 @@ export default function HomeScreen() {
   } = useApp();
 
   useEffect(() => {
+    if (!rootNavigationState?.key) return;
     if (!isAuthenticated) {
-      router.replace('/auth/welcome');
+      const timer = setTimeout(() => {
+        router.replace('/auth/welcome');
+      }, 10);
+      return () => clearTimeout(timer);
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, rootNavigationState?.key, router]);
 
   const featuredFertilizers = products.filter((p) => p.category === 'fertilizers');
   const featuredBulk = products.filter((p) => p.category === 'bulkHarvest');

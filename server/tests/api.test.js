@@ -100,6 +100,15 @@ const runAllTests = async () => {
     const switchRes = await request('PUT', '/v1/auth/switch-persona', { persona: 'bulkBuyer' });
     assert(switchRes.status === 200 && switchRes.body.user.persona === 'bulkBuyer', '5. Auth - Switch Persona to bulkBuyer');
 
+    // 5.1 Auth Module - Update Personal Information & Onboarding Profile
+    const profileRes = await request('PUT', '/v1/auth/profile', {
+      name: 'Ramesh Patel',
+      email: 'ramesh.patel@ecoswadesh.com',
+      state: 'Madhya Pradesh',
+      district: 'Ujjain',
+    });
+    assert(profileRes.status === 200 && profileRes.body.user.onboardingCompleted === true, '5.1 Auth - Update Personal Profile & Complete Onboarding');
+
     // 6. Products Module - List Products with Filter
     const prodsRes = await request('GET', '/v1/products?category=fertilizers');
     assert(prodsRes.status === 200 && prodsRes.body.products.length > 0, '6. Marketplace - List & Filter Products');
