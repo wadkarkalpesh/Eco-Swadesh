@@ -163,6 +163,24 @@ export const authApi = {
     }
     return res;
   },
+
+  updateProfile: (profileData) =>
+    request(
+      '/auth/profile',
+      {
+        method: 'PUT',
+        body: JSON.stringify(profileData),
+      },
+      {
+        success: true,
+        message: 'Personal information & onboarding completed successfully.',
+        user: {
+          id: 'usr_current',
+          ...profileData,
+          onboardingCompleted: true,
+        },
+      }
+    ),
 };
 
 // ----------------------------------------------------

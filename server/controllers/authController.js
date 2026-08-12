@@ -73,17 +73,20 @@ const verifyOTP = (req, res) => {
   const phoneNumber = session ? session.phoneNumber : '+919876543210';
   
   // Find or Provision User
-  let user = db.users.find((u) => u.phoneNumber === phoneNumber);
+  const existingUser = db.users.find((u) => u.phoneNumber === phoneNumber);
+  const isExistingUser = !!existingUser;
+  let user = existingUser;
 
   if (!user) {
     user = db.insert('users', {
       id: `usr_${persona}_${Date.now().toString().slice(-4)}`,
       phoneNumber,
       countryCode: session ? session.countryCode : 'IN',
-      name: name || (persona === 'farmer' ? 'Organic Farmer' : persona === 'bulkBuyer' ? 'Agro Commodity Buyer' : 'Eco Swadesh Member'),
+      name: name || '',
       persona,
       roles: [persona],
       verified: true,
+      onboardingCompleted: false,
       createdAt: new Date().toISOString(),
     });
   } else if (persona && user.persona !== persona) {
@@ -95,22 +98,91 @@ const verifyOTP = (req, res) => {
   }
 
   // Clean up OTP session
-  db.otpSessions.delete(otpSessionId);
+  if (session) {
+    db.otpSessions.delete(otpSessionId);
+  }
 
   const token = generateToken(user);
 
   return res.status(200).json({
     success: true,
     token,
+    isExistingUser,
+    onboardingCompleted: user.onboardingCompleted !== false && (isExistingUser || !!user.name),
     user: {
       id: user.id,
-      name: user.name,
+      name: user.name || (persona === 'farmer' ? 'Organic Farmer' : persona === 'consumer' ? 'Eco Consumer' : 'Eco Swadesh Member'),
       phoneNumber: user.phoneNumber,
       email: user.email,
       persona: user.persona,
       roles: user.roles,
       verified: user.verified,
       location: user.location,
+      onboardingCompleted: user.onboardingCompleted !== false,
+    },
+  });
+};
+
+/**
+ * Update Personal Information & Complete Onboarding
+ * PUT /v1/auth/profile
+ */
+const updateProfile = (req, res) => {
+  const {
+    name,
+    email,
+    state,
+    district,
+    city,
+    address,
+    farmSizeAcres,
+    primaryCrops,
+    bankUpiId,
+    gstLicenseNo,
+    persona,
+  } = req.body;
+
+  const user = db.findById('users', req.user.id);
+  if (!user) {
+    return res.status(404).json({
+      success: false,
+      error: 'USER_NOT_FOUND',
+      message: 'User account not found.',
+    });
+  }
+
+  const locationStr = [city, district, state].filter(Boolean).join(', ');
+
+  user.name = name || user.name;
+  user.email = email || user.email;
+  user.location = locationStr || user.location;
+  user.address = address || user.address;
+  user.farmSizeAcres = farmSizeAcres ? parseFloat(farmSizeAcres) : user.farmSizeAcres;
+  user.primaryCrops = primaryCrops || user.primaryCrops;
+  user.bankUpiId = bankUpiId || user.bankUpiId;
+  user.gstLicenseNo = gstLicenseNo || user.gstLicenseNo;
+  user.onboardingCompleted = true;
+  if (persona) {
+    user.persona = persona;
+    if (!user.roles.includes(persona)) {
+      user.roles.push(persona);
+    }
+  }
+
+  db.update('users', user.id, user);
+
+  return res.status(200).json({
+    success: true,
+    message: 'Personal information & onboarding completed successfully.',
+    user: {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      phoneNumber: user.phoneNumber,
+      persona: user.persona,
+      roles: user.roles,
+      location: user.location,
+      onboardingCompleted: true,
     },
   });
 };
@@ -198,4 +270,5 @@ module.exports = {
   verifyOTP,
   getMe,
   switchPersona,
+  updateProfile,
 };

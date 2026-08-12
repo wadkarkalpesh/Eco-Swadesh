@@ -108,6 +108,31 @@ export default function HomeScreen() {
       {/* DPDP Act 2023 Consent & Privacy Transparency Notice */}
       <DPDPConsentBanner />
 
+      {/* Auth Portal Quick Bar */}
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: safeSpacingMd, paddingVertical: 6, backgroundColor: '#E8F5E9', borderBottomWidth: 1, borderBottomColor: '#C8E6C9' }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <Ionicons name="person-circle" size={18} color={safePrimary} />
+          <Text style={{ fontSize: 11, fontWeight: '700', color: safePrimaryDark, marginLeft: 4 }}>
+            Active Portal: {persona === 'consumer' || persona === 'bulkBuyer' ? 'BUYER / CUSTOMER' : 'FARMER / SELLER'}
+          </Text>
+        </View>
+
+        <View style={{ flexDirection: 'row', gap: 6 }}>
+          <TouchableOpacity
+            style={{ paddingHorizontal: 8, paddingVertical: 4, backgroundColor: '#1976D2', borderRadius: 12 }}
+            onPress={() => router.push('/auth/buyer-login')}
+          >
+            <Text style={{ fontSize: 10, fontWeight: '800', color: '#FFF' }}>🛒 Buyer Login</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{ paddingHorizontal: 8, paddingVertical: 4, backgroundColor: safePrimary, borderRadius: 12 }}
+            onPress={() => router.push('/auth/seller-login')}
+          >
+            <Text style={{ fontSize: 10, fontWeight: '800', color: '#FFF' }}>🌾 Seller Login</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
       {/* Live Market Commodity Ticker */}
       <View style={styles.tickerContainer}>
         <View style={styles.tickerBadge}>

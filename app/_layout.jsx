@@ -113,6 +113,30 @@ export default function RootLayout() {
               title: 'Export Biosecurity & Phytosanitary',
             }}
           />
+          <Stack.Screen
+            name="auth/select-portal"
+            options={{
+              title: 'Select Authentication Portal',
+            }}
+          />
+          <Stack.Screen
+            name="auth/buyer-login"
+            options={{
+              title: 'Customer & Buyer Login',
+            }}
+          />
+          <Stack.Screen
+            name="auth/seller-login"
+            options={{
+              title: 'Farmer & Seller Login',
+            }}
+          />
+          <Stack.Screen
+            name="auth/onboarding"
+            options={{
+              title: 'Personal Information Setup',
+            }}
+          />
         </Stack>
       </AppProvider>
     </ErrorBoundary>
