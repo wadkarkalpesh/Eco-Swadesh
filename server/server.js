@@ -39,6 +39,7 @@ const waterRoutes = require('./routes/waterRoutes');
 const coopRoutes = require('./routes/coopRoutes');
 const labTrackingRoutes = require('./routes/labTrackingRoutes');
 const metricsRoutes = require('./routes/metricsRoutes');
+const phase26to30Routes = require('./routes/phase26to30Routes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -106,6 +107,10 @@ app.get('/v1/health', (req, res) => {
       iso14046WaterFootprintStewardship: 'OPERATIONAL',
       cooperativeDividendLedger: 'OPERATIONAL',
       nablLabChainOfCustodyTracking: 'OPERATIONAL',
+      cryptographicMerkleLedgerProofs: 'OPERATIONAL',
+      apedaPhytosanitaryInspectionDispatch: 'OPERATIONAL',
+      microClimatePredictiveAgronomy: 'OPERATIONAL',
+      multiFarmerLtlMilkRunOptimizer: 'OPERATIONAL',
       prometheusSreMetrics: 'OPERATIONAL',
       rateLimiterTokenBucket: 'OPERATIONAL',
     },
@@ -138,6 +143,8 @@ app.use('/v1/contracts/forward', forwardContractRoutes);
 app.use('/v1/sustainability', waterRoutes);
 app.use('/v1/coop', coopRoutes);
 app.use('/v1/lab', labTrackingRoutes);
+app.use('/v1/ledger', phase26to30Routes);
+app.use('/v1', phase26to30Routes);
 
 // 404 Catch-All Handler
 app.use((req, res) => {

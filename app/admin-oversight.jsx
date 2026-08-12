@@ -28,7 +28,7 @@ const safeSpacingLg = (SPACING && SPACING.lg) || 24;
 const safeSpacingXxl = (SPACING && SPACING.xxl) || 48;
 
 export default function AdminOversightScreen() {
-  const { t, products } = useApp();
+  const { t, products, adminMetrics } = useApp();
 
   const [pendingSellers, setPendingSellers] = useState([
     {
@@ -60,16 +60,28 @@ export default function AdminOversightScreen() {
 
         <View style={styles.metricsGrid}>
           <View style={styles.mItem}>
-            <Text style={styles.mVal}>₹1.48 Cr</Text>
+            <Text style={styles.mVal}>
+              {adminMetrics && adminMetrics.totalMonthlyRevenueINR
+                ? `₹${(adminMetrics.totalMonthlyRevenueINR / 100000).toFixed(2)} Lakh`
+                : '₹1.48 Cr'}
+            </Text>
             <Text style={styles.mLab}>{t('totalGMV')}</Text>
           </View>
           <View style={styles.mItem}>
-            <Text style={styles.mVal}>1,240 Tons</Text>
+            <Text style={styles.mVal}>
+              {adminMetrics && adminMetrics.totalTonnageDispatched
+                ? `${adminMetrics.totalTonnageDispatched} Tons`
+                : '1,240 Tons'}
+            </Text>
             <Text style={styles.mLab}>Bulk Traded</Text>
           </View>
           <View style={styles.mItem}>
-            <Text style={styles.mVal}>42</Text>
-            <Text style={styles.mLab}>Fraud Blocked</Text>
+            <Text style={styles.mVal}>
+              {adminMetrics && adminMetrics.activeEscrowPoolINR
+                ? `₹${(adminMetrics.activeEscrowPoolINR / 1000).toFixed(0)}k Pool`
+                : '42 Blocked'}
+            </Text>
+            <Text style={styles.mLab}>Escrow Pool</Text>
           </View>
         </View>
       </Card>

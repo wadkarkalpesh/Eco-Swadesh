@@ -37,7 +37,7 @@ const safeSpacingMd = (SPACING && SPACING.md) || 16;
 const safeSpacingXxl = (SPACING && SPACING.xxl) || 48;
 
 export default function CommunityScreen() {
-  const { t, communityPosts, addCommunityPost } = useApp();
+  const { t, communityPosts, addCommunityPost, upvoteCommunityPost } = useApp();
   
   // Post modal state
   const [modalVisible, setModalVisible] = useState(false);
@@ -45,9 +45,9 @@ export default function CommunityScreen() {
   const [newTitle, setNewTitle] = useState('');
   const [newContent, setNewContent] = useState('');
 
-  const handleCreatePost = () => {
+  const handleCreatePost = async () => {
     if (!newTitle.trim() || !newContent.trim()) return;
-    addCommunityPost({
+    await addCommunityPost({
       title: newTitle,
       content: newContent,
       tags: ['Organic Farming', 'Q&A'],
@@ -116,8 +116,11 @@ export default function CommunityScreen() {
             </View>
 
             <View style={styles.postFooter}>
-              <TouchableOpacity style={styles.footerAction}>
-                <Ionicons name="thumbs-up-outline" size={16} color={safePrimary} />
+              <TouchableOpacity
+                style={styles.footerAction}
+                onPress={() => upvoteCommunityPost(post.id)}
+              >
+                <Ionicons name="thumbs-up" size={16} color={safePrimary} />
                 <Text style={styles.actionText}>{post.upvotes} Upvotes</Text>
               </TouchableOpacity>
 

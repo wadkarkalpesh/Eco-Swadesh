@@ -758,6 +758,63 @@ export const labApi = {
     request(`/lab/custody-tracking/${sampleCode}`, { method: 'GET' }),
 };
 
+// ----------------------------------------------------
+// 25. Cryptographic Blockchain Merkle Ledger Proofs
+// ----------------------------------------------------
+export const ledgerApi = {
+  mintProof: (data) =>
+    request('/ledger/proof/generate', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+  verifyProof: (hash) =>
+    request(`/ledger/proof/${encodeURIComponent(hash)}`, { method: 'GET' }),
+  getAuditTrail: (limit = 20) =>
+    request(`/ledger/proof/audit-trail?limit=${limit}`, { method: 'GET' }),
+};
+
+// ----------------------------------------------------
+// 26. APEDA/NPOP Electronic Phytosanitary Inspections
+// ----------------------------------------------------
+export const inspectionsApi = {
+  dispatch: (data) =>
+    request('/inspections/dispatch', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+  list: () =>
+    request('/inspections', { method: 'GET' }),
+  getById: (id) =>
+    request(`/inspections/${id}`, { method: 'GET' }),
+  complete: (id, data) =>
+    request(`/inspections/${id}/complete`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+};
+
+// ----------------------------------------------------
+// 27. Micro-Climate Predictive Agronomy Hazard Engine
+// ----------------------------------------------------
+export const microClimateApi = {
+  evaluate: (data) =>
+    request('/ai/micro-climate/forecast-risk', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+};
+
+// ----------------------------------------------------
+// 28. Multi-Farmer LTL Milk-Run Freight Route Optimizer
+// ----------------------------------------------------
+export const milkRunApi = {
+  consolidate: (data) =>
+    request('/logistics/milk-run/consolidate', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    }),
+};
+
 export default {
   auth: authApi,
   products: productsApi,
@@ -783,4 +840,8 @@ export default {
   water: waterApi,
   coop: coopApi,
   lab: labApi,
+  ledger: ledgerApi,
+  inspections: inspectionsApi,
+  microClimate: microClimateApi,
+  milkRun: milkRunApi,
 };

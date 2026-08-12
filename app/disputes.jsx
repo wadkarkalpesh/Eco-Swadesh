@@ -36,7 +36,9 @@ const safeTerracotta = (COLORS && COLORS.terracotta) || '#D84315';
 
 export default function DisputesScreen() {
   const [modalVisible, setModalVisible] = useState(false);
-  const [disputesList] = useState([
+  const [orderIdInput, setOrderIdInput] = useState('');
+  const [reasonInput, setReasonInput] = useState('');
+  const [disputesList, setDisputesList] = useState([
     {
       id: 'DISP-992',
       orderId: 'SHIP-8921',
@@ -54,6 +56,29 @@ export default function DisputesScreen() {
       ],
     },
   ]);
+
+  const handleFileClaim = () => {
+    if (!reasonInput.trim()) return;
+    const newDispute = {
+      id: `DISP-${Math.floor(1000 + Math.random() * 9000)}`,
+      orderId: orderIdInput || `SHIP-${Math.floor(1000 + Math.random() * 9000)}`,
+      crop: 'Active Consignment Truckload',
+      buyer: 'Current Buyer Node',
+      seller: 'Designated Producer FPO',
+      claimReason: reasonInput,
+      amountHeld: 'Escrow Frozen (Under Arbitration)',
+      status: 'UNDER_LAB_RETEST',
+      timeline: [
+        { label: 'Claim Filed & Escrow Frozen', date: 'Just now', done: true },
+        { label: 'Arbitration Officer Assigned', date: 'In Progress', done: true },
+        { label: 'NABL Certified Re-Testing', date: 'Pending Lab Slot', done: false },
+      ],
+    };
+    setDisputesList((prev) => [newDispute, ...prev]);
+    setOrderIdInput('');
+    setReasonInput('');
+    setModalVisible(false);
+  };
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.scrollBody}>
@@ -124,19 +149,26 @@ export default function DisputesScreen() {
               </TouchableOpacity>
             </View>
 
-            <Input label="Order / Waybill ID" placeholder="e.g. SHIP-8921" />
+            <Input
+              label="Order / Waybill ID"
+              placeholder="e.g. SHIP-8921"
+              value={orderIdInput}
+              onChangeText={setOrderIdInput}
+            />
             <Input
               label="Dispute Reason"
               placeholder="e.g. Moisture content exceeded contract spec or lab test variance..."
               multiline
               numberOfLines={3}
+              value={reasonInput}
+              onChangeText={setReasonInput}
             />
 
             <Button
               title="Freeze Escrow & Submit Claim"
               variant="terracotta"
               size="md"
-              onPress={() => setModalVisible(false)}
+              onPress={handleFileClaim}
               style={{ marginTop: safeSpacingMd }}
             />
           </View>

@@ -35,12 +35,37 @@ const safeSpacingMd = (SPACING && SPACING.md) || 16;
 const safeSpacingXxl = (SPACING && SPACING.xxl) || 48;
 
 export default function SellerDashboardScreen() {
-  const { products } = useApp();
+  const { products, publishProductListing } = useApp();
   const [modalVisible, setModalVisible] = useState(false);
   const [certModalVisible, setCertModalVisible] = useState(false);
   const [prodName, setProdName] = useState('');
   const [retailPrice, setRetailPrice] = useState('');
   const [bulkPrice, setBulkPrice] = useState('');
+  const [isPublishing, setIsPublishing] = useState(false);
+
+  const handlePublish = async () => {
+    if (!prodName.trim()) return;
+    setIsPublishing(true);
+    try {
+      await publishProductListing({
+        name: prodName,
+        retailPrice: parseFloat(retailPrice) || 350,
+        bulkPricePerTon: parseFloat(bulkPrice) || 42000,
+        category: 'bulkHarvest',
+        sellerName: 'Swadesh Farmer Collective',
+        certifiedType: 'NATIONAL',
+        certName: 'Jaivik Bharat & APEDA',
+        inStock: true,
+        image: 'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=600&auto=format&fit=crop&q=80',
+      });
+      setProdName('');
+      setRetailPrice('');
+      setBulkPrice('');
+      setModalVisible(false);
+    } finally {
+      setIsPublishing(false);
+    }
+  };
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.scrollBody}>
@@ -161,10 +186,11 @@ export default function SellerDashboardScreen() {
             </View>
 
             <Button
-              title="Publish Listing to Eco Swadesh"
+              title={isPublishing ? 'Publishing to Network...' : 'Publish Listing to Eco Swadesh'}
               variant="terracotta"
               size="md"
-              onPress={() => setModalVisible(false)}
+              onPress={handlePublish}
+              disabled={isPublishing}
               style={{ marginTop: safeSpacingMd }}
             />
           </View>

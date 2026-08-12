@@ -68,6 +68,7 @@ export default function HomeScreen() {
     cart,
     addToCart,
     formatPrice,
+    commodityTrends,
   } = useApp();
 
   const featuredFertilizers = products.filter((p) => p.category === 'fertilizers');
@@ -114,7 +115,7 @@ export default function HomeScreen() {
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.tickerScroll}
         >
-          {MOCK_COMMODITY_PRICES.map((item, idx) => (
+          {(commodityTrends || MOCK_COMMODITY_PRICES).map((item, idx) => (
             <View key={idx} style={styles.tickerItem}>
               <Text style={styles.tickerCrop}>{item.crop}:</Text>
               <Text style={styles.tickerPrice}>

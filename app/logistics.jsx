@@ -14,7 +14,7 @@ import Badge from '../components/ui/Badge';
 import Input from '../components/ui/Input';
 import Button from '../components/ui/Button';
 import CustomsCalculatorCard from '../components/CustomsCalculatorCard';
-import { shelfLifeApi } from '../utils/apiClient';
+import apiClient, { shelfLifeApi } from '../utils/apiClient';
 
 const safeBg = (COLORS && COLORS.background) || '#F4F7F4';
 const safePrimary = (COLORS && COLORS.primary) || '#1E4D2B';
@@ -42,6 +42,8 @@ export default function LogisticsScreen() {
   const [calcTons, setCalcTons] = useState('10');
   const [calcKM, setCalcKM] = useState('250');
   const [calculatedQuote, setCalculatedQuote] = useState(null);
+  const [quoteBreakdown, setQuoteBreakdown] = useState(null);
+  const [isCalculating, setIsCalculating] = useState(false);
 
   // Cold-Chain Arrhenius State
   const commodityType = 'BIO_INOCULANT_BEAUVERIA';
@@ -65,11 +67,28 @@ export default function LogisticsScreen() {
     }
   };
 
-  const handleCalculateFreight = () => {
+  const handleCalculateFreight = async () => {
     const tons = parseFloat(calcTons) || 1;
     const km = parseFloat(calcKM) || 100;
-    const est = 1500 + tons * km * 12;
-    setCalculatedQuote(est);
+    setIsCalculating(true);
+    try {
+      const res = await apiClient.logistics.calculateFreight({
+        weightTons: tons,
+        distanceKm: km,
+      });
+      if (res && res.breakdown) {
+        setCalculatedQuote(res.breakdown.totalFreight);
+        setQuoteBreakdown(res.breakdown);
+      } else {
+        const est = 1500 + tons * km * 12;
+        setCalculatedQuote(est);
+      }
+    } catch (_err) {
+      const est = 1500 + tons * km * 12;
+      setCalculatedQuote(est);
+    } finally {
+      setIsCalculating(false);
+    }
   };
 
   return (
@@ -170,10 +189,11 @@ export default function LogisticsScreen() {
         </View>
 
         <Button
-          title="Calculate Domestic Freight Quote"
+          title={isCalculating ? 'Calculating Live Freight Quote...' : 'Calculate Domestic Freight Quote'}
           variant="terracotta"
           size="md"
           onPress={handleCalculateFreight}
+          disabled={isCalculating}
           style={{ marginTop: safeSpacingXs }}
         />
 
@@ -181,6 +201,11 @@ export default function LogisticsScreen() {
           <View style={styles.quoteBox}>
             <Text style={styles.quoteLabel}>Estimated Direct Freight Cost:</Text>
             <Text style={styles.quoteVal}>₹{calculatedQuote.toLocaleString()}</Text>
+            {quoteBreakdown && (
+              <Text style={{ fontSize: 11, color: safeTextSecondary, marginTop: 2 }}>
+                Transport: ₹{quoteBreakdown.transportCost} | Surcharge: ₹{quoteBreakdown.fuelSurcharge}
+              </Text>
+            )}
             <Text style={styles.quoteNote}>
               Includes weighbridge verification, transit insurance, and destination lab inspection.
             </Text>

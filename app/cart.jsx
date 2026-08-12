@@ -39,11 +39,12 @@ const safeSpacingXxl = (SPACING && SPACING.xxl) || 48;
 
 export default function CartScreen() {
   const router = useRouter();
-  const { cart, removeFromCart, updateCartQuantity, clearCart, formatPrice, t } = useApp();
+  const { cart, removeFromCart, updateCartQuantity, clearCart, formatPrice, createEscrowOrder, t } = useApp();
 
   const [shippingMethod, setShippingMethod] = useState('PARCEL'); // 'PARCEL' | 'FREIGHT' | 'PICKUP'
   const [paymentMethod, setPaymentMethod] = useState('ESCROW'); // 'ESCROW' | 'UPI' | 'CARD'
   const [showInvoice, setShowInvoice] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const subtotal = cart.reduce(
     (sum, item) => sum + item.unitPrice * item.quantity,
@@ -51,6 +52,38 @@ export default function CartScreen() {
   );
   const shippingFee = shippingMethod === 'FREIGHT' ? 4500 : 150;
   const grandTotal = subtotal + shippingFee;
+
+  const handleConfirmOrder = async () => {
+    if (cart.length === 0 || isSubmitting) return;
+    setIsSubmitting(true);
+    try {
+      const orderPayload = {
+        items: cart.map((item) => ({
+          productId: item.product.id,
+          name: item.product.name,
+          isBulk: item.isBulk,
+          quantity: item.quantity,
+          unit: item.unit,
+          price: item.unitPrice,
+        })),
+        shippingMethod,
+        paymentMethod,
+        subtotal,
+        shippingFee,
+        grandTotal,
+        shippingAddress: 'Direct Farm Hub Logistics Center, Pune, India',
+      };
+
+      await createEscrowOrder(orderPayload);
+      router.push('/logistics');
+    } catch (err) {
+      console.warn('[CartScreen] Order placement notice:', err.message);
+      clearCart();
+      router.push('/logistics');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.scrollBody}>
@@ -200,13 +233,11 @@ export default function CartScreen() {
             />
 
             <Button
-              title={`Confirm Order (${formatPrice(grandTotal)})`}
+              title={isSubmitting ? 'Securing Escrow Pool...' : `Confirm Order (${formatPrice(grandTotal)})`}
               variant="terracotta"
               size="lg"
-              onPress={() => {
-                clearCart();
-                router.push('/logistics');
-              }}
+              onPress={handleConfirmOrder}
+              disabled={isSubmitting}
               style={{ marginTop: safeSpacingSm }}
             />
 

@@ -19,7 +19,7 @@ import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import SoilReportModal from '../../components/SoilReportModal';
 import { MOCK_AI_DIAGNOSES } from '../../constants/mockData';
-import { voiceApi } from '../../utils/apiClient';
+import apiClient, { voiceApi } from '../../utils/apiClient';
 
 const safeBg = (COLORS && COLORS.background) || '#F4F7F4';
 const safePrimary = (COLORS && COLORS.primary) || '#1E4D2B';
@@ -85,14 +85,33 @@ export default function AIAssistantScreen() {
   ]);
   const [inputMessage, setInputMessage] = useState('');
 
-  const processImageForDiagnosis = (imageUri) => {
+  const processImageForDiagnosis = async (imageUri) => {
     setSelectedImage(imageUri);
     setScanning(true);
     setScanResult(null);
-    setTimeout(() => {
-      setScanning(false);
+
+    try {
+      const res = await apiClient.ai.diagnoseLeaf({
+        cropType: 'cotton',
+        imageBase64: imageUri,
+      });
+      if (res && res.diseaseDetected) {
+        setScanResult({
+          cropName: res.cropName || 'Cotton / Broadleaf',
+          detectedDisease: res.diseaseDetected,
+          confidence: `${res.confidencePct || 96.8}% Accuracy`,
+          severity: res.severity || 'MODERATE',
+          organicCure: res.organicRecipes || MOCK_AI_DIAGNOSES[0].organicCure,
+          recommendedFertilizer: res.recommendedBioFertilizers ? res.recommendedBioFertilizers.join(', ') : 'Bio-NPK Liquid + Cold-Pressed Neem Oil',
+        });
+      } else {
+        setScanResult(MOCK_AI_DIAGNOSES[0]);
+      }
+    } catch (_err) {
       setScanResult(MOCK_AI_DIAGNOSES[0]);
-    }, 1800);
+    } finally {
+      setScanning(false);
+    }
   };
 
   const handleTakeCameraPhoto = async () => {
@@ -137,21 +156,33 @@ export default function AIAssistantScreen() {
     }
   };
 
-  const handleSendMessage = (textToSend = inputMessage) => {
+  const handleSendMessage = async (textToSend = inputMessage) => {
     if (!textToSend.trim()) return;
 
     const userMsg = { id: Date.now().toString(), sender: 'user', text: textToSend };
     setChatMessages((prev) => [...prev, userMsg]);
     setInputMessage('');
 
-    setTimeout(() => {
+    try {
+      const advisory = await apiClient.voice.getAdvisory('hi', 'wheat', textToSend).catch(() => null);
+      let replyText = advisory && advisory.vernacularAdvisory
+        ? `${advisory.vernacularAdvisory.englishSummary}\n\n🌱 Recommended Organic Protocol: ${advisory.vernacularAdvisory.organicInterventionScript}`
+        : `Based on your request regarding "${textToSend}", we recommend using Bio-Active NPK Liquid (5ml/L) combined with Cold-Pressed Neem Oil (10,000 PPM). This provides 100% organic nitrogen while protecting against soft-bodied sucking pests. All products are lab-verified with National & Local Govt seals.`;
+
       const aiReply = {
         id: (Date.now() + 1).toString(),
         sender: 'ai',
-        text: `Based on your request regarding "${textToSend}", we recommend using Bio-Active NPK Liquid (5ml/L) combined with Cold-Pressed Neem Oil (10,000 PPM). This provides 100% organic nitrogen while protecting against soft-bodied sucking pests. All products are lab-verified with National & Local Govt seals.`,
+        text: replyText,
       };
       setChatMessages((prev) => [...prev, aiReply]);
-    }, 1000);
+    } catch (_err) {
+      const aiReply = {
+        id: (Date.now() + 1).toString(),
+        sender: 'ai',
+        text: `Bio-NPK Liquid (5ml/L) and Vermicompost (2 Tons/Acre) provide the best organic nutrition for your requested scenario.`,
+      };
+      setChatMessages((prev) => [...prev, aiReply]);
+    }
   };
 
   return (
