@@ -12,9 +12,26 @@ import apiClient from '../utils/apiClient';
 const AppContext = createContext();
 
 export function AppProvider({ children }) {
+  // Authentication Guard State (Requires Login to view Home Page)
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+
   // Localization & Persona State
   const [language, setLanguage] = useState('en');
   const [persona, setPersona] = useState('farmer'); // 'farmer' | 'consumer' | 'bulkBuyer' | 'seller' | 'expert' | 'admin'
+
+  const loginUser = (userPayload) => {
+    setIsAuthenticated(true);
+    setCurrentUser(userPayload);
+    if (userPayload?.persona) {
+      setPersona(userPayload.persona);
+    }
+  };
+
+  const logoutUser = () => {
+    setIsAuthenticated(false);
+    setCurrentUser(null);
+  };
   const [currency, setCurrency] = useState('inr'); // 'inr' | 'usd' | 'eur' | 'aud'
   
   // Platform Order Mode: RETAIL (Kg/Lit) vs BULK (Tons)
@@ -236,6 +253,10 @@ export function AppProvider({ children }) {
   return (
     <AppContext.Provider
       value={{
+        isAuthenticated,
+        currentUser,
+        loginUser,
+        logoutUser,
         language,
         changeLanguage,
         t,

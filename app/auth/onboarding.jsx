@@ -30,7 +30,7 @@ const safeSpacingXxl = (SPACING && SPACING.xxl) || 48;
 export default function OnboardingScreen() {
   const router = useRouter();
   const params = useLocalSearchParams();
-  const { persona, changePersona } = useApp();
+  const { persona, changePersona, loginUser } = useApp();
 
   const isSeller = (params.persona || persona) === 'farmer' || (params.persona || persona) === 'seller';
 
@@ -72,6 +72,7 @@ export default function OnboardingScreen() {
 
       const res = await authApi.updateProfile(payload);
       if (res && res.success) {
+        loginUser(res.user);
         changePersona(isSeller ? 'farmer' : 'consumer');
         Alert.alert(
           'Onboarding Complete!',

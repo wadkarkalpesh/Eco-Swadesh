@@ -58,6 +58,7 @@ export default function ProfileScreen() {
     currency,
     changeCurrency,
     language,
+    logoutUser,
   } = useApp();
 
   return (
@@ -273,6 +274,21 @@ export default function ProfileScreen() {
             <Ionicons name="chevron-forward" size={18} color={safeTextMuted} />
           </TouchableOpacity>
         </Card>
+
+        {/* Account Logout Action Card */}
+        <Card style={styles.sectionCard}>
+          <TouchableOpacity
+            style={styles.logoutBtn}
+            onPress={() => {
+              logoutUser();
+              Alert.alert('Logged Out', 'You have been logged out of Eco-Swadesh.');
+              router.replace('/auth/welcome');
+            }}
+          >
+            <Ionicons name="log-out-outline" size={20} color="#D32F2F" />
+            <Text style={styles.logoutText}>Log Out of Eco-Swadesh Account</Text>
+          </TouchableOpacity>
+        </Card>
       </ScrollView>
     </SafeAreaView>
   );
@@ -437,5 +453,17 @@ const styles = StyleSheet.create({
   },
   selectedCurrText: {
     color: safeTextLight,
+  },
+  logoutBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: safeSpacingSm,
+    gap: 8,
+  },
+  logoutText: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#D32F2F',
   },
 });

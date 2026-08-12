@@ -31,7 +31,7 @@ const safeRadiusMd = (RADIUS && RADIUS.md) || 14;
 
 export default function BuyerLoginScreen() {
   const router = useRouter();
-  const { changePersona } = useApp();
+  const { changePersona, loginUser } = useApp();
 
   const [authMode, setAuthMode] = useState('phone'); // 'phone' | 'email'
   const [phoneOrEmail, setPhoneOrEmail] = useState('+91 98765 43210');
@@ -65,6 +65,7 @@ export default function BuyerLoginScreen() {
     try {
       const res = await authApi.verifyOTP(otpSessionId || 'sess_mock', otpCode, 'consumer');
       if (res && res.success) {
+        loginUser(res.user);
         changePersona('consumer');
         if (res.isExistingUser && res.onboardingCompleted) {
           Alert.alert('Welcome Back!', `Logged in successfully as ${res.user.name || 'Buyer'}.`);

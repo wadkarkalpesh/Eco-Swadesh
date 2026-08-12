@@ -81,24 +81,17 @@ export default function WelcomeScreen() {
       {/* Action Buttons */}
       <Card style={styles.actionCard}>
         <Button
-          title="Create New Account (Sign Up)"
+          title="Continue as Buyer / Customer →"
           variant="primary"
           size="md"
-          onPress={() => router.push('/auth/select-portal')}
+          onPress={() => router.push('/auth/buyer-login')}
           style={{ marginBottom: safeSpacingSm }}
         />
         <Button
-          title="Already Have an Account? Log In"
+          title="Continue as Farmer / Seller →"
           variant="secondary"
           size="md"
-          onPress={() => router.push('/auth/select-portal')}
-          style={{ marginBottom: safeSpacingSm }}
-        />
-        <Button
-          title="Explore Platform as Guest →"
-          variant="outline"
-          size="sm"
-          onPress={() => router.replace('/(tabs)')}
+          onPress={() => router.push('/auth/seller-login')}
         />
       </Card>
     </ScrollView>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   Text,
@@ -70,7 +70,14 @@ export default function HomeScreen() {
     addToCart,
     formatPrice,
     commodityTrends,
+    isAuthenticated,
   } = useApp();
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      router.replace('/auth/welcome');
+    }
+  }, [isAuthenticated, router]);
 
   const featuredFertilizers = products.filter((p) => p.category === 'fertilizers');
   const featuredBulk = products.filter((p) => p.category === 'bulkHarvest');
