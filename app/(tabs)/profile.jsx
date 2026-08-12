@@ -6,6 +6,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
+  Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -15,6 +16,7 @@ import { useApp } from '../../context/AppContext';
 import Card from '../../components/ui/Card';
 import Badge from '../../components/ui/Badge';
 import LanguagePicker from '../../components/ui/LanguagePicker';
+import privacyManager from '../../utils/privacyManager';
 
 const safeBg = (COLORS && COLORS.background) || '#F4F7F4';
 const safePrimary = (COLORS && COLORS.primary) || '#1E4D2B';
@@ -186,6 +188,46 @@ export default function ProfileScreen() {
               ))}
             </View>
           </View>
+        </Card>
+
+        {/* DPDP Privacy & Data Subject Rights (India DPDP Act 2023) */}
+        <Card style={styles.sectionCard}>
+          <Text style={styles.sectionTitle}>DPDP Privacy & Data Subject Rights</Text>
+          <Text style={styles.sectionSub}>Manage personal data, export records, or invoke DPDP statutory rights:</Text>
+
+          <TouchableOpacity
+            style={styles.portalItem}
+            onPress={() => {
+              const res = privacyManager.requestDataExport();
+              Alert.alert('Data Export Request', `${res.summary}\nRequested at: ${res.requestedAt}`);
+            }}
+          >
+            <View style={[styles.portalIconCircle, { backgroundColor: '#E8F5E9' }]}>
+              <Ionicons name="download-outline" size={20} color={safePrimary} />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.portalTitle}>Export My Data (JSON)</Text>
+              <Text style={styles.portalSub}>Download all orders, certificates, and soil lab reports</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={18} color={safeTextMuted} />
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.portalItem}
+            onPress={() => {
+              const res = privacyManager.requestRightToBeForgotten();
+              Alert.alert('Erasure Request Registered', `${res.message}\nTicket ID: ${res.erasureTicketId}`);
+            }}
+          >
+            <View style={[styles.portalIconCircle, { backgroundColor: '#FFEBEE' }]}>
+              <Ionicons name="trash-outline" size={20} color="#D32F2F" />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={[styles.portalTitle, { color: '#D32F2F' }]}>Right to be Forgotten (Erasure)</Text>
+              <Text style={styles.portalSub}>Request statutory DPDP deletion of personal PII records</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={18} color={safeTextMuted} />
+          </TouchableOpacity>
         </Card>
       </ScrollView>
     </SafeAreaView>

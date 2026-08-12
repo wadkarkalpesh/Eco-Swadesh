@@ -22,6 +22,7 @@ import SustainabilityAnalyticsCard from '../../components/SustainabilityAnalytic
 import CommodityTrendChart from '../../components/CommodityTrendChart';
 import SubsidyFinderCard from '../../components/SubsidyFinderCard';
 import EquipmentRentalCard from '../../components/EquipmentRentalCard';
+import DPDPConsentBanner from '../../components/ui/DPDPConsentBanner';
 import { MOCK_COMMODITY_PRICES } from '../../constants/mockData';
 
 const safeBg = (COLORS && COLORS.background) || '#F4F7F4';
@@ -103,6 +104,9 @@ export default function HomeScreen() {
           </TouchableOpacity>
         </View>
       </View>
+
+      {/* DPDP Act 2023 Consent & Privacy Transparency Notice */}
+      <DPDPConsentBanner />
 
       {/* Live Market Commodity Ticker */}
       <View style={styles.tickerContainer}>
