@@ -11,11 +11,10 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLORS, RADIUS, SPACING } from '../../constants/theme';
 import Card from './Card';
 import Button from './Button';
-import privacyManager from '../../utils/privacyManager';
+import { privacyManager } from '../../utils/privacyManager';
 
 const safePrimary = (COLORS && COLORS.primary) || '#1E4D2B';
 const safePrimaryDark = (COLORS && COLORS.primaryDark) || '#12361C';
-const safeTextLight = (COLORS && COLORS.textLight) || '#FFFFFF';
 const safeTextPrimary = (COLORS && COLORS.textPrimary) || '#1A2E1E';
 const safeTextSecondary = (COLORS && COLORS.textSecondary) || '#5A6E5D';
 const safeTextMuted = (COLORS && COLORS.textMuted) || '#8A9E8C';
@@ -24,7 +23,6 @@ const safeSuccess = (COLORS && COLORS.success) || '#2E7D32';
 const safeSpacingXs = (SPACING && SPACING.xs) || 4;
 const safeSpacingSm = (SPACING && SPACING.sm) || 8;
 const safeSpacingMd = (SPACING && SPACING.md) || 16;
-const safeRadiusSm = (RADIUS && RADIUS.sm) || 8;
 const safeRadiusMd = (RADIUS && RADIUS.md) || 14;
 
 export default function DPDPConsentBanner() {

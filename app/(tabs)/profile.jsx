@@ -16,7 +16,7 @@ import { useApp } from '../../context/AppContext';
 import Card from '../../components/ui/Card';
 import Badge from '../../components/ui/Badge';
 import LanguagePicker from '../../components/ui/LanguagePicker';
-import privacyManager from '../../utils/privacyManager';
+import { privacyManager } from '../../utils/privacyManager';
 
 const safeBg = (COLORS && COLORS.background) || '#F4F7F4';
 const safePrimary = (COLORS && COLORS.primary) || '#1E4D2B';
