@@ -19,6 +19,7 @@ import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import SoilReportModal from '../../components/SoilReportModal';
 import { MOCK_AI_DIAGNOSES } from '../../constants/mockData';
+import { voiceApi } from '../../utils/apiClient';
 
 const safeBg = (COLORS && COLORS.background) || '#F4F7F4';
 const safePrimary = (COLORS && COLORS.primary) || '#1E4D2B';
@@ -51,6 +52,28 @@ export default function AIAssistantScreen() {
   const [scanResult, setScanResult] = useState(null);
   const [showSoilReport, setShowSoilReport] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+
+  // Vernacular Voice Agronomy state
+  const [voiceLang, setVoiceLang] = useState('hi');
+  const [voiceScript, setVoiceScript] = useState(null);
+  const [loadingVoice, setLoadingVoice] = useState(false);
+
+  const handleFetchVoiceAdvisory = async (lang = voiceLang) => {
+    setVoiceLang(lang);
+    setLoadingVoice(true);
+    try {
+      const crop = scanResult ? scanResult.cropName : 'tomato';
+      const disease = scanResult ? scanResult.detectedDisease : 'Early Bacterial Blight';
+      const res = await voiceApi.getAdvisory(lang, crop, disease);
+      if (res && res.speechScript) {
+        setVoiceScript(res.speechScript);
+      }
+    } catch (e) {
+      console.warn('Voice advisory error:', e);
+    } finally {
+      setLoadingVoice(false);
+    }
+  };
   
   // Chat state
   const [chatMessages, setChatMessages] = useState([
@@ -223,6 +246,68 @@ export default function AIAssistantScreen() {
                 🧪 Recommended Soil Input: <Text style={{ fontWeight: '700' }}>{scanResult.recommendedFertilizer}</Text>
               </Text>
             </View>
+          )}
+        </Card>
+
+        {/* Vernacular Voice Agronomy Advisory Card */}
+        <Card bg="#FFFDF5" style={{ marginBottom: safeSpacingMd, borderLeftWidth: 4, borderLeftColor: '#FFA000' }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: safeSpacingSm }}>
+            <Ionicons name="volume-high" size={24} color="#D84315" />
+            <Text style={{ fontSize: 15, fontWeight: '800', color: safeTextPrimary, marginLeft: 8, flex: 1 }}>
+              Multilingual Voice Agronomy
+            </Text>
+            <Badge label="SPEECH SYNTHESIS" variant="gold" size="sm" />
+          </View>
+
+          <Text style={{ fontSize: 11, color: safeTextSecondary, marginBottom: safeSpacingSm }}>
+            Listen to expert agronomy disease advisories synthesized in regional languages:
+          </Text>
+
+          <View style={{ flexDirection: 'row', gap: 6, marginBottom: safeSpacingSm }}>
+            {[
+              { code: 'hi', label: '🇮🇳 हिंदी' },
+              { code: 'pa', label: '🌾 ਪੰਜਾਬੀ' },
+              { code: 'mr', label: '🚩 मराठी' },
+              { code: 'ta', label: '🌴 தமிழ்' },
+            ].map((item) => (
+              <TouchableOpacity
+                key={item.code}
+                style={{
+                  paddingHorizontal: 10,
+                  paddingVertical: 6,
+                  borderRadius: 16,
+                  backgroundColor: voiceLang === item.code ? safePrimaryDark : '#EFECE6',
+                }}
+                onPress={() => handleFetchVoiceAdvisory(item.code)}
+              >
+                <Text style={{ fontSize: 11, fontWeight: '700', color: voiceLang === item.code ? safeTextLight : safeTextSecondary }}>
+                  {item.label}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+          {loadingVoice ? (
+            <ActivityIndicator color={safePrimary} style={{ marginVertical: 8 }} />
+          ) : voiceScript ? (
+            <View style={{ backgroundColor: '#F9F6EE', padding: 10, borderRadius: 8, marginTop: 4 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
+                <Ionicons name="play-circle" size={20} color={safePrimary} />
+                <Text style={{ fontSize: 11, fontWeight: '700', color: safePrimaryDark, marginLeft: 6 }}>
+                  Acoustic Speech Advisory Generated:
+                </Text>
+              </View>
+              <Text style={{ fontSize: 12, color: safeTextPrimary, fontStyle: 'italic', lineHeight: 18 }}>
+                {`"${voiceScript}"`}
+              </Text>
+            </View>
+          ) : (
+            <Button
+              title="🔊 Synthesize Voice Advisory"
+              variant="outline"
+              size="sm"
+              onPress={() => handleFetchVoiceAdvisory(voiceLang)}
+            />
           )}
         </Card>
 

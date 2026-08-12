@@ -77,6 +77,42 @@ export default function RootLayout() {
               title: 'Escrow & Quality Dispute Resolution',
             }}
           />
+          <Stack.Screen
+            name="procurement"
+            options={{
+              title: 'FPO Group Procurement',
+            }}
+          />
+          <Stack.Screen
+            name="mandi-prices"
+            options={{
+              title: 'APMC Mandi AI Price Forecaster',
+            }}
+          />
+          <Stack.Screen
+            name="carbon-credits"
+            options={{
+              title: 'Soil Carbon Credits & ESG Registry',
+            }}
+          />
+          <Stack.Screen
+            name="agri-credit"
+            options={{
+              title: 'Alternative Eco Agri-Credit',
+            }}
+          />
+          <Stack.Screen
+            name="farm-gis"
+            options={{
+              title: 'Satellite GIS Farm Buffer Auditor',
+            }}
+          />
+          <Stack.Screen
+            name="phytosanitary"
+            options={{
+              title: 'Export Biosecurity & Phytosanitary',
+            }}
+          />
         </Stack>
       </AppProvider>
     </ErrorBoundary>

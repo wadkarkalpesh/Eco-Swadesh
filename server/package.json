@@ -19,6 +19,11 @@
     "express",
     "firebase"
   ],
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3"
+  },
   "author": "Eco Swadesh Engineering Team",
   "license": "MIT"
 }

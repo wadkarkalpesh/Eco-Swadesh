@@ -14,6 +14,7 @@ import Badge from '../components/ui/Badge';
 import Input from '../components/ui/Input';
 import Button from '../components/ui/Button';
 import CustomsCalculatorCard from '../components/CustomsCalculatorCard';
+import { shelfLifeApi } from '../utils/apiClient';
 
 const safeBg = (COLORS && COLORS.background) || '#F4F7F4';
 const safePrimary = (COLORS && COLORS.primary) || '#1E4D2B';
@@ -41,6 +42,28 @@ export default function LogisticsScreen() {
   const [calcTons, setCalcTons] = useState('10');
   const [calcKM, setCalcKM] = useState('250');
   const [calculatedQuote, setCalculatedQuote] = useState(null);
+
+  // Cold-Chain Arrhenius State
+  const commodityType = 'BIO_INOCULANT_BEAUVERIA';
+  const [exposureHours, setExposureHours] = useState('48');
+  const [shelfReport, setShelfReport] = useState(null);
+
+  const handleEvaluateShelfLife = async () => {
+    try {
+      const res = await shelfLifeApi.evaluate({
+        commodityType,
+        nominalShelfLifeDays: 180,
+        referenceTempCelsius: 4.0,
+        temperatureReadingsCelsius: [4.5, 4.8, 5.0, 4.2],
+        exposureHours: parseFloat(exposureHours) || 48,
+      });
+      if (res && res.shelfLifeReport) {
+        setShelfReport(res.shelfLifeReport);
+      }
+    } catch (e) {
+      console.warn('Shelf-life evaluation error:', e);
+    }
+  };
 
   const handleCalculateFreight = () => {
     const tons = parseFloat(calcTons) || 1;
@@ -167,6 +190,56 @@ export default function LogisticsScreen() {
 
       {/* Global Customs & Duty Tariff Calculator Widget */}
       <CustomsCalculatorCard />
+
+      {/* Arrhenius Biological Cold-Chain Watchdog */}
+      <Card bg="#F4FBF7" style={{ marginBottom: safeSpacingMd, borderLeftWidth: 4, borderLeftColor: safePrimary }}>
+        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: safeSpacingXs }}>
+          <Ionicons name="thermometer-outline" size={24} color={safePrimary} />
+          <Text style={{ fontSize: 15, fontWeight: '800', color: safeTextPrimary, marginLeft: 8, flex: 1 }}>
+            Arrhenius Cold-Chain Biological Watchdog
+          </Text>
+          <Badge label="Q10 KINETICS" variant="success" size="sm" />
+        </View>
+
+        <Text style={{ fontSize: 11, color: safeTextSecondary, marginBottom: safeSpacingSm }}>
+          Predictive microbial inoculant degradation & spore viability watchdog in transit:
+        </Text>
+
+        <View style={{ flexDirection: 'row', gap: 8 }}>
+          <View style={{ flex: 1 }}>
+            <Input
+              label="Exposure Hours:"
+              keyboardType="numeric"
+              value={exposureHours}
+              onChangeText={setExposureHours}
+            />
+          </View>
+          <View style={{ flex: 1, justifyContent: 'center', paddingTop: 8 }}>
+            <Button
+              title="Evaluate Potency"
+              variant="primary"
+              size="sm"
+              onPress={handleEvaluateShelfLife}
+            />
+          </View>
+        </View>
+
+        {shelfReport && (
+          <View style={{ backgroundColor: '#E8F5E9', padding: 10, borderRadius: 8, marginTop: 8 }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 }}>
+              <Text style={{ fontSize: 12, fontWeight: '700', color: safePrimaryDark }}>
+                Status: {shelfReport.viabilityStatus}
+              </Text>
+              <Text style={{ fontSize: 12, fontWeight: '800', color: safePrimary }}>
+                {shelfReport.integrityPercentage}% Viable
+              </Text>
+            </View>
+            <Text style={{ fontSize: 10, color: safeTextSecondary }}>
+              Remaining Potency: {shelfReport.remainingShelfLifeDays} / {shelfReport.nominalShelfLifeDays} Nominal Days
+            </Text>
+          </View>
+        )}
+      </Card>
 
       {/* Active Shipments Trackers */}
       <Text style={styles.sectionTitleHeader}>{t('activeShipments')} ({shipments.length})</Text>

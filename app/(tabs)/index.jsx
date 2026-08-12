@@ -228,6 +228,36 @@ export default function HomeScreen() {
           </View>
         </Card>
 
+        {/* Enterprise & Rural Agri-Tech Hub Shortcuts */}
+        <Text style={styles.sectionTitleHeader}>Enterprise Agri-Tech & FinTech Hubs</Text>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: safeSpacingMd }}>
+          {[
+            { title: 'FPO Procurement', sub: 'Group Bulk Pools', icon: 'people', color: '#1E4D2B', bg: '#E8F5E9', route: '/procurement' },
+            { title: 'Mandi AI Rates', sub: 'APMC Price Forecast', icon: 'trending-up', color: '#FFA000', bg: '#FFF8E1', route: '/mandi-prices' },
+            { title: 'Soil Carbon', sub: 'Verra ESG Offsets', icon: 'leaf', color: '#2E7D32', bg: '#E8F5E9', route: '/carbon-credits' },
+            { title: 'Agri-Credit', sub: '4% Kisan Loans', icon: 'card', color: '#1976D2', bg: '#E3F2FD', route: '/agri-credit' },
+            { title: 'Satellite GIS', sub: '30m Buffer Audit', icon: 'map', color: '#673AB7', bg: '#EDE7F6', route: '/farm-gis' },
+            { title: 'Export Passports', sub: 'Phytosanitary Biosecurity', icon: 'airplane', color: '#D84315', bg: '#FBE9E7', route: '/phytosanitary' },
+          ].map((item, idx) => (
+            <TouchableOpacity
+              key={idx}
+              style={{
+                width: '48%',
+                backgroundColor: item.bg,
+                padding: 12,
+                borderRadius: safeRadiusMd,
+                borderWidth: 1,
+                borderColor: 'rgba(0,0,0,0.05)',
+              }}
+              onPress={() => router.push(item.route)}
+            >
+              <Ionicons name={item.icon} size={22} color={item.color} />
+              <Text style={{ fontSize: 13, fontWeight: '800', color: safeTextPrimary, marginTop: 4 }}>{item.title}</Text>
+              <Text style={{ fontSize: 10, color: safeTextSecondary, marginTop: 1 }}>{item.sub}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+
         {/* Farmer Government Subsidy & Grant Finder Widget */}
         <SubsidyFinderCard />
 
