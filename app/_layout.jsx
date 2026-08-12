@@ -137,6 +137,48 @@ export default function RootLayout() {
               title: 'Personal Information Setup',
             }}
           />
+          <Stack.Screen
+            name="auth/welcome"
+            options={{
+              title: 'Welcome to Eco-Swadesh',
+            }}
+          />
+          <Stack.Screen
+            name="knowledge"
+            options={{
+              title: 'Agri Knowledge & Learning Hub',
+            }}
+          />
+          <Stack.Screen
+            name="wishlist"
+            options={{
+              title: 'Saved Wishlist',
+            }}
+          />
+          <Stack.Screen
+            name="checkout"
+            options={{
+              title: 'Escrow Protected Checkout',
+            }}
+          />
+          <Stack.Screen
+            name="add-product"
+            options={{
+              title: 'Publish Product to Marketplace',
+            }}
+          />
+          <Stack.Screen
+            name="notifications"
+            options={{
+              title: 'Eco-Swadesh Notifications',
+            }}
+          />
+          <Stack.Screen
+            name="help-support"
+            options={{
+              title: 'Help & Support Center',
+            }}
+          />
         </Stack>
       </AppProvider>
     </ErrorBoundary>

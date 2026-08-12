@@ -155,6 +155,50 @@ export default function ProfileScreen() {
             </View>
             <Ionicons name="chevron-forward" size={18} color={safeTextMuted} />
           </TouchableOpacity>
+
+          <TouchableOpacity style={styles.portalItem} onPress={() => router.push('/knowledge')}>
+            <View style={[styles.portalIconCircle, { backgroundColor: '#E8F5E9' }]}>
+              <Ionicons name="book-outline" size={20} color={safePrimary} />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.portalTitle}>Agri Knowledge & Learning Hub</Text>
+              <Text style={styles.portalSub}>Farming Guides, NPOP Organic Rules & Videos</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={18} color={safeTextMuted} />
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.portalItem} onPress={() => router.push('/wishlist')}>
+            <View style={[styles.portalIconCircle, { backgroundColor: '#FFEBEE' }]}>
+              <Ionicons name="heart-outline" size={20} color="#D32F2F" />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.portalTitle}>My Saved Wishlist</Text>
+              <Text style={styles.portalSub}>View saved bio-inputs and organic produce</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={18} color={safeTextMuted} />
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.portalItem} onPress={() => router.push('/notifications')}>
+            <View style={[styles.portalIconCircle, { backgroundColor: '#FFF3E0' }]}>
+              <Ionicons name="notifications-outline" size={20} color="#E65100" />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.portalTitle}>Notifications & Alerts</Text>
+              <Text style={styles.portalSub}>Order updates, Escrow payouts & AI Doctor diagnosis</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={18} color={safeTextMuted} />
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.portalItem} onPress={() => router.push('/help-support')}>
+            <View style={[styles.portalIconCircle, { backgroundColor: '#E0F2F1' }]}>
+              <Ionicons name="help-buoy-outline" size={20} color="#00695C" />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.portalTitle}>Help & Support Center</Text>
+              <Text style={styles.portalSub}>24/7 Support tickets, FAQs & dispute assistance</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={18} color={safeTextMuted} />
+          </TouchableOpacity>
         </Card>
 
         {/* Global Settings (Language & Currency) */}
