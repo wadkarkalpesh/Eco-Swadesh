@@ -24,7 +24,6 @@ const safeSuccess = (COLORS && COLORS.success) || '#2E7D32';
 const safeDanger = (COLORS && COLORS.danger) || '#D32F2F';
 
 const safeSpacingXs = (SPACING && SPACING.xs) || 4;
-const safeSpacingSm = (SPACING && SPACING.sm) || 8;
 const safeSpacingMd = (SPACING && SPACING.md) || 16;
 const safeSpacingXxl = (SPACING && SPACING.xxl) || 48;
 const safeRadiusSm = (RADIUS && RADIUS.sm) || 8;

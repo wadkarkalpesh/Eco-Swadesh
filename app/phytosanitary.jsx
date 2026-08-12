@@ -23,7 +23,6 @@ const safeSunGold = (COLORS && COLORS.sunGold) || '#FFA000';
 const safeSuccess = (COLORS && COLORS.success) || '#2E7D32';
 
 const safeSpacingXs = (SPACING && SPACING.xs) || 4;
-const safeSpacingSm = (SPACING && SPACING.sm) || 8;
 const safeSpacingMd = (SPACING && SPACING.md) || 16;
 const safeSpacingXxl = (SPACING && SPACING.xxl) || 48;
 
