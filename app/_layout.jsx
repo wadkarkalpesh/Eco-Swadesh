@@ -114,36 +114,6 @@ export default function RootLayout() {
             }}
           />
           <Stack.Screen
-            name="auth/select-portal"
-            options={{
-              title: 'Select Authentication Portal',
-            }}
-          />
-          <Stack.Screen
-            name="auth/buyer-login"
-            options={{
-              title: 'Customer & Buyer Login',
-            }}
-          />
-          <Stack.Screen
-            name="auth/seller-login"
-            options={{
-              title: 'Farmer & Seller Login',
-            }}
-          />
-          <Stack.Screen
-            name="auth/onboarding"
-            options={{
-              title: 'Personal Information Setup',
-            }}
-          />
-          <Stack.Screen
-            name="auth/welcome"
-            options={{
-              title: 'Welcome to Eco-Swadesh',
-            }}
-          />
-          <Stack.Screen
             name="knowledge"
             options={{
               title: 'Agri Knowledge & Learning Hub',
