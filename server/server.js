@@ -40,6 +40,7 @@ const coopRoutes = require('./routes/coopRoutes');
 const labTrackingRoutes = require('./routes/labTrackingRoutes');
 const metricsRoutes = require('./routes/metricsRoutes');
 const phase26to30Routes = require('./routes/phase26to30Routes');
+const farmerRoutes = require('./routes/farmerRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -113,12 +114,14 @@ app.get('/v1/health', (req, res) => {
       multiFarmerLtlMilkRunOptimizer: 'OPERATIONAL',
       prometheusSreMetrics: 'OPERATIONAL',
       rateLimiterTokenBucket: 'OPERATIONAL',
+      farmerDirectoryAndClusters: 'OPERATIONAL',
     },
   });
 });
 
 // Mount /v1 Domain Subsystems with Rate Limiting
 app.use('/v1/auth', authRateLimiter, authRoutes);
+app.use('/v1/farmers', globalRateLimiter, farmerRoutes);
 app.use('/v1/products', globalRateLimiter, productsRoutes);
 app.use('/v1/orders', ordersRoutes);
 app.use('/v1/payments', paymentsRoutes);

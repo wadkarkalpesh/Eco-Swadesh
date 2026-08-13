@@ -37,14 +37,37 @@ const getProducts = (req, res) => {
         p.name.toLowerCase().includes(q) ||
         p.description?.toLowerCase().includes(q) ||
         p.sellerName?.toLowerCase().includes(q) ||
-        p.certName?.toLowerCase().includes(q)
+        p.farmerName?.toLowerCase().includes(q) ||
+        p.certName?.toLowerCase().includes(q) ||
+        p.origin?.toLowerCase().includes(q)
     );
   }
 
-  const total = results.length;
+  // Enrich products with producing farmer metadata if farmerId is set
+  const enriched = results.map((p) => {
+    if (p.farmerId) {
+      const farmer = db.findById('users', p.farmerId);
+      if (farmer) {
+        return {
+          ...p,
+          producerProfile: {
+            farmerId: farmer.id,
+            farmerName: farmer.name,
+            farmSizeAcres: farmer.farmSizeAcres,
+            fpoName: farmer.fpoName,
+            soilHealthCardId: farmer.soilHealthCardId,
+            address: farmer.address,
+          },
+        };
+      }
+    }
+    return p;
+  });
+
+  const total = enriched.length;
   const pageNum = parseInt(page, 10);
   const limitNum = parseInt(limit, 10);
-  const paginated = results.slice((pageNum - 1) * limitNum, pageNum * limitNum);
+  const paginated = enriched.slice((pageNum - 1) * limitNum, pageNum * limitNum);
 
   return res.status(200).json({
     success: true,
@@ -71,9 +94,28 @@ const getProductById = (req, res) => {
     });
   }
 
+  let enrichedProduct = { ...product };
+  if (product.farmerId) {
+    const farmer = db.findById('users', product.farmerId);
+    if (farmer) {
+      enrichedProduct.producerProfile = {
+        farmerId: farmer.id,
+        farmerName: farmer.name,
+        email: farmer.email,
+        phone: farmer.phoneNumber,
+        farmSizeAcres: farmer.farmSizeAcres,
+        primaryCrops: farmer.primaryCrops,
+        fpoName: farmer.fpoName,
+        soilHealthCardId: farmer.soilHealthCardId,
+        address: farmer.address,
+        certifications: farmer.certifications,
+      };
+    }
+  }
+
   return res.status(200).json({
     success: true,
-    product,
+    product: enrichedProduct,
   });
 };
 
@@ -98,6 +140,8 @@ const createProduct = (req, res) => {
     origin = 'India',
     image,
     labPurityRating = '99.5% Pure',
+    farmerId,
+    farmerName,
   } = req.body;
 
   if (!name || (!retailPrice && !bulkPricePerTon)) {
@@ -114,6 +158,8 @@ const createProduct = (req, res) => {
   const newProduct = db.insert('products', {
     name,
     category,
+    farmerId: farmerId || (req.user?.persona === 'farmer' ? req.user.id : null),
+    farmerName: farmerName || (req.user?.persona === 'farmer' ? req.user.name : null),
     sellerId,
     sellerName,
     sellerType: category === 'bulkHarvest' ? 'Organic Farmer Collective' : 'Bio-Input Manufacturer',
