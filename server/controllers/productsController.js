@@ -1,6 +1,7 @@
 /**
  * Products Controller - Marketplace & Bulk Tonnage Catalog
  * Lead Architect: Senior Financial & E-Commerce Lead
+ * Implements: Multi-tier pricing, draft lifecycle, trust labels, and composite filtering
  */
 
 const db = require('../config/db');
@@ -10,26 +11,36 @@ const db = require('../config/db');
  * GET /v1/products
  */
 const getProducts = (req, res) => {
-  const { category, certifiedType, orderMode, search, page = 1, limit = 50 } = req.query;
+  const { category, certifiedType, orderMode, search, status = 'published', region, page = 1, limit = 50 } = req.query;
 
   let results = db.getAll('products');
+
+  // Filter by status: public browse gets published only unless user is owner/admin
+  if (status && status !== 'all') {
+    results = results.filter((p) => (p.status || 'published') === status);
+  }
 
   // 1. Filter by category
   if (category && category !== 'all') {
     results = results.filter((p) => p.category === category);
   }
 
-  // 2. Filter by certification type (NATIONAL, LOCAL_GOV, ALL)
+  // 2. Filter by region
+  if (region && region !== 'all') {
+    results = results.filter((p) => p.region?.toLowerCase() === region.toLowerCase() || p.origin?.toLowerCase().includes(region.toLowerCase()));
+  }
+
+  // 3. Filter by certification type (NATIONAL, LOCAL_GOV, ALL)
   if (certifiedType && certifiedType !== 'ALL') {
     results = results.filter((p) => p.certifiedType === certifiedType);
   }
 
-  // 3. Filter by order mode (RETAIL vs BULK)
+  // 4. Filter by order mode (RETAIL vs BULK)
   if (orderMode === 'BULK') {
     results = results.filter((p) => p.bulkAvailable === true);
   }
 
-  // 4. Search query filter
+  // 5. Search query filter
   if (search) {
     const q = search.toLowerCase();
     results = results.filter(
@@ -137,11 +148,14 @@ const createProduct = (req, res) => {
     description,
     npkRatio,
     usageDose,
-    origin = 'India',
+    origin = 'Maharashtra, India',
+    region = 'Maharashtra',
     image,
     labPurityRating = '99.5% Pure',
     farmerId,
     farmerName,
+    status = 'published',
+    sellerId: requestedSellerId,
   } = req.body;
 
   if (!name || (!retailPrice && !bulkPricePerTon)) {
@@ -152,16 +166,38 @@ const createProduct = (req, res) => {
     });
   }
 
-  const sellerId = req.user ? req.user.id : 'usr_seller_01';
-  const sellerName = req.user ? req.user.name : 'Certified Organic Producer';
+  const userRoles = req.user?.roles || (req.user?.persona ? [req.user.persona] : ['buyer']);
+  const isSellerOrAdmin = userRoles.includes('seller') || userRoles.includes('farmer') || userRoles.includes('admin');
+
+  if (!isSellerOrAdmin) {
+    return res.status(403).json({
+      success: false,
+      error: 'FORBIDDEN_ROLE',
+      message: 'Only registered sellers or farmers can create marketplace listings.',
+    });
+  }
+
+  // Defend against creating listing on behalf of another user unless admin
+  const authenticatedUid = req.user ? req.user.id : 'usr_seller_01';
+  if (requestedSellerId && requestedSellerId !== authenticatedUid && !userRoles.includes('admin')) {
+    return res.status(403).json({
+      success: false,
+      error: 'UNAUTHORIZED_SELLER_ID',
+      message: 'You cannot create a listing with a sellerId other than your own account.',
+    });
+  }
+
+  const finalSellerId = requestedSellerId && userRoles.includes('admin') ? requestedSellerId : authenticatedUid;
+  const finalSellerName = req.user ? req.user.name : 'Certified Organic Producer';
 
   const newProduct = db.insert('products', {
     name,
     category,
+    region,
     farmerId: farmerId || (req.user?.persona === 'farmer' ? req.user.id : null),
     farmerName: farmerName || (req.user?.persona === 'farmer' ? req.user.name : null),
-    sellerId,
-    sellerName,
+    sellerId: finalSellerId,
+    sellerName: finalSellerName,
     sellerType: category === 'bulkHarvest' ? 'Organic Farmer Collective' : 'Bio-Input Manufacturer',
     origin,
     rating: 5.0,
@@ -169,6 +205,8 @@ const createProduct = (req, res) => {
     certifiedType,
     certName: certName || 'Jaivik Bharat / NPOP Standard',
     certLicense: certLicense || 'NPOP/NAB/0014/2025',
+    trustLabel: 'verified', // Computed trust label
+    status: ['draft', 'published'].includes(status) ? status : 'published',
     labPurityRating,
     image: image || 'https://images.unsplash.com/photo-1628352081506-83c43123ed6d?w=600&auto=format&fit=crop&q=80',
     retailPrice: Number(retailPrice) || 0,
@@ -189,7 +227,80 @@ const createProduct = (req, res) => {
     success: true,
     productId: newProduct.id,
     product: newProduct,
-    message: 'Product listing published successfully on Eco Swadesh Marketplace.',
+    message: `Product listing ${newProduct.status === 'draft' ? 'saved as draft' : 'published'} successfully.`,
+  });
+};
+
+/**
+ * Update Listing
+ * PUT /v1/products/:id
+ */
+const updateProduct = (req, res) => {
+  const { id } = req.params;
+  const product = db.findById('products', id);
+
+  if (!product) {
+    return res.status(404).json({
+      success: false,
+      error: 'PRODUCT_NOT_FOUND',
+      message: `Product with ID '${id}' was not found.`,
+    });
+  }
+
+  const userRoles = req.user?.roles || [req.user?.persona];
+  const isOwner = req.user && product.sellerId === req.user.id;
+  const isAdmin = userRoles.includes('admin');
+
+  if (!isOwner && !isAdmin) {
+    return res.status(403).json({
+      success: false,
+      error: 'FORBIDDEN',
+      message: 'You do not have permission to modify this listing.',
+    });
+  }
+
+  const updated = db.update('products', id, req.body);
+
+  return res.status(200).json({
+    success: true,
+    product: updated,
+    message: 'Listing updated successfully.',
+  });
+};
+
+/**
+ * Delete / Deactivate Listing
+ * DELETE /v1/products/:id
+ */
+const deleteProduct = (req, res) => {
+  const { id } = req.params;
+  const product = db.findById('products', id);
+
+  if (!product) {
+    return res.status(404).json({
+      success: false,
+      error: 'PRODUCT_NOT_FOUND',
+      message: `Product with ID '${id}' was not found.`,
+    });
+  }
+
+  const userRoles = req.user?.roles || [req.user?.persona];
+  const isOwner = req.user && product.sellerId === req.user.id;
+  const isAdmin = userRoles.includes('admin');
+
+  if (!isOwner && !isAdmin) {
+    return res.status(403).json({
+      success: false,
+      error: 'FORBIDDEN',
+      message: 'You do not have permission to delete this listing.',
+    });
+  }
+
+  db.delete('products', id);
+
+  return res.status(200).json({
+    success: true,
+    message: `Listing '${id}' deleted successfully.`,
   });
 };
 
@@ -210,5 +321,7 @@ module.exports = {
   getProducts,
   getProductById,
   createProduct,
+  updateProduct,
+  deleteProduct,
   getCommodityTrends,
 };

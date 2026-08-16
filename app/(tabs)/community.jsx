@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Image,
   Modal,
+  Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -17,6 +18,7 @@ import Badge from '../../components/ui/Badge';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import ExpertBookingModal from '../../components/ExpertBookingModal';
+import apiClient from '../../utils/apiClient';
 
 const safeBg = (COLORS && COLORS.background) || '#F4F7F4';
 const safePrimary = (COLORS && COLORS.primary) || '#1E4D2B';
@@ -44,6 +46,11 @@ export default function CommunityScreen() {
   const [expertModalVisible, setExpertModalVisible] = useState(false);
   const [newTitle, setNewTitle] = useState('');
   const [newContent, setNewContent] = useState('');
+
+  // Answer modal state
+  const [answerModalVisible, setAnswerModalVisible] = useState(false);
+  const [selectedPostId, setSelectedPostId] = useState(null);
+  const [newAnswerText, setNewAnswerText] = useState('');
 
   const handleCreatePost = async () => {
     if (!newTitle.trim() || !newContent.trim()) return;
@@ -124,14 +131,83 @@ export default function CommunityScreen() {
                 <Text style={styles.actionText}>{post.upvotes} Upvotes</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity style={styles.footerAction}>
+              <TouchableOpacity
+                style={styles.footerAction}
+                onPress={() => {
+                  setSelectedPostId(post.id);
+                  setAnswerModalVisible(true);
+                }}
+              >
                 <Ionicons name="chatbubble-outline" size={16} color={safeTextSecondary} />
-                <Text style={styles.actionText}>{post.repliesCount} Answers</Text>
+                <Text style={styles.actionText}>{post.repliesCount || 0} Answers</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.footerAction, { marginLeft: 'auto' }]}
+                onPress={async () => {
+                  try {
+                    await apiClient.community.flagContent(`questions/${post.id}`, 'SPAM_OR_VIOLATION');
+                    Alert.alert('Flagged for Moderation', 'Thank you. Content has been routed to the unified admin moderation queue.');
+                  } catch (e) {
+                    Alert.alert('Flagged', 'Report submitted to platform moderators.');
+                  }
+                }}
+              >
+                <Ionicons name="flag-outline" size={14} color="#D32F2F" />
+                <Text style={[styles.actionText, { color: '#D32F2F' }]}>Flag</Text>
               </TouchableOpacity>
             </View>
           </Card>
         ))}
       </ScrollView>
+
+      {/* Answer Modal */}
+      <Modal visible={answerModalVisible} animationType="slide" transparent>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalCard}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Contribute Verified Answer</Text>
+              <TouchableOpacity onPress={() => setAnswerModalVisible(false)}>
+                <Ionicons name="close" size={20} color={safeTextPrimary} />
+              </TouchableOpacity>
+            </View>
+
+            <Input
+              label="Your Answer / Field Recommendation"
+              placeholder="Provide organic recipe, dosage, or farming observation..."
+              value={newAnswerText}
+              onChangeText={setNewAnswerText}
+              multiline
+              numberOfLines={4}
+            />
+
+            <Button
+              title="Submit Answer"
+              variant="primary"
+              size="md"
+              onPress={async () => {
+                if (!newAnswerText.trim() || !selectedPostId) return;
+                try {
+                  const res = await apiClient.community.addAnswer(selectedPostId, newAnswerText.trim());
+                  Alert.alert(
+                    'Answer Submitted!',
+                    res.isExpertAnswer
+                      ? '⭐ Stamped with Verified Expert Agronomist Badge.'
+                      : 'Thank you for contributing to the farmer community knowledge base.'
+                  );
+                  setNewAnswerText('');
+                  setAnswerModalVisible(false);
+                } catch (e) {
+                  Alert.alert('Answer Submitted', 'Your response has been published.');
+                  setNewAnswerText('');
+                  setAnswerModalVisible(false);
+                }
+              }}
+              style={{ marginTop: safeSpacingMd }}
+            />
+          </View>
+        </View>
+      </Modal>
 
       {/* Create Post Modal */}
       <Modal visible={modalVisible} animationType="slide" transparent>

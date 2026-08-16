@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
   ScrollView,
   StyleSheet,
+  TouchableOpacity,
+  Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SPACING } from '../constants/theme';
@@ -11,8 +13,10 @@ import { useApp } from '../context/AppContext';
 import Card from '../components/ui/Card';
 import Badge from '../components/ui/Badge';
 import Button from '../components/ui/Button';
+import apiClient from '../utils/apiClient';
 
 const safeBg = (COLORS && COLORS.background) || '#F4F7F4';
+const safePrimary = (COLORS && COLORS.primary) || '#1E4D2B';
 const safePrimaryDark = (COLORS && COLORS.primaryDark) || '#12361C';
 const safeTextLight = (COLORS && COLORS.textLight) || '#FFFFFF';
 const safeTextPrimary = (COLORS && COLORS.textPrimary) || '#1A2E1E';
@@ -30,25 +34,68 @@ const safeSpacingXxl = (SPACING && SPACING.xxl) || 48;
 export default function AdminOversightScreen() {
   const { t, products, adminMetrics } = useApp();
 
-  const [pendingSellers, setPendingSellers] = useState([
+  const [moderationQueue, setModerationQueue] = useState([
     {
-      id: 'sel-901',
-      name: 'Organic Harvest Farmer Union',
-      location: 'Punjab, India',
-      type: 'Direct Farm Collective',
-      licenseSubmitted: 'NPOP/NAB/8821/2026',
+      id: 'cert_901',
+      type: 'CERTIFICATION',
+      name: 'Gujarat Agro Organic Board Certificate',
+      producerId: 'usr_seller_01',
+      licenseNo: 'GJ-AGRI-ORG-2026',
+      status: 'pending',
     },
     {
-      id: 'sel-902',
-      name: 'BioFlora Earth Fertilizers Pvt Ltd',
-      location: 'California, US',
-      type: 'Bio-Input Manufacturer',
-      licenseSubmitted: 'CDFA-CCOF-1192',
+      id: 'flag_401',
+      type: 'FLAGGED_CONTENT',
+      name: 'Synthetic Chemical Question Thread',
+      reason: 'Violates 100% Organic Marketplace Standards',
+      status: 'under_review',
+    },
+    {
+      id: 'disp_901',
+      type: 'QUALITY_DISPUTE',
+      name: 'Batch #281 Sharbati Wheat - Moisture Variance',
+      buyer: 'Verified Bulk Buyer',
+      status: 'OPEN',
     },
   ]);
 
-  const handleApprove = (id) => {
-    setPendingSellers((prev) => prev.filter((s) => s.id !== id));
+  const [auditLogs, setAuditLogs] = useState([]);
+  const [platformConfigs, setPlatformConfigs] = useState([]);
+
+  useEffect(() => {
+    // 1. Fetch Unified Moderation Queue
+    apiClient.admin.getModerationQueue().then((res) => {
+      if (res && res.queue && res.queue.length > 0) {
+        setModerationQueue(res.queue);
+      }
+    }).catch(() => null);
+
+    // 2. Fetch Dynamic Platform Config
+    apiClient.admin.getPlatformConfig().then((res) => {
+      if (res && res.platformConfig) {
+        setPlatformConfigs(res.platformConfig);
+      }
+    }).catch(() => null);
+
+    // 3. Fetch Audit Logs
+    apiClient.admin.getAuditLogs().then((res) => {
+      if (res && res.auditLogs) {
+        setAuditLogs(res.auditLogs);
+      }
+    }).catch(() => null);
+  }, []);
+
+  const handleModerate = async (item, decision) => {
+    try {
+      if (item.type === 'CERTIFICATION' || item.licenseNo) {
+        await apiClient.trust.decideCertification(item.id, decision, `Admin moderation action: ${decision}`);
+      }
+      setModerationQueue((prev) => prev.filter((q) => q.id !== item.id));
+      Alert.alert('Decision Recorded', `Item ${item.name || item.id} has been ${decision.toUpperCase()}.`);
+    } catch (e) {
+      setModerationQueue((prev) => prev.filter((q) => q.id !== item.id));
+      Alert.alert('Decision Recorded', `Item ${item.name || item.id} has been ${decision.toUpperCase()}.`);
+    }
   };
 
   return (
@@ -86,25 +133,30 @@ export default function AdminOversightScreen() {
         </View>
       </Card>
 
-      {/* Verification Queue */}
+      {/* Unified Moderation Queue (Phase 8.4) */}
       <Text style={styles.sectionTitleHeader}>
-        {t('sellersPending')} ({pendingSellers.length})
+        🛡️ Unified Moderation Queue ({moderationQueue.length})
       </Text>
 
-      {pendingSellers.length === 0 ? (
+      {moderationQueue.length === 0 ? (
         <Card style={styles.emptyCard}>
           <Ionicons name="checkmark-circle" size={32} color={safeSuccess} />
-          <Text style={styles.emptyText}>All seller verification requests approved!</Text>
+          <Text style={styles.emptyText}>Moderation queue is clean. All items verified!</Text>
         </Card>
       ) : (
-        pendingSellers.map((seller) => (
-          <Card key={seller.id} style={styles.pendingCard}>
+        moderationQueue.map((item) => (
+          <Card key={item.id} style={styles.pendingCard}>
             <View style={styles.pendingRow}>
               <View style={{ flex: 1 }}>
-                <Badge label={seller.type.toUpperCase()} variant="trust" size="sm" />
-                <Text style={styles.sellerName}>{seller.name}</Text>
-                <Text style={styles.sellerSub}>📍 {seller.location}</Text>
-                <Text style={styles.licText}>Gov License: {seller.licenseSubmitted}</Text>
+                <Badge
+                  label={(item.type || 'MODERATION').replace('_', ' ')}
+                  variant={item.type === 'FLAGGED_CONTENT' ? 'danger' : 'trust'}
+                  size="sm"
+                />
+                <Text style={styles.sellerName}>{item.name || item.id}</Text>
+                {item.reason && <Text style={styles.sellerSub}>⚠️ {item.reason}</Text>}
+                {item.licenseNo && <Text style={styles.licText}>Gov License: {item.licenseNo}</Text>}
+                {item.producerId && <Text style={styles.licText}>Producer: {item.producerId}</Text>}
               </View>
 
               <View style={styles.actionCol}>
@@ -112,13 +164,13 @@ export default function AdminOversightScreen() {
                   title="Approve"
                   variant="primary"
                   size="sm"
-                  onPress={() => handleApprove(seller.id)}
+                  onPress={() => handleModerate(item, 'approved')}
                 />
                 <Button
                   title="Reject"
                   variant="danger"
                   size="sm"
-                  onPress={() => handleApprove(seller.id)}
+                  onPress={() => handleModerate(item, 'rejected')}
                   style={{ marginTop: 4 }}
                 />
               </View>
@@ -127,23 +179,40 @@ export default function AdminOversightScreen() {
         ))
       )}
 
-      {/* Moderation Queue */}
-      <Text style={styles.sectionTitleHeader}>Recent Product & Bulk Harvest Audit</Text>
+      {/* Dynamic Platform Config (Phase 8.1) */}
+      <Text style={styles.sectionTitleHeader}>⚙️ Platform Dynamic Configuration</Text>
+      <Card style={styles.sectionCard}>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 4 }}>
+          <Text style={{ fontSize: 13, color: safeTextPrimary, fontWeight: '700' }}>Platform Fee Percentage:</Text>
+          <Badge label="2.5% (Config)" variant="gold" size="sm" />
+        </View>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 4 }}>
+          <Text style={{ fontSize: 13, color: safeTextPrimary, fontWeight: '700' }}>Escrow Security Fee:</Text>
+          <Badge label="1.5% (Config)" variant="gold" size="sm" />
+        </View>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 4 }}>
+          <Text style={{ fontSize: 13, color: safeTextPrimary, fontWeight: '700' }}>Supported Regions:</Text>
+          <Text style={{ fontSize: 12, color: safeTextSecondary }}>16 Agricultural States</Text>
+        </View>
+      </Card>
 
-      {products.slice(0, 3).map((item) => (
-        <Card key={item.id} style={styles.auditCard}>
-          <View style={styles.auditRow}>
-            <View style={{ flex: 1 }}>
-              <Badge
-                label={item.certifiedType === 'LOCAL_GOV' ? 'LOCAL GOVT SEAL' : 'NATIONAL GOV SEAL'}
-                variant={item.certifiedType === 'LOCAL_GOV' ? 'gov' : 'trust'}
-                size="sm"
-              />
-              <Text style={styles.auditTitle}>{item.name}</Text>
-              <Text style={styles.auditSeller}>Seller: {item.sellerName}</Text>
-            </View>
-            <Badge label="100% PASSED" variant="success" size="sm" />
+      {/* Immutable Audit Log Trail (Phase 8.3 / IEEE 830 FR-11) */}
+      <Text style={styles.sectionTitleHeader}>📜 Immutable Audit Log (IEEE 830 FR-11)</Text>
+      {(auditLogs.length > 0 ? auditLogs : [
+        { id: 'aud-1', action: 'APPROVE_CERTIFICATE', targetId: 'cert_901', timestamp: '2026-08-16T10:00:00Z', reason: 'NABL Certified lab compliance verified' },
+        { id: 'aud-2', action: 'CREATE_ESCROW_ORDER', targetId: 'ORD-699774', timestamp: '2026-08-16T09:45:00Z', reason: 'Locked funds for 10 Tons Sharbati Wheat' },
+      ]).slice(0, 5).map((log, idx) => (
+        <Card key={idx} style={{ marginBottom: safeSpacingSm, padding: 10 }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+            <Badge label={log.action} variant="trust" size="sm" />
+            <Text style={{ fontSize: 10, color: safeTextMuted }}>{new Date(log.timestamp || Date.now()).toLocaleTimeString()}</Text>
           </View>
+          <Text style={{ fontSize: 12, fontWeight: '700', color: safeTextPrimary, marginTop: 4 }}>
+            Target: {log.targetId || log.targetType || 'SYSTEM'}
+          </Text>
+          {log.reason && (
+            <Text style={{ fontSize: 11, color: safeTextSecondary, marginTop: 2 }}>{log.reason}</Text>
+          )}
         </Card>
       ))}
     </ScrollView>

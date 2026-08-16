@@ -36,6 +36,51 @@ export default function RootLayout() {
             }}
           />
           <Stack.Screen
+            name="auth/register"
+            options={{
+              title: 'Eco-Swadesh | Registration',
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="auth/login"
+            options={{
+              title: 'Eco-Swadesh | Sign In',
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="auth/welcome"
+            options={{
+              title: 'Eco-Swadesh | Gateway',
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="auth/onboarding"
+            options={{
+              title: 'Eco-Swadesh | Onboarding',
+            }}
+          />
+          <Stack.Screen
+            name="auth/buyer-login"
+            options={{
+              title: 'Buyer Portal Sign In',
+            }}
+          />
+          <Stack.Screen
+            name="auth/seller-login"
+            options={{
+              title: 'Farmer & Seller Portal Sign In',
+            }}
+          />
+          <Stack.Screen
+            name="auth/select-portal"
+            options={{
+              title: 'Select Platform Portal',
+            }}
+          />
+          <Stack.Screen
             name="product/[id]"
             options={{
               title: 'Product & Organic Certification',

@@ -181,6 +181,26 @@ export const authApi = {
         },
       }
     ),
+
+  addRole: (role) =>
+    request(
+      '/auth/roles',
+      {
+        method: 'POST',
+        body: JSON.stringify({ role }),
+      },
+      {
+        success: true,
+        roles: ['buyer', role],
+        message: `Role '${role}' added successfully.`,
+      }
+    ),
+
+  exportData: () =>
+    request('/auth/data-export', { method: 'GET' }, {
+      success: true,
+      complianceStandard: 'Digital Personal Data Protection (DPDP) Act, 2023',
+    }),
 };
 
 // ----------------------------------------------------
@@ -281,6 +301,23 @@ export const ordersApi = {
       orderId: id,
       escrowStatus: 'RELEASED_TO_SELLER',
     }),
+
+  getMessages: (orderId) =>
+    request(`/orders/${orderId}/messages`, { method: 'GET' }, {
+      success: true,
+      orderId,
+      messages: [],
+    }),
+
+  sendMessage: (orderId, text) =>
+    request(`/orders/${orderId}/messages`, {
+      method: 'POST',
+      body: JSON.stringify({ text }),
+    }, {
+      success: true,
+      orderId,
+      message: { id: `msg-${Date.now()}`, text, timestamp: new Date().toISOString() },
+    }),
 };
 
 // ----------------------------------------------------
@@ -353,6 +390,23 @@ export const trustApi = {
       certificateId: `cert-${Date.now()}`,
       message: 'Certificate uploaded and queued for moderation.',
     }),
+
+  decideCertification: (certificationId, decision, reason) =>
+    request('/trust/decide-certification', {
+      method: 'POST',
+      body: JSON.stringify({ certificationId, decision, reason }),
+    }, {
+      success: true,
+      status: decision,
+      certificateId: certificationId,
+    }),
+
+  checkExpiry: () =>
+    request('/trust/check-expiry', { method: 'GET' }, {
+      success: true,
+      alertsDispatched: 0,
+      notifications: [],
+    }),
 };
 
 // ----------------------------------------------------
@@ -366,6 +420,25 @@ export const aiApi = {
     }, {
       success: true,
       ...MOCK_AI_DIAGNOSES[0],
+    }),
+
+  diagnosePhoto: (imagePath, cropType) =>
+    request('/ai/diagnose-photo', {
+      method: 'POST',
+      body: JSON.stringify({ imagePath, cropType }),
+    }, {
+      success: true,
+      ...MOCK_AI_DIAGNOSES[0],
+      suggestEscalation: false,
+    }),
+
+  escalateToExpert: (diagnosisId, cropType, additionalNotes) =>
+    request('/ai/escalate-to-expert', {
+      method: 'POST',
+      body: JSON.stringify({ diagnosisId, cropType, additionalNotes }),
+    }, {
+      success: true,
+      questionId: `comm-esc-${Date.now()}`,
     }),
 
   calculateSoilDosage: (data) =>
@@ -415,6 +488,25 @@ export const communityApi = {
       post: { id: `post-${Date.now()}`, ...postData, upvotes: 0, repliesCount: 0 },
     }),
 
+  addAnswer: (postId, content) =>
+    request(`/community/posts/${postId}/answers`, {
+      method: 'POST',
+      body: JSON.stringify({ content }),
+    }, {
+      success: true,
+      questionId: postId,
+      isExpertAnswer: false,
+    }),
+
+  flagContent: (path, reason) =>
+    request('/community/flag', {
+      method: 'POST',
+      body: JSON.stringify({ path, reason }),
+    }, {
+      success: true,
+      path,
+    }),
+
   upvotePost: (id) =>
     request(`/community/posts/${id}/upvote`, { method: 'POST' }, {
       success: true,
@@ -446,6 +538,28 @@ export const adminApi = {
         verifiedSellersCount: 142,
         activeProductsCount: 6,
       },
+    }),
+
+  getPlatformConfig: () =>
+    request('/admin/platform-config', { method: 'GET' }, {
+      success: true,
+      platformConfig: [],
+    }),
+
+  updatePlatformConfig: (configId, data) =>
+    request(`/admin/platform-config/${configId}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    }, {
+      success: true,
+      config: { id: configId, ...data },
+    }),
+
+  getModerationQueue: () =>
+    request('/admin/moderation-queue', { method: 'GET' }, {
+      success: true,
+      totalItems: 0,
+      queue: [],
     }),
 
   getAuditLogs: () =>

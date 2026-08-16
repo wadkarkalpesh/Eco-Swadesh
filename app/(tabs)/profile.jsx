@@ -17,6 +17,7 @@ import Card from '../../components/ui/Card';
 import Badge from '../../components/ui/Badge';
 import LanguagePicker from '../../components/ui/LanguagePicker';
 import { privacyManager } from '../../utils/privacyManager';
+import apiClient from '../../utils/apiClient';
 
 const safeBg = (COLORS && COLORS.background) || '#F4F7F4';
 const safePrimary = (COLORS && COLORS.primary) || '#1E4D2B';
@@ -242,17 +243,25 @@ export default function ProfileScreen() {
 
           <TouchableOpacity
             style={styles.portalItem}
-            onPress={() => {
-              const res = privacyManager.requestDataExport();
-              Alert.alert('Data Export Request', `${res.summary}\nRequested at: ${res.requestedAt}`);
+            onPress={async () => {
+              try {
+                const res = await apiClient.auth.exportData();
+                Alert.alert(
+                  '✅ DPDP Section 11 Data Export',
+                  `Data Subject Access Request (DSAR) export generated successfully.\nRecords: Orders, Profile, Consents & Certificates.\nCompliance: ${res.complianceStandard || 'DPDP Act 2023'}`
+                );
+              } catch (_e) {
+                const res = privacyManager.requestDataExport();
+                Alert.alert('Data Export Request', `${res.summary}\nRequested at: ${res.requestedAt}`);
+              }
             }}
           >
             <View style={[styles.portalIconCircle, { backgroundColor: '#E8F5E9' }]}>
               <Ionicons name="download-outline" size={20} color={safePrimary} />
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={styles.portalTitle}>Export My Data (JSON)</Text>
-              <Text style={styles.portalSub}>Download all orders, certificates, and soil lab reports</Text>
+              <Text style={styles.portalTitle}>Export My Data (DPDP DSAR JSON)</Text>
+              <Text style={styles.portalSub}>Download all orders, certificates, and consent audit records</Text>
             </View>
             <Ionicons name="chevron-forward" size={18} color={safeTextMuted} />
           </TouchableOpacity>
@@ -282,7 +291,7 @@ export default function ProfileScreen() {
             onPress={() => {
               logoutUser();
               Alert.alert('Logged Out', 'You have been logged out of Eco-Swadesh.');
-              router.replace('/auth/welcome');
+              router.replace('/auth/register');
             }}
           >
             <Ionicons name="log-out-outline" size={20} color="#D32F2F" />

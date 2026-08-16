@@ -22,10 +22,15 @@ const getTracking = (req, res) => {
   }
 
   // Simulate subtle real-time IoT sensor telemetry variance
+  const baseTelemetry = shipment.telemetry || {
+    temperatureCelsius: shipment.temperatureC || 4.2,
+    humidityPct: shipment.humidityPct || 82,
+    coldChainHealthy: true,
+  };
   const telemetry = {
-    ...shipment.telemetry,
-    temperatureCelsius: Number((shipment.telemetry.temperatureCelsius + (Math.random() * 0.4 - 0.2)).toFixed(1)),
-    humidityPct: Number((shipment.telemetry.humidityPct + (Math.random() * 0.6 - 0.3)).toFixed(1)),
+    ...baseTelemetry,
+    temperatureCelsius: Number(((baseTelemetry.temperatureCelsius || 4.2) + (Math.random() * 0.4 - 0.2)).toFixed(1)),
+    humidityPct: Number(((baseTelemetry.humidityPct || 82) + (Math.random() * 0.6 - 0.3)).toFixed(1)),
     lastUpdated: new Date().toISOString(),
   };
 

@@ -1,0 +1,148 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function hasRole(role) {
+      return isSignedIn() && request.auth.token.roles != null && role in request.auth.token.roles;
+    }
+
+    function hasAnyRole(roles) {
+      return isSignedIn() && request.auth.token.roles != null && request.auth.token.roles.hasAny(roles);
+    }
+
+    // Default deny-all for any unmapped paths
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Phase 2: Users collection
+    match /users/{userId} {
+      allow get: if isSignedIn() && (request.auth.uid == userId || hasRole('admin'));
+      allow list: if hasRole('admin');
+      allow update: if isSignedIn() && request.auth.uid == userId;
+      allow create: if isSignedIn() && request.auth.uid == userId;
+      allow delete: if hasRole('admin');
+    }
+
+    // Phase 3: Listings collection
+    match /listings/{listingId} {
+      // Public browse for published listings, draft only visible to seller/admin
+      allow get: if resource.data.status == 'published' 
+                 || (isSignedIn() && (request.auth.uid == resource.data.sellerId || hasRole('admin')));
+      allow list: if true;
+      allow create: if hasRole('seller')
+                    && request.resource.data.sellerId == request.auth.uid
+                    && request.resource.data.status in ['draft', 'published'];
+      allow update, delete: if isSignedIn() && (request.auth.uid == resource.data.sellerId || hasRole('admin'));
+    }
+
+    // Phase 4: Certifications
+    match /certifications/{certId} {
+      allow get, list: if true;
+      allow create: if hasRole('seller')
+                    && request.resource.data.status == 'pending';
+      // Sellers can never update their own certifications after creation - only moderator/admin
+      allow update: if hasAnyRole(['moderator', 'admin']);
+      allow delete: if hasRole('admin');
+    }
+
+    // Phase 4 & Phase 8: Immutable Audit Log (Server-only writes via Admin SDK)
+    match /auditLog/{entryId} {
+      allow read: if hasAnyRole(['admin', 'moderator']);
+      allow write: if false; // Cloud Functions / Admin SDK bypass rules by design
+    }
+
+    // Phase 5 & Phase 6: Orders and order-scoped messages
+    match /orders/{orderId} {
+      allow read: if isSignedIn() && (
+        request.auth.uid == resource.data.buyerId ||
+        request.auth.uid in resource.data.sellerIds ||
+        hasRole('admin')
+      );
+      allow create: if isSignedIn() && request.resource.data.buyerId == request.auth.uid;
+      allow update: if isSignedIn() && (
+        request.auth.uid == resource.data.buyerId ||
+        request.auth.uid in resource.data.sellerIds ||
+        hasRole('admin')
+      );
+
+      // Phase 6.2: Order-scoped messaging subcollection
+      match /messages/{messageId} {
+        allow read, create: if isSignedIn() && (
+          get(/databases/$(database)/documents/orders/$(orderId)).data.buyerId == request.auth.uid ||
+          request.auth.uid in get(/databases/$(database)/documents/orders/$(orderId)).data.sellerIds ||
+          hasRole('admin')
+        );
+      }
+    }
+
+    // Phase 5: Payments (Server managed)
+    match /payments/{paymentId} {
+      allow read: if isSignedIn() && (
+        request.auth.uid == resource.data.buyerId ||
+        hasAnyRole(['admin', 'moderator'])
+      );
+      allow write: if false; // Only Cloud Functions (Webhooks) write to payments
+    }
+
+    // Phase 6: Community Questions and Answers
+    match /questions/{questionId} {
+      allow read, list: if true;
+      allow create: if isSignedIn();
+      allow update, delete: if isSignedIn() && (
+        request.auth.uid == resource.data.authorId ||
+        hasAnyRole(['moderator', 'admin'])
+      );
+
+      // Phase 6.1: Community Answers (Client cannot provide isExpertAnswer directly)
+      match /answers/{answerId} {
+        allow read, list: if true;
+        allow create: if isSignedIn() && !('isExpertAnswer' in request.resource.data);
+        allow update: if isSignedIn() && (
+          request.auth.uid == resource.data.authorId ||
+          hasAnyRole(['moderator', 'admin'])
+        );
+        allow delete: if isSignedIn() && (
+          request.auth.uid == resource.data.authorId ||
+          hasRole('admin')
+        );
+      }
+    }
+
+    // Reviews collection
+    match /reviews/{reviewId} {
+      allow read, list: if true;
+      allow create: if isSignedIn();
+      allow update, delete: if isSignedIn() && (
+        request.auth.uid == resource.data.authorId ||
+        hasAnyRole(['moderator', 'admin'])
+      );
+    }
+
+    // Notifications (User-scoped)
+    match /notifications/{userId} {
+      allow read: if isSignedIn() && request.auth.uid == userId;
+      match /items/{itemId} {
+        allow read, update: if isSignedIn() && request.auth.uid == userId;
+        allow write: if false; // Written by server triggers & schedulers
+      }
+    }
+
+    // Reference collections
+    match /certSchemes/{schemeId} {
+      allow read, list: if true;
+      allow write: if hasRole('admin');
+    }
+
+    // Phase 8: Platform Configuration (Config-driven settings)
+    match /platformConfig/{configId} {
+      allow get, list: if true; // read by clients for region/language pickers, fee tables
+      allow write: if hasRole('admin');
+    }
+  }
+}

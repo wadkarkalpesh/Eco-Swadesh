@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
   View,
   Text,
-  ScrollView,
   StyleSheet,
   TouchableOpacity,
   Alert,
@@ -10,6 +9,7 @@ import {
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, RADIUS, SPACING } from '../../constants/theme';
+import ScreenContainer from '../../components/ui/ScreenContainer';
 import Card from '../../components/ui/Card';
 import Badge from '../../components/ui/Badge';
 import Button from '../../components/ui/Button';
@@ -17,7 +17,6 @@ import Input from '../../components/ui/Input';
 import { authApi } from '../../utils/apiClient';
 import { useApp } from '../../context/AppContext';
 
-const safeBg = (COLORS && COLORS.background) || '#F4F7F4';
 const safePrimary = (COLORS && COLORS.primary) || '#1E4D2B';
 const safePrimaryDark = (COLORS && COLORS.primaryDark) || '#12361C';
 const safeTextLight = (COLORS && COLORS.textLight) || '#FFFFFF';
@@ -27,7 +26,6 @@ const safeTextSecondary = (COLORS && COLORS.textSecondary) || '#5A6E5D';
 const safeSpacingXs = (SPACING && SPACING.xs) || 4;
 const safeSpacingSm = (SPACING && SPACING.sm) || 8;
 const safeSpacingMd = (SPACING && SPACING.md) || 16;
-const safeSpacingXxl = (SPACING && SPACING.xxl) || 48;
 const safeRadiusMd = (RADIUS && RADIUS.md) || 14;
 
 export default function SellerLoginScreen() {
@@ -84,7 +82,7 @@ export default function SellerLoginScreen() {
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.scrollBody}>
+    <ScreenContainer maxWidth="auth" withSafeArea={true}>
       {/* Banner Header */}
       <Card bg={safePrimaryDark} style={styles.headerCard}>
         <View style={styles.bannerRow}>
@@ -168,14 +166,21 @@ export default function SellerLoginScreen() {
             </TouchableOpacity>
           </>
         )}
+
+        <TouchableOpacity
+          style={{ marginTop: safeSpacingMd, alignItems: 'center' }}
+          onPress={() => router.push('/auth/register')}
+        >
+          <Text style={{ fontSize: 12, color: safePrimary, fontWeight: '700' }}>
+            ← Need to create a new account? Register Here
+          </Text>
+        </TouchableOpacity>
       </Card>
-    </ScrollView>
+    </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: safeBg },
-  scrollBody: { padding: safeSpacingMd, paddingBottom: safeSpacingXxl },
   headerCard: { marginBottom: safeSpacingMd },
   bannerRow: { flexDirection: 'row', alignItems: 'center' },
   headerTitle: { fontSize: 18, fontWeight: '800', color: safeTextLight },

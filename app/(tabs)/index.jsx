@@ -78,7 +78,7 @@ export default function HomeScreen() {
     if (!rootNavigationState?.key) return;
     if (!isAuthenticated) {
       const timer = setTimeout(() => {
-        router.replace('/auth/welcome');
+        router.replace('/auth/register');
       }, 10);
       return () => clearTimeout(timer);
     }

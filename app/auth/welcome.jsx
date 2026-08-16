@@ -2,35 +2,31 @@ import React from 'react';
 import {
   View,
   Text,
-  ScrollView,
   StyleSheet,
-  Image,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, RADIUS, SPACING } from '../../constants/theme';
+import ScreenContainer from '../../components/ui/ScreenContainer';
 import Card from '../../components/ui/Card';
 import Badge from '../../components/ui/Badge';
 import Button from '../../components/ui/Button';
 
-const safeBg = (COLORS && COLORS.background) || '#F4F7F4';
 const safePrimary = (COLORS && COLORS.primary) || '#1E4D2B';
 const safePrimaryDark = (COLORS && COLORS.primaryDark) || '#12361C';
 const safeTextLight = (COLORS && COLORS.textLight) || '#FFFFFF';
 const safeTextPrimary = (COLORS && COLORS.textPrimary) || '#1A2E1E';
 const safeTextSecondary = (COLORS && COLORS.textSecondary) || '#5A6E5D';
 const safeSunGold = (COLORS && COLORS.sunGold) || '#FFA000';
-
 const safeSpacingSm = (SPACING && SPACING.sm) || 8;
 const safeSpacingMd = (SPACING && SPACING.md) || 16;
-const safeSpacingXxl = (SPACING && SPACING.xxl) || 48;
 const safeRadiusMd = (RADIUS && RADIUS.md) || 14;
 
 export default function WelcomeScreen() {
   const router = useRouter();
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.scrollBody}>
+    <ScreenContainer maxWidth="auth" withSafeArea={true}>
       {/* Hero Banner */}
       <Card bg={safePrimaryDark} style={styles.heroCard}>
         <View style={styles.logoRow}>
@@ -81,26 +77,24 @@ export default function WelcomeScreen() {
       {/* Action Buttons */}
       <Card style={styles.actionCard}>
         <Button
-          title="Continue as Buyer / Customer →"
+          title="1. Register New Account (Sign Up) →"
           variant="primary"
-          size="md"
-          onPress={() => router.push('/auth/buyer-login')}
+          size="lg"
+          onPress={() => router.push('/auth/register')}
           style={{ marginBottom: safeSpacingSm }}
         />
         <Button
-          title="Continue as Farmer / Seller →"
+          title="2. Existing User Log In →"
           variant="secondary"
           size="md"
-          onPress={() => router.push('/auth/seller-login')}
+          onPress={() => router.push('/auth/login')}
         />
       </Card>
-    </ScrollView>
+    </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: safeBg },
-  scrollBody: { padding: safeSpacingMd, paddingBottom: safeSpacingXxl },
   heroCard: { marginBottom: safeSpacingMd, alignItems: 'center', paddingVertical: safeSpacingMd + 8 },
   logoRow: { flexDirection: 'row', alignItems: 'center' },
   logoTitle: { fontSize: 26, fontWeight: '800', color: safeTextLight, marginLeft: 8 },

@@ -1,173 +1,161 @@
 /**
- * Orders Controller - Escrow Protection & Multi-Tier Checkout
- * Lead Architect: Senior Financial & E-Commerce Lead
+ * Orders & Escrow Lifecycle Controller
+ * Lead Architect: Principal FinTech & Logistics Architect
+ * Implements: Escrow Locks, Destination Lab Verification, Invoice Breakdown, and Order-Scoped Messaging
  */
 
 const db = require('../config/db');
+const { eventBus } = require('../services/eventStream');
 
 /**
- * Create Escrow-Protected Order (Retail or Heavy Freight Bulk Tonnage)
+ * Place Order & Initialize Escrow Contract
  * POST /v1/orders/escrow
  */
 const createEscrowOrder = (req, res) => {
-  const {
-    items = [],
-    logisticsType = 'RETAIL_PARCEL', // 'RETAIL_PARCEL' | 'HEAVY_FREIGHT'
-    shippingAddress = 'Default Certified Delivery Address',
-    paymentMethod = 'RAZORPAY_ROUTE_ESCROW',
-    currency = 'INR',
-  } = req.body;
+  const item = (req.body.items && req.body.items[0]) || {};
+  const effectiveProductId = req.body.productId || item.productId || 'prod-1';
+  const effectiveQty = req.body.quantityTons !== undefined ? req.body.quantityTons : (item.quantityTons !== undefined ? item.quantityTons : 1);
+  const effectiveCustomPrice = req.body.customPricePerTon || item.agreedPricePerTon;
+  const effectiveAddress = req.body.deliveryAddress || req.body.shippingAddress || 'Central Agro Hub, Pune, IN';
 
-  if (!items || items.length === 0) {
-    return res.status(400).json({
+  const product = db.findById('products', effectiveProductId) || db.products[0];
+  if (!product) {
+    return res.status(404).json({
       success: false,
-      error: 'EMPTY_CART',
-      message: 'At least one product item is required to initialize an escrow contract.',
+      error: 'PRODUCT_NOT_FOUND',
+      message: `Product '${effectiveProductId}' is unavailable.`,
     });
   }
 
-  const buyerId = req.user ? req.user.id : 'usr_consumer_01';
-  const buyerName = req.user ? req.user.name : 'Eco Swadesh Buyer';
+  const buyerId = req.user ? req.user.id : (requestedBuyerId || 'usr_buyer_01');
+  const buyerName = req.user ? req.user.name : 'Verified Organic Buyer';
+  const sellerId = product.sellerId || product.farmerId || requestedSellerId || 'usr_seller_01';
+  const sellerName = product.sellerName || product.farmerName || 'Verified Farm Collective';
 
-  let subtotal = 0;
-  let isAnyBulk = logisticsType === 'HEAVY_FREIGHT';
-  let primarySellerId = 'usr_seller_01';
-  let primarySellerName = 'Eco Swadesh Certified Collective';
+  const isBulk = (req.body.orderMode === 'BULK') || (item.isBulk === true) || Number(effectiveQty) >= (product.bulkMinTons || 1);
+  const effectivePrice = isBulk
+    ? (effectiveCustomPrice || product.bulkPricePerTon || product.retailPrice * 1000)
+    : product.retailPrice;
+  const unit = isBulk ? 'Ton' : (product.retailUnit || 'Kg');
+  const qty = Number(effectiveQty) || 1;
 
-  const processedItems = items.map((item) => {
-    const product = db.findById('products', item.productId);
-    const isBulk = Boolean(item.isBulk);
-    if (isBulk) isAnyBulk = true;
+  const subtotal = Math.round(effectivePrice * qty);
+  const platformFee = Math.round(subtotal * 0.025); // 2.5% platform fee
+  const escrowProtectionFee = Math.round(subtotal * 0.015); // 1.5% escrow security fee
+  const logisticsEstimate = isBulk ? qty * 1800 : 150;
+  const grandTotal = subtotal + platformFee + escrowProtectionFee + logisticsEstimate;
 
-    const unitPrice = isBulk
-      ? item.agreedPricePerTon || (product ? product.bulkPricePerTon : 42000)
-      : (product ? product.retailPrice : 450);
-    const quantity = item.quantity || item.quantityTons || 1;
-    const itemTotal = unitPrice * quantity;
-    subtotal += itemTotal;
-
-    if (product) {
-      primarySellerId = product.sellerId;
-      primarySellerName = product.sellerName;
-    }
-
-    return {
-      productId: item.productId,
-      productName: product ? product.name : (item.name || 'Organic Agri Commodity'),
-      isBulk,
-      quantity,
-      unit: isBulk ? 'Ton' : (product ? product.retailUnit : 'Kg'),
-      unitPrice,
-      total: itemTotal,
-      certificationSnapshot: {
-        certName: product ? product.certName : 'Jaivik Bharat NPOP Standards',
-        certLicense: product ? product.certLicense : 'NPOP/NAB/0014/2025',
-        verifiedScore: product ? product.rating * 20 : 98,
-        snapshotDate: new Date().toISOString(),
-      },
-    };
-  });
-
-  // Calculate freight and platform escrow fee
-  const freightCharges = isAnyBulk ? 4500 : 80;
-  const platformFee = Math.round(subtotal * 0.005); // 0.5% platform facilitation fee
-  const grandTotal = subtotal + freightCharges + platformFee;
-
-  const orderId = `ORD-2026-${Math.floor(1000 + Math.random() * 9000)}`;
-  const escrowContractId = `ESC-${Math.floor(1000 + Math.random() * 9000)}`;
-  const shipmentId = `SHIP-${Math.floor(1000 + Math.random() * 9000)}`;
+  const orderId = `ORD-${Date.now().toString().slice(-6)}`;
+  const escrowContractId = `ESC-CTR-${Date.now()}`;
+  const shipmentId = `SHP-${Date.now().toString().slice(-6)}`;
 
   const newOrder = db.insert('orders', {
     id: orderId,
+    productId: effectiveProductId,
+    productName: product.name,
+    productImage: product.image,
+    category: product.category,
+    orderMode: isBulk ? 'BULK' : 'RETAIL',
+    quantity: qty,
+    unit,
+    effectivePrice,
+    subtotal,
+    platformFee,
+    escrowProtectionFee,
+    logisticsEstimate,
+    grandTotal,
     buyerId,
     buyerName,
-    sellerId: primarySellerId,
-    sellerName: primarySellerName,
-    logisticsType: isAnyBulk ? 'HEAVY_FREIGHT' : 'RETAIL_PARCEL',
-    shippingAddress,
-    currency,
-    items: processedItems,
-    subtotal,
-    freightCharges,
-    platformFee,
-    grandTotal,
-    escrowContractId,
+    sellerId,
+    sellerIds: [sellerId],
+    sellerName,
+    farmerId: product.farmerId || sellerId,
+    deliveryAddress: effectiveAddress,
+    buyerNotes: req.body.buyerNotes || 'Standard Organic APEDA Grade-A Verification Requested',
+    status: 'created',
+    paymentStatus: 'AWAITING_PAYMENT',
     escrowStatus: 'HELD_IN_ESCROW_POOL',
-    paymentStatus: 'PAID_TO_ESCROW',
-    paymentMethod,
-    destinationLabInspectionStatus: isAnyBulk ? 'PENDING_ARRIVAL' : 'EXEMPT',
+    escrowContractId,
     shipmentId,
+    destinationLabInspectionStatus: 'PENDING_SAMPLE_COLLECTION',
     createdAt: new Date().toISOString(),
   });
 
-  // Automatically provision corresponding logistics tracking record
+  // Provision associated telemetry shipment
   db.insert('shipments', {
     id: shipmentId,
     orderId,
-    type: isAnyBulk ? 'BULK_FREIGHT' : 'RETAIL_PARCEL',
-    title: isAnyBulk
-      ? `${processedItems[0].quantity} Tons ${processedItems[0].productName} Truckload`
-      : `${processedItems.length} Organic Certified Parcel Items`,
-    origin: 'Certified Farm Depot, Madhya Pradesh, IN',
-    destination: shippingAddress,
-    weight: isAnyBulk ? `${processedItems[0].quantity} Tons` : '5.5 Kg',
-    carrier: isAnyBulk ? 'EcoFreight Heavy Trucking Direct' : 'GreenParcel Carbon-Neutral Courier',
-    status: 'IN_TRANSIT',
-    driverName: 'Sardar Gurpreet Singh',
-    driverPhone: '+91 98230 11200',
-    vehicleNo: 'MH-12-VT-9921',
-    estDelivery: 'Within 48 Hours',
-    escrowStatus: `₹${grandTotal.toLocaleString()} Held in Escrow (Release after destination inspection)`,
+    productName: product.name,
+    quantityTons: qty,
+    origin: product.origin || 'Maharashtra, India',
+    destination: effectiveAddress,
+    status: 'DISPATCH_QUEUED',
+    carrier: 'Eco Swadesh Reefer Fleet #42',
+    temperatureC: 4.2,
+    humidityPct: 82,
+    driverPhone: '+919811223344',
+    gpsCoordinates: { lat: 18.5204, lng: 73.8567 },
     telemetry: {
-      temperatureCelsius: 23.4,
-      humidityPct: 56.0,
-      cargoMoisturePct: 11.4,
-      gpsLatitude: 19.8762,
-      gpsLongitude: 75.3433,
-      speedKmh: 55,
+      temperatureCelsius: 4.2,
+      humidityPct: 82,
+      gpsCoordinates: { lat: 18.5204, lng: 73.8567 },
+      coldChainHealthy: true,
       lastUpdated: new Date().toISOString(),
     },
     milestones: [
-      { label: 'Harvest Loaded at Farm', date: 'Today, 08:00 AM', completed: true, timestamp: new Date().toISOString() },
-      { label: 'Weighbridge & Initial Lab Stamp', date: 'Today, 11:30 AM', completed: true, timestamp: new Date().toISOString() },
-      { label: 'En-Route on Highway NH-52', date: 'In Progress', completed: true, timestamp: new Date().toISOString() },
-      { label: 'Destination Lab Check at Warehouse', date: 'Pending Arrival', completed: false },
-      { label: 'Final Escrow Release to Farmer', date: 'Pending Lab Check', completed: false },
+      { step: 'Order Placed & Escrow Locked', completed: true, timestamp: new Date().toISOString() },
+      { step: 'NABL Certified Lab Sampling', completed: false },
+      { step: 'Cold Chain Reefer In-Transit', completed: false },
+      { step: 'APMC Destination Inspection & Escrow Release', completed: false },
     ],
   });
 
-  // Audit log creation of escrow order
   db.logAudit({
     actorId: buyerId,
     actorRole: 'buyer',
     action: 'CREATE_ESCROW_ORDER',
     targetType: 'ORDER',
     targetId: orderId,
-    reason: `Created escrow contract ${escrowContractId} for grand total of ₹${grandTotal.toLocaleString()}`,
+    reason: `Initialized escrow contract ${escrowContractId} for ${qty} ${unit} of ${product.name} (Total: INR ${grandTotal})`,
   });
 
   return res.status(201).json({
     success: true,
     orderId,
-    escrowContractId,
     shipmentId,
-    grandTotal,
+    escrowContractId,
     escrowStatus: 'HELD_IN_ESCROW_POOL',
     order: newOrder,
-    message: 'Order placed successfully. Funds are securely locked in the Eco Swadesh Escrow Pool.',
+    message: 'Order created with Escrow Protection. Complete payment to lock funds.',
   });
 };
 
 /**
- * List User Orders
+ * Get Orders (Filtered by Role / Persona)
  * GET /v1/orders
  */
 const getOrders = (req, res) => {
-  const userId = req.user ? req.user.id : null;
+  const { status, buyerId, sellerId } = req.query;
   let list = db.getAll('orders');
 
-  if (userId) {
-    list = list.filter((o) => o.buyerId === userId || o.sellerId === userId);
+  if (status) {
+    list = list.filter((o) => o.status === status || o.escrowStatus === status);
+  }
+
+  if (buyerId) {
+    list = list.filter((o) => o.buyerId === buyerId);
+  }
+
+  if (sellerId) {
+    list = list.filter((o) => o.sellerId === sellerId || (o.sellerIds && o.sellerIds.includes(sellerId)));
+  }
+
+  // If authenticated user is not admin, scope to their own orders
+  if (req.user && !req.user.roles?.includes('admin')) {
+    const userId = req.user.id;
+    list = list.filter(
+      (o) => o.buyerId === userId || o.sellerId === userId || (o.sellerIds && o.sellerIds.includes(userId))
+    );
   }
 
   return res.status(200).json({
@@ -255,9 +243,123 @@ const releaseEscrow = (req, res) => {
   });
 };
 
+/**
+ * Get Order-Scoped Messages (Phase 6.2)
+ * GET /v1/orders/:id/messages
+ */
+const getOrderMessages = (req, res) => {
+  const { id } = req.params;
+  const order = db.findById('orders', id);
+
+  if (!order) {
+    return res.status(404).json({
+      success: false,
+      error: 'ORDER_NOT_FOUND',
+      message: `Order '${id}' was not found.`,
+    });
+  }
+
+  // Phase 6.2: Authorization check - only buyer and sellers on that order can read
+  const userId = req.user ? req.user.id : null;
+  const userRoles = req.user?.roles || [];
+  const isAuthorized =
+    userId &&
+    (order.buyerId === userId ||
+      order.sellerId === userId ||
+      (order.sellerIds && order.sellerIds.includes(userId)) ||
+      userRoles.includes('admin'));
+
+  if (!isAuthorized) {
+    return res.status(403).json({
+      success: false,
+      error: 'FORBIDDEN_ORDER_ACCESS',
+      message: 'Access denied. You must be a buyer or seller on this specific order to access messages.',
+    });
+  }
+
+  if (!db.orderMessages.has(id)) {
+    db.orderMessages.set(id, []);
+  }
+
+  const messages = db.orderMessages.get(id);
+
+  return res.status(200).json({
+    success: true,
+    orderId: id,
+    total: messages.length,
+    messages,
+  });
+};
+
+/**
+ * Send Order-Scoped Message (Phase 6.2)
+ * POST /v1/orders/:id/messages
+ */
+const sendOrderMessage = (req, res) => {
+  const { id } = req.params;
+  const { text } = req.body;
+
+  if (!text || typeof text !== 'string') {
+    return res.status(400).json({
+      success: false,
+      error: 'MISSING_TEXT',
+      message: 'Message text is required.',
+    });
+  }
+
+  const order = db.findById('orders', id);
+  if (!order) {
+    return res.status(404).json({
+      success: false,
+      error: 'ORDER_NOT_FOUND',
+      message: `Order '${id}' was not found.`,
+    });
+  }
+
+  const userId = req.user ? req.user.id : 'usr_buyer_01';
+  const userRoles = req.user?.roles || [];
+  const isAuthorized =
+    userId &&
+    (order.buyerId === userId ||
+      order.sellerId === userId ||
+      (order.sellerIds && order.sellerIds.includes(userId)) ||
+      userRoles.includes('admin'));
+
+  if (!isAuthorized) {
+    return res.status(403).json({
+      success: false,
+      error: 'FORBIDDEN_ORDER_ACCESS',
+      message: 'Access denied. You must be a buyer or seller on this specific order to send messages.',
+    });
+  }
+
+  if (!db.orderMessages.has(id)) {
+    db.orderMessages.set(id, []);
+  }
+
+  const messageRecord = {
+    id: `msg_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
+    orderId: id,
+    senderId: userId,
+    senderName: req.user ? req.user.name : (userId === order.buyerId ? 'Buyer' : 'Seller'),
+    text,
+    timestamp: new Date().toISOString(),
+  };
+
+  db.orderMessages.get(id).push(messageRecord);
+
+  return res.status(201).json({
+    success: true,
+    orderId: id,
+    message: messageRecord,
+  });
+};
+
 module.exports = {
   createEscrowOrder,
   getOrders,
   getOrderById,
   releaseEscrow,
+  getOrderMessages,
+  sendOrderMessage,
 };

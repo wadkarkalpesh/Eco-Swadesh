@@ -2,29 +2,26 @@ import React from 'react';
 import {
   View,
   Text,
-  ScrollView,
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, RADIUS, SPACING } from '../../constants/theme';
+import ScreenContainer from '../../components/ui/ScreenContainer';
 import Card from '../../components/ui/Card';
 import Badge from '../../components/ui/Badge';
 import { useApp } from '../../context/AppContext';
 
-const safeBg = (COLORS && COLORS.background) || '#F4F7F4';
 const safePrimary = (COLORS && COLORS.primary) || '#1E4D2B';
 const safePrimaryDark = (COLORS && COLORS.primaryDark) || '#12361C';
 const safeTextLight = (COLORS && COLORS.textLight) || '#FFFFFF';
 const safeTextPrimary = (COLORS && COLORS.textPrimary) || '#1A2E1E';
 const safeTextSecondary = (COLORS && COLORS.textSecondary) || '#5A6E5D';
 const safeSunGold = (COLORS && COLORS.sunGold) || '#FFA000';
-const safeTerracotta = (COLORS && COLORS.terracotta) || '#D84315';
 
 const safeSpacingSm = (SPACING && SPACING.sm) || 8;
 const safeSpacingMd = (SPACING && SPACING.md) || 16;
-const safeSpacingXxl = (SPACING && SPACING.xxl) || 48;
 const safeRadiusMd = (RADIUS && RADIUS.md) || 14;
 
 export default function SelectPortalScreen() {
@@ -33,16 +30,16 @@ export default function SelectPortalScreen() {
 
   const handleSelectBuyer = () => {
     changePersona('consumer');
-    router.push('/auth/buyer-login');
+    router.push('/auth/register');
   };
 
   const handleSelectSeller = () => {
     changePersona('farmer');
-    router.push('/auth/seller-login');
+    router.push('/auth/register');
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.scrollBody}>
+    <ScreenContainer maxWidth="auth" withSafeArea={true}>
       {/* Header Banner */}
       <Card bg={safePrimaryDark} style={styles.headerCard}>
         <View style={styles.logoRow}>
@@ -55,7 +52,7 @@ export default function SelectPortalScreen() {
         <Badge label="100% ESCROW PROTECTED" variant="gold" size="sm" style={{ marginTop: safeSpacingSm }} />
       </Card>
 
-      <Text style={styles.selectHeader}>Select Your Authentication Portal:</Text>
+      <Text style={styles.selectHeader}>Select Your Registration Portal:</Text>
 
       {/* Buyer Portal Tile */}
       <TouchableOpacity onPress={handleSelectBuyer} activeOpacity={0.85}>
@@ -79,7 +76,7 @@ export default function SelectPortalScreen() {
           </View>
 
           <View style={[styles.enterBtn, { backgroundColor: '#1976D2' }]}>
-            <Text style={styles.enterBtnText}>Continue as Buyer / Customer →</Text>
+            <Text style={styles.enterBtnText}>Register as Buyer / Customer →</Text>
           </View>
         </Card>
       </TouchableOpacity>
@@ -106,17 +103,15 @@ export default function SelectPortalScreen() {
           </View>
 
           <View style={[styles.enterBtn, { backgroundColor: safePrimary }]}>
-            <Text style={styles.enterBtnText}>Continue as Farmer / Seller →</Text>
+            <Text style={styles.enterBtnText}>Register as Farmer / Seller →</Text>
           </View>
         </Card>
       </TouchableOpacity>
-    </ScrollView>
+    </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: safeBg },
-  scrollBody: { padding: safeSpacingMd, paddingBottom: safeSpacingXxl },
   headerCard: { marginBottom: safeSpacingMd, alignItems: 'center', paddingVertical: safeSpacingMd },
   logoRow: { flexDirection: 'row', alignItems: 'center' },
   headerTitle: { fontSize: 24, fontWeight: '800', color: safeTextLight, marginLeft: 8 },

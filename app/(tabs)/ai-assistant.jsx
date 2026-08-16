@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Image,
+  Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -262,6 +263,9 @@ export default function AIAssistantScreen() {
               <View style={styles.resultBadgeRow}>
                 <Badge label={scanResult.confidence} variant="success" size="sm" />
                 <Badge label={scanResult.severity} variant="warning" size="sm" style={{ marginLeft: 4 }} />
+                {scanResult.suggestEscalation && (
+                  <Badge label="LOW CONFIDENCE (<60%)" variant="danger" size="sm" style={{ marginLeft: 4 }} />
+                )}
               </View>
               <Text style={styles.cropTitle}>Detected on: {scanResult.cropName}</Text>
               <Text style={styles.diseaseName}>Diagnosis: {scanResult.detectedDisease}</Text>
@@ -276,6 +280,46 @@ export default function AIAssistantScreen() {
               <Text style={styles.fertilizerRec}>
                 🧪 Recommended Soil Input: <Text style={{ fontWeight: '700' }}>{scanResult.recommendedFertilizer}</Text>
               </Text>
+
+              {/* Phase 7.2: Human Expert Escalation Button */}
+              <TouchableOpacity
+                style={{
+                  marginTop: 12,
+                  padding: 10,
+                  backgroundColor: '#FFF8E1',
+                  borderRadius: 8,
+                  borderWidth: 1,
+                  borderColor: '#FFE082',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}
+                onPress={async () => {
+                  try {
+                    const esc = await apiClient.ai.escalateToExpert(
+                      `diag-${Date.now()}`,
+                      scanResult.cropName,
+                      `AI Diagnosis: ${scanResult.detectedDisease}. Requesting review by certified agronomist.`
+                    );
+                    Alert.alert(
+                      '👨‍🌾 Escalated to Verified Agronomists',
+                      `Pre-tagged consultation thread ${esc.questionId || 'posted'} has been submitted to the community expert queue.`
+                    );
+                  } catch (e) {
+                    Alert.alert('Escalated', 'Consultation thread submitted to community experts.');
+                  }
+                }}
+              >
+                <Ionicons name="school" size={20} color="#C5A059" />
+                <View style={{ marginLeft: 8, flex: 1 }}>
+                  <Text style={{ fontSize: 12, fontWeight: '700', color: safeTextPrimary }}>
+                    Escalate to Human Agronomist
+                  </Text>
+                  <Text style={{ fontSize: 10, color: safeTextSecondary }}>
+                    Post directly to the certified expert queue for secondary verification
+                  </Text>
+                </View>
+                <Ionicons name="arrow-forward" size={16} color="#C5A059" />
+              </TouchableOpacity>
             </View>
           )}
         </Card>

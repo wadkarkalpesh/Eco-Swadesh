@@ -4,13 +4,16 @@ const {
   verifyQRSeal,
   getCertifications,
   uploadCertificate,
-  moderateCertificate,
+  decideCertification,
+  checkCertExpiry,
 } = require('../controllers/trustController');
-const { optionalJWT, requireRole } = require('../middleware/auth');
+const { optionalJWT, authenticateJWT } = require('../middleware/auth');
 
 router.get('/qr/:sealCode', optionalJWT, verifyQRSeal);
 router.get('/certifications', optionalJWT, getCertifications);
 router.post('/upload-certificate', optionalJWT, uploadCertificate);
-router.put('/moderate/:certId', optionalJWT, moderateCertificate);
+router.post('/decide-certification', authenticateJWT, decideCertification);
+router.put('/moderate/:certId', optionalJWT, decideCertification);
+router.get('/check-expiry', optionalJWT, checkCertExpiry);
 
 module.exports = router;
