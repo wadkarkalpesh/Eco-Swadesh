@@ -1,6 +1,6 @@
 /**
  * Eco Swadesh Unified API Client SDK for React Native & Expo v54
- * Bridges the Frontend with the Node.js / Express / Firebase Production Backend.
+ * Bridges the Frontend with the Node.js / Express / Supabase Production Backend.
  * Features:
  * - Automatic Bearer Token Authorization Injection
  * - Zero-Crash Network Resilience with Offline Mock Fallback

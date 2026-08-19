@@ -1,6 +1,6 @@
 /**
  * Eco Swadesh Production Backend API Server
- * Architecture: Node.js / Express / Firebase & PostgreSQL Extensible Architecture
+ * Architecture: Node.js / Express / Supabase & PostgreSQL Extensible Architecture
  * Target Lead: Kalpesh Wadkar
  */
 

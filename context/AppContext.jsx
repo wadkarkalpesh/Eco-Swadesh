@@ -8,6 +8,8 @@ import {
   MOCK_COMMODITY_PRICES,
 } from '../constants/mockData';
 import apiClient from '../utils/apiClient';
+import { supabase, isSupabaseConfigured } from '../utils/supabaseClient';
+import supabaseService from '../services/supabaseService';
 
 const AppContext = createContext();
 
@@ -185,14 +187,23 @@ export function AppProvider({ children }) {
     return `${symbol}${converted.toLocaleString()} / ${unit}`;
   };
 
-  // Fetch Live Data from Backend API on Boot
+  // Fetch Live Data from Supabase / Backend API on Boot
   const fetchAllLiveData = useCallback(async () => {
     setIsLoading(true);
     try {
-      // 1. Fetch Products
+      // Check Supabase Products first if configured
+      if (isSupabaseConfigured()) {
+        const sbProducts = await supabaseService.getProducts();
+        if (sbProducts && sbProducts.length > 0) {
+          setProducts(sbProducts);
+          setServerOnline(true);
+        }
+      }
+
+      // 1. Fetch Products from API / fallback
       const prodRes = await apiClient.products.getProducts().catch(() => null);
       if (prodRes && prodRes.products && prodRes.products.length > 0) {
-        setProducts(prodRes.products);
+        setProducts((prev) => (prev && prev.length > 0 && isSupabaseConfigured() ? prev : prodRes.products));
         setServerOnline(true);
       }
 
@@ -231,6 +242,26 @@ export function AppProvider({ children }) {
     } finally {
       setIsLoading(false);
     }
+  }, []);
+
+  // Supabase Auth Listener
+  useEffect(() => {
+    if (!isSupabaseConfigured()) return;
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (session?.user) {
+        const profile = await supabaseService.getProfile(session.user.id);
+        if (profile) {
+          setCurrentUser(profile);
+          if (profile.persona) setPersona(profile.persona);
+          setIsAuthenticated(true);
+        }
+      }
+    });
+
+    return () => {
+      subscription?.unsubscribe();
+    };
   }, []);
 
   useEffect(() => {
@@ -403,6 +434,9 @@ export function AppProvider({ children }) {
         adminMetrics,
         isLoading,
         serverOnline,
+        supabase,
+        supabaseService,
+        isSupabaseConfigured,
         refreshAllData: fetchAllLiveData,
       }}
     >

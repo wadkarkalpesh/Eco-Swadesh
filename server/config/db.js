@@ -1,5 +1,5 @@
 /**
- * Eco Swadesh Database Engine (Firestore & Document-Store Architecture Compatible)
+ * Eco Swadesh Database Engine (Supabase & PostgreSQL Architecture Compatible)
  * Implements in-memory indexing, CRUD operators, and atomic collections
  * for users, products, listings, orders, escrow pools, logistics, AI diagnoses, and audit logs.
  */

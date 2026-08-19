@@ -17,9 +17,11 @@
     "apeda-npop",
     "ai-agronomy",
     "express",
-    "firebase"
+    "supabase",
+    "postgresql"
   ],
   "dependencies": {
+    "@supabase/supabase-js": "^2.112.3",
     "cors": "^2.8.6",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3"

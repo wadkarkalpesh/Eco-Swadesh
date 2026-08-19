@@ -16,7 +16,7 @@
   ],
   "exclude": [
     "node_modules",
-    "functions",
+    "supabase",
     "server",
     "EcoSwadeshApp",
     "dist"
