@@ -16,12 +16,10 @@ import Input from '../components/ui/Input';
 import { productsApi } from '../utils/apiClient';
 
 const safeBg = (COLORS && COLORS.background) || '#F4F7F4';
-const safePrimary = (COLORS && COLORS.primary) || '#1E4D2B';
 const safePrimaryDark = (COLORS && COLORS.primaryDark) || '#12361C';
 const safeTextLight = (COLORS && COLORS.textLight) || '#FFFFFF';
 const safeTextPrimary = (COLORS && COLORS.textPrimary) || '#1A2E1E';
 
-const safeSpacingXs = (SPACING && SPACING.xs) || 4;
 const safeSpacingSm = (SPACING && SPACING.sm) || 8;
 const safeSpacingMd = (SPACING && SPACING.md) || 16;
 const safeSpacingXxl = (SPACING && SPACING.xxl) || 48;
@@ -94,6 +92,12 @@ export default function AddProductScreen() {
           label="Product Title *"
           value={title}
           onChangeText={setTitle}
+        />
+
+        <Input
+          label="Category (e.g. fertilizers, seeds, bioPesticides, equipment, grains)"
+          value={category}
+          onChangeText={setCategory}
         />
 
         <View style={{ flexDirection: 'row' }}>

@@ -82,11 +82,11 @@ const runAdvancedTests = async () => {
 
     // 1. FinTech: Create Razorpay Order
     const rzpOrderRes = await request('POST', '/v1/payments/razorpay/create-order', {
-      amountINR: 420000,
+      amountINR: 426600,
       orderId: 'ORD-2026-9041',
     });
     assert(
-      rzpOrderRes.status === 200 && rzpOrderRes.body.order.amount === 42000000,
+      rzpOrderRes.status === 200 && rzpOrderRes.body.order.amount === 42660000,
       '1. FinTech - Razorpay Order Creation (Paise Conversion)'
     );
 

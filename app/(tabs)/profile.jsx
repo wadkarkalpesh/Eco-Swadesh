@@ -21,6 +21,7 @@ import apiClient from '../../utils/apiClient';
 
 const safeBg = (COLORS && COLORS.background) || '#F4F7F4';
 const safePrimary = (COLORS && COLORS.primary) || '#1E4D2B';
+const safePrimaryDark = (COLORS && COLORS.primaryDark) || '#12361C';
 const safePrimaryLight = (COLORS && COLORS.primaryLight) || '#2E7D32';
 const safeLogisticsPurple = (COLORS && COLORS.logisticsPurple) || '#673AB7';
 const safeTrustBlue = (COLORS && COLORS.trustBlue) || '#1976D2';
@@ -59,34 +60,261 @@ export default function ProfileScreen() {
     currency,
     changeCurrency,
     language,
+    currentUser,
+    isAuthenticated,
     logoutUser,
   } = useApp();
 
+  // Active user details with robust fallbacks
+  const userName = currentUser?.name || (isAuthenticated ? 'Ramesh Patel' : 'Guest Member');
+  const userPhone = currentUser?.phone || '+91 98230 11200';
+  const userEmail = currentUser?.email || 'ramesh.patel@ecoswadesh.com';
+  const userRole = (currentUser?.persona || persona || 'FARMER').toUpperCase();
+  const userId = currentUser?.id || 'USR-IN-2026-9041';
+  const userLocation = currentUser?.district && currentUser?.state
+    ? `${currentUser.district}, ${currentUser.state}`
+    : (currentUser?.state || 'Ujjain, Madhya Pradesh, India');
+  const memberSince = currentUser?.createdAt
+    ? new Date(currentUser.createdAt).toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' })
+    : 'Jan 15, 2026';
+
+  const handleLogout = () => {
+    Alert.alert(
+      '🚪 Log Out of Eco-Swadesh',
+      'Are you sure you want to end your current session? You can sign back in anytime with your registered phone number or email.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Log Out',
+          style: 'destructive',
+          onPress: () => {
+            logoutUser();
+            Alert.alert('Logged Out', 'You have been successfully logged out of your session.');
+            router.replace('/auth/login');
+          },
+        },
+      ]
+    );
+  };
+
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      {/* Header Profile Info */}
+      {/* Header Profile Banner */}
       <View style={styles.header}>
         <View style={styles.profileRow}>
-          <Image
-            source={{ uri: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=160&auto=format&fit=crop&q=80' }}
-            style={styles.profileAvatar}
-          />
+          <View style={styles.avatarContainer}>
+            <Image
+              source={{ uri: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=160&auto=format&fit=crop&q=80' }}
+              style={styles.profileAvatar}
+            />
+            <View style={styles.onlineBadge} />
+          </View>
+
           <View style={styles.profileInfo}>
-            <Text style={styles.profileName}>Tejas & Team Eco-Swadesh</Text>
+            <Text style={styles.profileName}>{userName}</Text>
+            <Text style={styles.profileIdentifier}>{userPhone}</Text>
             <View style={styles.roleBadgeRow}>
-              <Badge label={persona.toUpperCase()} variant="trust" size="sm" />
-              <Badge label="VERIFIED USER" variant="success" size="sm" style={{ marginLeft: 4 }} />
+              <Badge label={userRole} variant="gold" size="sm" />
+              <Badge label="DPDP VERIFIED" variant="success" size="sm" style={{ marginLeft: 6 }} />
             </View>
-            <Text style={styles.regionText}>📍 Global Hub • India / North America</Text>
+            <Text style={styles.regionText}>📍 {userLocation}</Text>
           </View>
         </View>
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollBody} showsVerticalScrollIndicator={false}>
-        {/* Active Persona Selection Card */}
+        {/* ========================================================================= */}
+        {/* 1. REGISTERED / LOGGED-IN USER ACCOUNT DATA (USER SPECIFICATION)           */}
+        {/* ========================================================================= */}
+        <Card style={styles.sectionCard}>
+          <View style={styles.sectionHeaderRow}>
+            <View style={styles.headerTitleWithIcon}>
+              <Ionicons name="person-circle" size={22} color={safePrimary} />
+              <Text style={[styles.sectionTitle, { marginLeft: 6, marginBottom: 0 }]}>
+                Registered User Account Details
+              </Text>
+            </View>
+            <Badge label={isAuthenticated ? 'ACTIVE SESSION' : 'GUEST'} variant={isAuthenticated ? 'success' : 'default'} size="sm" />
+          </View>
+          <Text style={styles.sectionSub}>Verified identity parameters, contact coordinates, and statutory data</Text>
+
+          <View style={styles.userProfileTable}>
+            {/* Full Name */}
+            <View style={styles.profileDataRow}>
+              <View style={styles.profileDataKeyCol}>
+                <Ionicons name="person-outline" size={15} color={safeTextSecondary} />
+                <Text style={styles.profileDataKey}>Full Name</Text>
+              </View>
+              <Text style={styles.profileDataVal}>{userName}</Text>
+            </View>
+
+            {/* Registered Phone */}
+            <View style={styles.profileDataRow}>
+              <View style={styles.profileDataKeyCol}>
+                <Ionicons name="call-outline" size={15} color={safeTextSecondary} />
+                <Text style={styles.profileDataKey}>Mobile Phone</Text>
+              </View>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                <Text style={styles.profileDataVal}>{userPhone}</Text>
+                <Ionicons name="checkmark-circle" size={14} color="#2E7D32" />
+              </View>
+            </View>
+
+            {/* Email Address */}
+            <View style={styles.profileDataRow}>
+              <View style={styles.profileDataKeyCol}>
+                <Ionicons name="mail-outline" size={15} color={safeTextSecondary} />
+                <Text style={styles.profileDataKey}>Email Address</Text>
+              </View>
+              <Text style={styles.profileDataVal}>{userEmail}</Text>
+            </View>
+
+            {/* Persona Role */}
+            <View style={styles.profileDataRow}>
+              <View style={styles.profileDataKeyCol}>
+                <Ionicons name="shield-outline" size={15} color={safeTextSecondary} />
+                <Text style={styles.profileDataKey}>Account Persona</Text>
+              </View>
+              <Text style={[styles.profileDataVal, { color: safePrimary, fontWeight: '800' }]}>{userRole}</Text>
+            </View>
+
+            {/* Account ID */}
+            <View style={styles.profileDataRow}>
+              <View style={styles.profileDataKeyCol}>
+                <Ionicons name="finger-print-outline" size={15} color={safeTextSecondary} />
+                <Text style={styles.profileDataKey}>Member UID</Text>
+              </View>
+              <Text style={[styles.profileDataVal, styles.monoText]}>{userId}</Text>
+            </View>
+
+            {/* State & District */}
+            <View style={styles.profileDataRow}>
+              <View style={styles.profileDataKeyCol}>
+                <Ionicons name="location-outline" size={15} color={safeTextSecondary} />
+                <Text style={styles.profileDataKey}>Jurisdiction</Text>
+              </View>
+              <Text style={styles.profileDataVal}>{userLocation}</Text>
+            </View>
+
+            {/* Member Since */}
+            <View style={styles.profileDataRow}>
+              <View style={styles.profileDataKeyCol}>
+                <Ionicons name="calendar-outline" size={15} color={safeTextSecondary} />
+                <Text style={styles.profileDataKey}>Member Since</Text>
+              </View>
+              <Text style={styles.profileDataVal}>{memberSince}</Text>
+            </View>
+
+            {/* DPDP Compliance */}
+            <View style={styles.profileDataRow}>
+              <View style={styles.profileDataKeyCol}>
+                <Ionicons name="lock-closed-outline" size={15} color={safeTextSecondary} />
+                <Text style={styles.profileDataKey}>DPDP Act 2023</Text>
+              </View>
+              <Badge label="CONSENT ACTIVE (SEC 11)" variant="trust" size="sm" />
+            </View>
+
+            {/* Persona Specific Custom Fields */}
+            {persona === 'farmer' && (
+              <>
+                <View style={styles.profileDataRow}>
+                  <View style={styles.profileDataKeyCol}>
+                    <Ionicons name="leaf-outline" size={15} color={safeTextSecondary} />
+                    <Text style={styles.profileDataKey}>Farm Acreage</Text>
+                  </View>
+                  <Text style={styles.profileDataVal}>{currentUser?.farmSizeAcres ? `${currentUser.farmSizeAcres} Acres` : '18 Acres Organic'}</Text>
+                </View>
+                <View style={styles.profileDataRow}>
+                  <View style={styles.profileDataKeyCol}>
+                    <Ionicons name="business-outline" size={15} color={safeTextSecondary} />
+                    <Text style={styles.profileDataKey}>Producer FPO</Text>
+                  </View>
+                  <Text style={[styles.profileDataVal, { maxWidth: '55%', textAlign: 'right' }]}>
+                    {currentUser?.fpoName || 'Malwa Narmada Organic FPC Ltd.'}
+                  </Text>
+                </View>
+                <View style={[styles.profileDataRow, { borderBottomWidth: 0 }]}>
+                  <View style={styles.profileDataKeyCol}>
+                    <Ionicons name="document-text-outline" size={15} color={safeTextSecondary} />
+                    <Text style={styles.profileDataKey}>Soil Health Card</Text>
+                  </View>
+                  <Text style={[styles.profileDataVal, styles.monoText]}>
+                    {currentUser?.soilHealthCardId || 'SHC-MP-UJJ-2025-09142'}
+                  </Text>
+                </View>
+              </>
+            )}
+
+            {persona === 'bulkBuyer' && (
+              <>
+                <View style={styles.profileDataRow}>
+                  <View style={styles.profileDataKeyCol}>
+                    <Ionicons name="briefcase-outline" size={15} color={safeTextSecondary} />
+                    <Text style={styles.profileDataKey}>Commercial Entity</Text>
+                  </View>
+                  <Text style={[styles.profileDataVal, { maxWidth: '55%', textAlign: 'right' }]}>
+                    {currentUser?.extraDetail || 'AgroFlour Milling & Food Processing Corp'}
+                  </Text>
+                </View>
+                <View style={[styles.profileDataRow, { borderBottomWidth: 0 }]}>
+                  <View style={styles.profileDataKeyCol}>
+                    <Ionicons name="receipt-outline" size={15} color={safeTextSecondary} />
+                    <Text style={styles.profileDataKey}>Verified GSTIN</Text>
+                  </View>
+                  <Text style={[styles.profileDataVal, styles.monoText]}>
+                    {currentUser?.gstin || '03AAAAA0000A1Z5'}
+                  </Text>
+                </View>
+              </>
+            )}
+
+            {persona === 'seller' && (
+              <View style={[styles.profileDataRow, { borderBottomWidth: 0 }]}>
+                <View style={styles.profileDataKeyCol}>
+                  <Ionicons name="flask-outline" size={15} color={safeTextSecondary} />
+                  <Text style={styles.profileDataKey}>Lab License</Text>
+                </View>
+                <Text style={styles.profileDataVal}>NABL-BIO-2026-44 (NPOP Certified)</Text>
+              </View>
+            )}
+
+            {persona === 'expert' && (
+              <View style={[styles.profileDataRow, { borderBottomWidth: 0 }]}>
+                <View style={styles.profileDataKeyCol}>
+                  <Ionicons name="school-outline" size={15} color={safeTextSecondary} />
+                  <Text style={styles.profileDataKey}>Accreditation</Text>
+                </View>
+                <Text style={[styles.profileDataVal, { maxWidth: '55%', textAlign: 'right' }]}>Senior Organic Agronomist & ICAR Member</Text>
+              </View>
+            )}
+          </View>
+
+          {/* Switch Account / Re-authenticate Quick Buttons */}
+          <View style={styles.accountActionBtnRow}>
+            <TouchableOpacity
+              style={styles.switchAccBtn}
+              onPress={() => router.push('/auth/login')}
+            >
+              <Ionicons name="swap-horizontal-outline" size={16} color={safePrimary} />
+              <Text style={styles.switchAccText}>Switch User / Re-login</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.switchAccBtn}
+              onPress={() => router.push('/auth/register')}
+            >
+              <Ionicons name="person-add-outline" size={16} color={safePrimary} />
+              <Text style={styles.switchAccText}>Create New Account</Text>
+            </TouchableOpacity>
+          </View>
+        </Card>
+
+        {/* ========================================================================= */}
+        {/* 2. ACTIVE PERSONA ROLE SWITCHER                                           */}
+        {/* ========================================================================= */}
         <Card style={styles.sectionCard}>
           <Text style={styles.sectionTitle}>Active Persona Role Switcher</Text>
-          <Text style={styles.sectionSub}>Switch active experience to view specialized features for your role:</Text>
+          <Text style={styles.sectionSub}>Switch active role to unlock specialized views and features:</Text>
 
           {PERSONA_ROLES.map((role) => {
             const isSelected = persona === role.id;
@@ -100,7 +328,7 @@ export default function ProfileScreen() {
                   {isSelected && <View style={styles.roleRadioInner} />}
                 </View>
                 <View style={{ flex: 1 }}>
-                  <Text style={[styles.roleTitle, isSelected && { color: safePrimary, fontWeight: '700' }]}>
+                  <Text style={[styles.roleTitle, isSelected && { color: safePrimary, fontWeight: '800' }]}>
                     {role.title}
                   </Text>
                   <Text style={styles.roleDesc}>{role.desc}</Text>
@@ -110,7 +338,9 @@ export default function ProfileScreen() {
           })}
         </Card>
 
-        {/* Specialized Ecosystem Portals */}
+        {/* ========================================================================= */}
+        {/* 3. SPECIALIZED ECOSYSTEM PORTALS                                          */}
+        {/* ========================================================================= */}
         <Card style={styles.sectionCard}>
           <Text style={styles.sectionTitle}>Specialized Platform Portals</Text>
 
@@ -203,7 +433,9 @@ export default function ProfileScreen() {
           </TouchableOpacity>
         </Card>
 
-        {/* Global Settings (Language & Currency) */}
+        {/* ========================================================================= */}
+        {/* 4. GLOBAL REGION & CURRENCY SETTINGS                                     */}
+        {/* ========================================================================= */}
         <Card style={styles.sectionCard}>
           <Text style={styles.sectionTitle}>Global Region & Currency Settings</Text>
 
@@ -236,9 +468,11 @@ export default function ProfileScreen() {
           </View>
         </Card>
 
-        {/* DPDP Privacy & Data Subject Rights (India DPDP Act 2023) */}
+        {/* ========================================================================= */}
+        {/* 5. DPDP PRIVACY & STATUTORY COMPLIANCE                                    */}
+        {/* ========================================================================= */}
         <Card style={styles.sectionCard}>
-          <Text style={styles.sectionTitle}>DPDP Privacy & Data Subject Rights</Text>
+          <Text style={styles.sectionTitle}>DPDP Privacy & Statutory Rights</Text>
           <Text style={styles.sectionSub}>Manage personal data, export records, or invoke DPDP statutory rights:</Text>
 
           <TouchableOpacity
@@ -267,7 +501,7 @@ export default function ProfileScreen() {
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={styles.portalItem}
+            style={[styles.portalItem, { borderBottomWidth: 0 }]}
             onPress={() => {
               const res = privacyManager.requestRightToBeForgotten();
               Alert.alert('Erasure Request Registered', `${res.message}\nTicket ID: ${res.erasureTicketId}`);
@@ -284,19 +518,32 @@ export default function ProfileScreen() {
           </TouchableOpacity>
         </Card>
 
-        {/* Account Logout Action Card */}
-        <Card style={styles.sectionCard}>
+        {/* ========================================================================= */}
+        {/* 6. LOGOUT OPTION IN THE END (USER SPECIFICATION)                         */}
+        {/* ========================================================================= */}
+        <Card style={[styles.sectionCard, styles.logoutCard]}>
+          <View style={styles.logoutHeaderRow}>
+            <View style={[styles.portalIconCircle, { backgroundColor: '#FFEBEE' }]}>
+              <Ionicons name="log-out-outline" size={22} color="#D32F2F" />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.logoutCardTitle}>Account Authentication & Security</Text>
+              <Text style={styles.logoutCardSub}>Session linked to {userPhone} ({userName})</Text>
+            </View>
+          </View>
+
           <TouchableOpacity
             style={styles.logoutBtn}
-            onPress={() => {
-              logoutUser();
-              Alert.alert('Logged Out', 'You have been logged out of Eco-Swadesh.');
-              router.replace('/auth/register');
-            }}
+            onPress={handleLogout}
+            activeOpacity={0.8}
           >
-            <Ionicons name="log-out-outline" size={20} color="#D32F2F" />
-            <Text style={styles.logoutText}>Log Out of Eco-Swadesh Account</Text>
+            <Ionicons name="log-out" size={20} color="#FFFFFF" />
+            <Text style={styles.logoutBtnText}>Log Out of Eco-Swadesh Account</Text>
           </TouchableOpacity>
+
+          <Text style={styles.logoutFooterNote}>
+            🔒 Logging out clears cryptographic session keys and local cache tokens safely.
+          </Text>
         </Card>
       </ScrollView>
     </SafeAreaView>
@@ -309,44 +556,79 @@ const styles = StyleSheet.create({
     backgroundColor: safeBg,
   },
   header: {
-    backgroundColor: safePrimary,
+    backgroundColor: safePrimaryDark,
     paddingHorizontal: safeSpacingMd,
-    paddingVertical: safeSpacingMd,
+    paddingVertical: safeSpacingMd + 4,
+    borderBottomLeftRadius: 18,
+    borderBottomRightRadius: 18,
   },
   profileRow: {
     flexDirection: 'row',
     alignItems: 'center',
   },
+  avatarContainer: {
+    position: 'relative',
+  },
   profileAvatar: {
-    width: 60,
-    height: 60,
+    width: 68,
+    height: 68,
     borderRadius: safeRadiusFull,
+    borderWidth: 2.5,
+    borderColor: '#A5D6A7',
+  },
+  onlineBadge: {
+    position: 'absolute',
+    bottom: 2,
+    right: 2,
+    width: 14,
+    height: 14,
+    borderRadius: 7,
+    backgroundColor: '#00E676',
     borderWidth: 2,
-    borderColor: safeTextLight,
+    borderColor: safePrimaryDark,
   },
   profileInfo: {
-    marginLeft: safeSpacingSm,
+    marginLeft: safeSpacingMd,
     flex: 1,
   },
   profileName: {
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: '800',
     color: safeTextLight,
+    letterSpacing: 0.2,
+  },
+  profileIdentifier: {
+    fontSize: 12,
+    color: '#C8E6C9',
+    marginTop: 1,
   },
   roleBadgeRow: {
     flexDirection: 'row',
-    marginVertical: 2,
+    alignItems: 'center',
+    marginVertical: 4,
   },
   regionText: {
     fontSize: 11,
-    color: '#A5D6A7',
+    color: '#E8F5E9',
+    marginTop: 2,
   },
   scrollBody: {
     padding: safeSpacingMd,
-    paddingBottom: safeSpacingXxl,
+    paddingBottom: safeSpacingXxl + 20,
   },
   sectionCard: {
     marginBottom: safeSpacingMd,
+  },
+  sectionHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  headerTitleWithIcon: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
   },
   sectionTitle: {
     fontSize: 15,
@@ -358,6 +640,66 @@ const styles = StyleSheet.create({
     fontSize: 11,
     color: safeTextMuted,
     marginBottom: safeSpacingSm,
+    lineHeight: 16,
+  },
+  userProfileTable: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: safeRadiusMd,
+    borderWidth: 1,
+    borderColor: safeBorder,
+    overflow: 'hidden',
+    marginTop: safeSpacingXs,
+  },
+  profileDataRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: safeSpacingMd,
+    paddingVertical: safeSpacingSm + 2,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F0F4F0',
+  },
+  profileDataKeyCol: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  profileDataKey: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: safeTextSecondary,
+  },
+  profileDataVal: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: safeTextPrimary,
+  },
+  monoText: {
+    fontFamily: 'monospace',
+    fontSize: 11,
+    color: safePrimaryDark,
+  },
+  accountActionBtnRow: {
+    flexDirection: 'row',
+    gap: 8,
+    marginTop: safeSpacingSm + 4,
+  },
+  switchAccBtn: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    paddingVertical: 10,
+    borderRadius: safeRadiusMd,
+    backgroundColor: safeAccentLight,
+    borderWidth: 1,
+    borderColor: '#C8E6C9',
+  },
+  switchAccText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: safePrimary,
   },
   roleItem: {
     flexDirection: 'row',
@@ -402,13 +744,13 @@ const styles = StyleSheet.create({
   portalItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: safeSpacingSm,
+    paddingVertical: safeSpacingSm + 2,
     borderBottomWidth: 1,
     borderBottomColor: safeBorder,
   },
   portalIconCircle: {
-    width: 36,
-    height: 36,
+    width: 38,
+    height: 38,
     borderRadius: safeRadiusMd,
     alignItems: 'center',
     justifyContent: 'center',
@@ -463,16 +805,52 @@ const styles = StyleSheet.create({
   selectedCurrText: {
     color: safeTextLight,
   },
+  logoutCard: {
+    borderWidth: 1.5,
+    borderColor: '#FFCDD2',
+    backgroundColor: '#FFF8F8',
+    padding: safeSpacingMd,
+  },
+  logoutHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: safeSpacingMd,
+  },
+  logoutCardTitle: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: '#C62828',
+  },
+  logoutCardSub: {
+    fontSize: 11,
+    color: '#E57373',
+    marginTop: 2,
+  },
   logoutBtn: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: safeSpacingSm,
+    backgroundColor: '#D32F2F',
+    paddingVertical: 12,
+    borderRadius: safeRadiusMd,
     gap: 8,
+    elevation: 2,
+    shadowColor: '#D32F2F',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
   },
-  logoutText: {
-    fontSize: 13,
+  logoutBtnText: {
+    fontSize: 14,
     fontWeight: '800',
-    color: '#D32F2F',
+    color: '#FFFFFF',
+    letterSpacing: 0.3,
+  },
+  logoutFooterNote: {
+    fontSize: 10.5,
+    color: '#8A9E8C',
+    textAlign: 'center',
+    marginTop: safeSpacingSm,
+    lineHeight: 15,
   },
 });

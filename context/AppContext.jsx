@@ -11,10 +11,109 @@ import apiClient from '../utils/apiClient';
 
 const AppContext = createContext();
 
+const PERSONA_PROFILES = {
+  farmer: {
+    id: 'usr_farmer_01',
+    name: 'Ramesh Patel',
+    phone: '+91 98230 11200',
+    email: 'ramesh.patel@ecoswadesh.com',
+    persona: 'farmer',
+    roles: ['farmer', 'seller'],
+    verified: true,
+    state: 'Madhya Pradesh',
+    district: 'Ujjain',
+    village: 'Pipliya Ragho',
+    farmSizeAcres: 18,
+    primaryCrops: ['Organic Sharbati Wheat', 'Desi Cotton', 'Bio-Mustard'],
+    certifications: ['NPOP/NAB/0014/2025', 'Jaivik Bharat MP-991'],
+    fpoName: 'Malwa Narmada Organic Farmers Producer Co. Ltd.',
+    soilHealthCardId: 'SHC-MP-UJJ-2025-09142',
+    onboardingCompleted: true,
+    dpdpConsent: true,
+    createdAt: '2026-01-15T08:30:00Z',
+  },
+  consumer: {
+    id: 'usr_consumer_01',
+    name: 'Priya Sharma',
+    phone: '+91 98765 43210',
+    email: 'priya.sharma@ecoswadesh.com',
+    persona: 'consumer',
+    roles: ['buyer', 'consumer'],
+    verified: true,
+    state: 'Maharashtra',
+    district: 'Pune',
+    address: 'Kalyani Nagar, Pune, Maharashtra',
+    onboardingCompleted: true,
+    dpdpConsent: true,
+    createdAt: '2026-02-01T10:00:00Z',
+  },
+  bulkBuyer: {
+    id: 'usr_bulk_01',
+    name: 'Baldev Singh',
+    phone: '+91 94120 55678',
+    email: 'baldev.singh@fpoagro.in',
+    persona: 'bulkBuyer',
+    roles: ['buyer', 'bulkBuyer'],
+    verified: true,
+    state: 'Punjab',
+    district: 'Ludhiana',
+    extraDetail: 'AgroFlour Milling & Food Processing Corp',
+    gstin: '03AAAAA0000A1Z5',
+    onboardingCompleted: true,
+    dpdpConsent: true,
+    createdAt: '2026-01-20T12:00:00Z',
+  },
+  seller: {
+    id: 'usr_seller_01',
+    name: 'Dr. Vivek Deshmukh',
+    phone: '+91 98900 33441',
+    email: 'vivek@biofertindia.com',
+    persona: 'seller',
+    roles: ['seller', 'manufacturer'],
+    verified: true,
+    state: 'Maharashtra',
+    district: 'Nashik',
+    extraDetail: 'BioFert Organic Inputs & Seed Laboratories Ltd.',
+    certifications: ['NABL-BIO-2026-44', 'NPOP/NAB/0019/2025'],
+    onboardingCompleted: true,
+    dpdpConsent: true,
+    createdAt: '2026-01-10T09:15:00Z',
+  },
+  expert: {
+    id: 'usr_expert_01',
+    name: 'Dr. Anita Roy',
+    phone: '+91 98310 99887',
+    email: 'anita.roy@icar.gov.in',
+    persona: 'expert',
+    roles: ['expert', 'moderator'],
+    verified: true,
+    state: 'Delhi',
+    district: 'New Delhi',
+    extraDetail: 'Senior Organic Agronomist & ICAR Research Council Member',
+    onboardingCompleted: true,
+    dpdpConsent: true,
+    createdAt: '2026-01-05T14:20:00Z',
+  },
+  admin: {
+    id: 'usr_admin_01',
+    name: 'Platform Oversight Governance',
+    phone: '+91 99000 00001',
+    email: 'admin@ecoswadesh.com',
+    persona: 'admin',
+    roles: ['admin', 'moderator'],
+    verified: true,
+    state: 'National Platform Council',
+    district: 'India Hub',
+    onboardingCompleted: true,
+    dpdpConsent: true,
+    createdAt: '2026-01-01T00:00:00Z',
+  },
+};
+
 export function AppProvider({ children }) {
-  // Authentication Guard State (Requires Login to view Home Page)
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null);
+  // Authentication Guard State
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [currentUser, setCurrentUser] = useState(PERSONA_PROFILES.farmer);
 
   // Localization & Persona State
   const [language, setLanguage] = useState('en');
@@ -31,6 +130,9 @@ export function AppProvider({ children }) {
   const logoutUser = () => {
     setIsAuthenticated(false);
     setCurrentUser(null);
+    if (apiClient && apiClient.auth && apiClient.auth.logout) {
+      apiClient.auth.logout();
+    }
   };
   const [currency, setCurrency] = useState('inr'); // 'inr' | 'usd' | 'eur' | 'aud'
   
@@ -243,6 +345,12 @@ export function AppProvider({ children }) {
   
   const changePersona = async (newPersona) => {
     setPersona(newPersona);
+    if (PERSONA_PROFILES[newPersona]) {
+      setCurrentUser((prev) => ({
+        ...PERSONA_PROFILES[newPersona],
+        ...(prev && prev.name && !prev.id?.startsWith('usr_') ? { name: prev.name, email: prev.email, phone: prev.phone } : {}),
+      }));
+    }
     try {
       await apiClient.auth.switchPersona(newPersona);
     } catch (_err) {}

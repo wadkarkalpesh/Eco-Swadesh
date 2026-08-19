@@ -11,8 +11,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, SPACING, RADIUS } from '../constants/theme';
-import Card from '../components/ui/Card';
+import { COLORS } from '../constants/theme';
 import Input from '../components/ui/Input';
 import Badge from '../components/ui/Badge';
 import { ordersApi } from '../utils/apiClient';
@@ -20,7 +19,6 @@ import { useApp } from '../context/AppContext';
 
 const safeBg = (COLORS && COLORS.background) || '#F4F7F4';
 const safePrimary = (COLORS && COLORS.primary) || '#1E4D2B';
-const safePrimaryDark = (COLORS && COLORS.primaryDark) || '#12361C';
 const safeTextLight = (COLORS && COLORS.textLight) || '#FFFFFF';
 const safeTextPrimary = (COLORS && COLORS.textPrimary) || '#1A2E1E';
 const safeTextSecondary = (COLORS && COLORS.textSecondary) || '#5A6E5D';

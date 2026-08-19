@@ -148,7 +148,7 @@ export default function CommunityScreen() {
                   try {
                     await apiClient.community.flagContent(`questions/${post.id}`, 'SPAM_OR_VIOLATION');
                     Alert.alert('Flagged for Moderation', 'Thank you. Content has been routed to the unified admin moderation queue.');
-                  } catch (e) {
+                  } catch (_e) {
                     Alert.alert('Flagged', 'Report submitted to platform moderators.');
                   }
                 }}
@@ -197,7 +197,7 @@ export default function CommunityScreen() {
                   );
                   setNewAnswerText('');
                   setAnswerModalVisible(false);
-                } catch (e) {
+                } catch (_e) {
                   Alert.alert('Answer Submitted', 'Your response has been published.');
                   setNewAnswerText('');
                   setAnswerModalVisible(false);

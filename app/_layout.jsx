@@ -194,6 +194,12 @@ export default function RootLayout() {
               title: 'Help & Support Center',
             }}
           />
+          <Stack.Screen
+            name="order-messages"
+            options={{
+              title: 'Escrow Order Communication',
+            }}
+          />
         </Stack>
       </AppProvider>
     </ErrorBoundary>

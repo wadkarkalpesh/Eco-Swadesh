@@ -121,26 +121,34 @@ export default function HomeScreen() {
       <DPDPConsentBanner />
 
       {/* Auth Portal Quick Bar */}
-      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: safeSpacingMd, paddingVertical: 6, backgroundColor: '#E8F5E9', borderBottomWidth: 1, borderBottomColor: '#C8E6C9' }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: safeSpacingMd, paddingVertical: 6, backgroundColor: '#E8F5E9', borderBottomWidth: 1, borderBottomColor: '#C8E6C9', flexWrap: 'wrap', gap: 6 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Ionicons name="person-circle" size={18} color={safePrimary} />
           <Text style={{ fontSize: 11, fontWeight: '700', color: safePrimaryDark, marginLeft: 4 }}>
-            Active Portal: {persona === 'consumer' || persona === 'bulkBuyer' ? 'BUYER / CUSTOMER' : 'FARMER / SELLER'}
+            Portal: {persona === 'consumer' || persona === 'bulkBuyer' ? 'BUYER' : 'FARMER/SELLER'}
           </Text>
         </View>
 
-        <View style={{ flexDirection: 'row', gap: 6 }}>
+        <View style={{ flexDirection: 'row', gap: 6, alignItems: 'center' }}>
           <TouchableOpacity
-            style={{ paddingHorizontal: 8, paddingVertical: 4, backgroundColor: '#1976D2', borderRadius: 12 }}
-            onPress={() => router.push('/auth/buyer-login')}
+            style={{ paddingHorizontal: 10, paddingVertical: 5, backgroundColor: '#FFA000', borderRadius: 12, flexDirection: 'row', alignItems: 'center' }}
+            onPress={() => router.push('/auth/register')}
           >
-            <Text style={{ fontSize: 10, fontWeight: '800', color: '#FFF' }}>🛒 Buyer Login</Text>
+            <Ionicons name="person-add" size={12} color="#1A2E1E" style={{ marginRight: 3 }} />
+            <Text style={{ fontSize: 11, fontWeight: '800', color: '#1A2E1E' }}>Register</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={{ paddingHorizontal: 8, paddingVertical: 4, backgroundColor: safePrimary, borderRadius: 12 }}
+            style={{ paddingHorizontal: 9, paddingVertical: 5, backgroundColor: '#1976D2', borderRadius: 12, flexDirection: 'row', alignItems: 'center' }}
+            onPress={() => router.push('/auth/login')}
+          >
+            <Ionicons name="log-in" size={12} color="#FFF" style={{ marginRight: 3 }} />
+            <Text style={{ fontSize: 11, fontWeight: '800', color: '#FFF' }}>Sign In</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={{ paddingHorizontal: 8, paddingVertical: 5, backgroundColor: safePrimary, borderRadius: 12 }}
             onPress={() => router.push('/auth/seller-login')}
           >
-            <Text style={{ fontSize: 10, fontWeight: '800', color: '#FFF' }}>🌾 Seller Login</Text>
+            <Text style={{ fontSize: 10, fontWeight: '800', color: '#FFF' }}>🌾 Seller Portal</Text>
           </TouchableOpacity>
         </View>
       </View>

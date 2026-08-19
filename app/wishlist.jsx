@@ -20,7 +20,6 @@ const safePrimary = (COLORS && COLORS.primary) || '#1E4D2B';
 const safePrimaryDark = (COLORS && COLORS.primaryDark) || '#12361C';
 const safeTextLight = (COLORS && COLORS.textLight) || '#FFFFFF';
 const safeTextPrimary = (COLORS && COLORS.textPrimary) || '#1A2E1E';
-const safeTextSecondary = (COLORS && COLORS.textSecondary) || '#5A6E5D';
 
 const safeSpacingSm = (SPACING && SPACING.sm) || 8;
 const safeSpacingMd = (SPACING && SPACING.md) || 16;
@@ -31,7 +30,7 @@ export default function WishlistScreen() {
   const router = useRouter();
   const { products, addToCart, formatPrice } = useApp();
 
-  const savedProducts = products.slice(0, 3); // Simulated wishlist items
+  const [savedItems, setSavedItems] = React.useState(products.slice(0, 3));
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.scrollBody}>
@@ -47,19 +46,25 @@ export default function WishlistScreen() {
       </Card>
 
       {/* Wishlist Items List */}
-      {savedProducts.map((item) => (
+      {savedItems.map((item) => (
         <Card key={item.id} style={styles.itemCard}>
-          <View style={styles.itemRow}>
+          <TouchableOpacity
+            style={styles.itemRow}
+            onPress={() => router.push(`/product/${item.id}`)}
+          >
             <Image source={{ uri: item.image }} style={styles.itemImg} />
             <View style={{ flex: 1, marginLeft: 12 }}>
               <Badge label={item.certScheme || 'NPOP CERTIFIED'} variant="success" size="sm" />
               <Text style={styles.itemTitle}>{item.title}</Text>
               <Text style={styles.itemPrice}>{formatPrice(item.price)}</Text>
             </View>
-          </View>
+          </TouchableOpacity>
 
           <View style={styles.actionRow}>
-            <TouchableOpacity style={styles.removeBtn}>
+            <TouchableOpacity
+              style={styles.removeBtn}
+              onPress={() => setSavedItems((prev) => prev.filter((i) => i.id !== item.id))}
+            >
               <Ionicons name="trash-outline" size={16} color="#D32F2F" />
               <Text style={{ fontSize: 11, color: '#D32F2F', fontWeight: '700' }}>Remove</Text>
             </TouchableOpacity>

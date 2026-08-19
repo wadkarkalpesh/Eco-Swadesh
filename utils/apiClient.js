@@ -196,6 +196,11 @@ export const authApi = {
       }
     ),
 
+  logout: () => {
+    setAuthToken(null);
+    return { success: true, message: 'Session terminated.' };
+  },
+
   exportData: () =>
     request('/auth/data-export', { method: 'GET' }, {
       success: true,

@@ -304,7 +304,7 @@ export default function AIAssistantScreen() {
                       '👨‍🌾 Escalated to Verified Agronomists',
                       `Pre-tagged consultation thread ${esc.questionId || 'posted'} has been submitted to the community expert queue.`
                     );
-                  } catch (e) {
+                  } catch (_e) {
                     Alert.alert('Escalated', 'Consultation thread submitted to community experts.');
                   }
                 }}

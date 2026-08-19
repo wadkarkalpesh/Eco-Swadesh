@@ -4,7 +4,6 @@ import {
   Text,
   ScrollView,
   StyleSheet,
-  TouchableOpacity,
   Alert,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -16,7 +15,6 @@ import Button from '../components/ui/Button';
 import apiClient from '../utils/apiClient';
 
 const safeBg = (COLORS && COLORS.background) || '#F4F7F4';
-const safePrimary = (COLORS && COLORS.primary) || '#1E4D2B';
 const safePrimaryDark = (COLORS && COLORS.primaryDark) || '#12361C';
 const safeTextLight = (COLORS && COLORS.textLight) || '#FFFFFF';
 const safeTextPrimary = (COLORS && COLORS.textPrimary) || '#1A2E1E';
@@ -32,7 +30,7 @@ const safeSpacingLg = (SPACING && SPACING.lg) || 24;
 const safeSpacingXxl = (SPACING && SPACING.xxl) || 48;
 
 export default function AdminOversightScreen() {
-  const { t, products, adminMetrics } = useApp();
+  const { t, adminMetrics } = useApp();
 
   const [moderationQueue, setModerationQueue] = useState([
     {
@@ -73,7 +71,7 @@ export default function AdminOversightScreen() {
     // 2. Fetch Dynamic Platform Config
     apiClient.admin.getPlatformConfig().then((res) => {
       if (res && res.platformConfig) {
-        setPlatformConfigs(res.platformConfig);
+        setPlatformConfigs(Array.isArray(res.platformConfig) ? res.platformConfig : [res.platformConfig]);
       }
     }).catch(() => null);
 
@@ -92,7 +90,7 @@ export default function AdminOversightScreen() {
       }
       setModerationQueue((prev) => prev.filter((q) => q.id !== item.id));
       Alert.alert('Decision Recorded', `Item ${item.name || item.id} has been ${decision.toUpperCase()}.`);
-    } catch (e) {
+    } catch (_e) {
       setModerationQueue((prev) => prev.filter((q) => q.id !== item.id));
       Alert.alert('Decision Recorded', `Item ${item.name || item.id} has been ${decision.toUpperCase()}.`);
     }
@@ -194,6 +192,12 @@ export default function AdminOversightScreen() {
           <Text style={{ fontSize: 13, color: safeTextPrimary, fontWeight: '700' }}>Supported Regions:</Text>
           <Text style={{ fontSize: 12, color: safeTextSecondary }}>16 Agricultural States</Text>
         </View>
+        {platformConfigs.length > 0 && platformConfigs.map((cfg, idx) => (
+          <View key={idx} style={{ flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 4, borderTopWidth: 1, borderTopColor: '#E2E8E2', marginTop: 4 }}>
+            <Text style={{ fontSize: 13, color: safeTextPrimary, fontWeight: '700' }}>{cfg.key || cfg.name || `Config #${idx + 1}`}:</Text>
+            <Text style={{ fontSize: 12, color: safeTextSecondary }}>{String(cfg.value || cfg.status || 'Active')}</Text>
+          </View>
+        ))}
       </Card>
 
       {/* Immutable Audit Log Trail (Phase 8.3 / IEEE 830 FR-11) */}

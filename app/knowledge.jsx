@@ -5,7 +5,6 @@ import {
   ScrollView,
   StyleSheet,
   TouchableOpacity,
-  Linking,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, RADIUS, SPACING } from '../constants/theme';
@@ -21,7 +20,6 @@ const safeTextPrimary = (COLORS && COLORS.textPrimary) || '#1A2E1E';
 const safeTextSecondary = (COLORS && COLORS.textSecondary) || '#5A6E5D';
 const safeSunGold = (COLORS && COLORS.sunGold) || '#FFA000';
 
-const safeSpacingSm = (SPACING && SPACING.sm) || 8;
 const safeSpacingMd = (SPACING && SPACING.md) || 16;
 const safeSpacingXxl = (SPACING && SPACING.xxl) || 48;
 const safeRadiusMd = (RADIUS && RADIUS.md) || 14;
