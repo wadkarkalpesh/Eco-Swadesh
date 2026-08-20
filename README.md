@@ -1,50 +1,79 @@
-# Welcome to Deccan Origin 👋
+# Deccan Origin - Monorepo Architecture 🌾⚡
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Deccan Origin is an Enterprise Organic Agriculture, Bulk Tonnage Marketplace, FinTech Escrow Protection, IoT Cold-Chain Logistics, and AI Agronomy platform.
 
-## Get started
+---
 
-1. Install dependencies
+## 📁 Repository Directory Layout
 
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+```
+Deccan-Origin/
+├── Frontend/                 # Expo v54 React Native Mobile & Web Application
+│   ├── app/                  # Expo Router file-based pages & screens
+│   ├── components/           # Reusable UI Components
+│   ├── constants/            # API contracts, theme design tokens & mock data
+│   ├── context/              # Auth, Notification & Cart React contexts
+│   ├── hooks/                # Custom React hooks
+│   ├── services/             # Frontend services & Supabase integration
+│   ├── utils/                # API Client SDK with mock fallback & utilities
+│   ├── assets/               # Branding assets, fonts, icons
+│   ├── app.json              # Expo application configuration
+│   └── package.json          # Frontend dependency manifest
+│
+├── Backend/                  # Node.js / Express / Supabase API Server
+│   ├── config/               # Database & service configurations
+│   ├── controllers/          # Business logic handlers
+│   ├── middleware/           # Auth JWT & validation middleware
+│   ├── routes/               # REST API Endpoints (/v1/*)
+│   ├── services/             # Agronomy, Escrow & IoT Services
+│   ├── tests/                # Automated API Verification Suite (32 tests)
+│   ├── supabase/             # Database migrations, schema.sql & seed.sql
+│   ├── server.js             # Main Express server entry point
+│   ├── Dockerfile            # Container definition
+│   └── docker-compose.yml    # Docker orchestration setup
+│
+├── package.json              # Root workspace orchestrator
+└── README.md                 # Project documentation
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+---
 
-## Learn more
+## 🚀 Quick Start Guide
 
-To learn more about developing your project with Expo, look at the following resources:
+### 1. Launching from Workspace Root
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+You can launch both the **Frontend** and **Backend** directly from the root workspace directory:
 
-## Join the community
+- **Start Backend API Server**:
+  ```bash
+  npm run start:backend
+  ```
+  *(Server runs at `http://localhost:5000/v1`)*
 
-Join our community of developers creating universal apps.
+- **Start Backend in Dev Mode (Nodemon)**:
+  ```bash
+  npm run dev:backend
+  ```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- **Run Backend Verification Test Suite**:
+  ```bash
+  npm run test:backend
+  ```
+
+- **Start Frontend (Expo App)**:
+  ```bash
+  npm run start:frontend
+  ```
+
+- **Start Frontend Web Version**:
+  ```bash
+  npm run dev:frontend
+  ```
+
+---
+
+## 🛠️ Integration Safety
+
+- The **Frontend** communicates with the **Backend** REST API via `Frontend/utils/apiClient.js`.
+- By default, requests target `http://localhost:5000/v1` (or the URL set in `EXPO_PUBLIC_API_URL`).
+- Built-in zero-crash network resilience ensures graceful fallback to offline mock data if the API server is unavailable during local mobile testing.
