@@ -10,6 +10,12 @@ import {
 import apiClient from '../utils/apiClient';
 import { supabase, isSupabaseConfigured } from '../utils/supabaseClient';
 import supabaseService from '../services/supabaseService';
+import {
+  saveStorageData,
+  getStorageData,
+  removeStorageData,
+  STORAGE_KEYS,
+} from '../utils/storage';
 
 const AppContext = createContext();
 
@@ -114,12 +120,44 @@ const PERSONA_PROFILES = {
 
 export function AppProvider({ children }) {
   // Authentication Guard State
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
-  const [currentUser, setCurrentUser] = useState(PERSONA_PROFILES.farmer);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [authInitialized, setAuthInitialized] = useState(false);
 
   // Localization & Persona State
   const [language, setLanguage] = useState('en');
   const [persona, setPersona] = useState('farmer'); // 'farmer' | 'consumer' | 'bulkBuyer' | 'seller' | 'expert' | 'admin'
+
+  // Load persistent user session on mount
+  useEffect(() => {
+    const initAuthSession = async () => {
+      try {
+        const savedAuth = await getStorageData(STORAGE_KEYS.IS_AUTHENTICATED, null);
+        const savedUser = await getStorageData(STORAGE_KEYS.USER_SESSION, null);
+
+        if (savedAuth === true && savedUser) {
+          setIsAuthenticated(true);
+          setCurrentUser(savedUser);
+          if (savedUser.persona) setPersona(savedUser.persona);
+        } else if (savedAuth === false) {
+          setIsAuthenticated(false);
+          setCurrentUser(null);
+        } else {
+          // Default initial session for first launch
+          setIsAuthenticated(true);
+          setCurrentUser(PERSONA_PROFILES.farmer);
+          saveStorageData(STORAGE_KEYS.IS_AUTHENTICATED, true);
+          saveStorageData(STORAGE_KEYS.USER_SESSION, PERSONA_PROFILES.farmer);
+        }
+      } catch (_e) {
+        setIsAuthenticated(false);
+        setCurrentUser(null);
+      } finally {
+        setAuthInitialized(true);
+      }
+    };
+    initAuthSession();
+  }, []);
 
   const loginUser = (userPayload) => {
     setIsAuthenticated(true);
@@ -127,14 +165,23 @@ export function AppProvider({ children }) {
     if (userPayload?.persona) {
       setPersona(userPayload.persona);
     }
+    saveStorageData(STORAGE_KEYS.IS_AUTHENTICATED, true);
+    saveStorageData(STORAGE_KEYS.USER_SESSION, userPayload);
   };
 
-  const logoutUser = () => {
+  const logoutUser = async () => {
     setIsAuthenticated(false);
     setCurrentUser(null);
     if (apiClient && apiClient.auth && apiClient.auth.logout) {
       apiClient.auth.logout();
     }
+    if (isSupabaseConfigured()) {
+      try {
+        await supabase.auth.signOut();
+      } catch (_e) {}
+    }
+    await removeStorageData(STORAGE_KEYS.USER_SESSION);
+    await saveStorageData(STORAGE_KEYS.IS_AUTHENTICATED, false);
   };
   const [currency, setCurrency] = useState('inr'); // 'inr' | 'usd' | 'eur' | 'aud'
   

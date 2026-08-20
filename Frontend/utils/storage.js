@@ -6,6 +6,9 @@ const STORAGE_KEYS = {
   LANGUAGE: '@eco_swadesh_language',
   CURRENCY: '@eco_swadesh_currency',
   SCAN_HISTORY: '@eco_swadesh_scan_history',
+  USER_SESSION: '@eco_swadesh_user_session',
+  IS_AUTHENTICATED: '@eco_swadesh_is_authenticated',
+  AUTH_TOKEN: '@eco_swadesh_auth_token',
 };
 
 export const saveStorageData = async (key, value) => {
@@ -43,3 +46,4 @@ export const removeStorageData = async (key) => {
 };
 
 export { STORAGE_KEYS };
+

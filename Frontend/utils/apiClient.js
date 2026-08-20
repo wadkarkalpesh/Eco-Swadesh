@@ -15,6 +15,12 @@ import {
   MOCK_COMMODITY_PRICES,
   MOCK_AI_DIAGNOSES,
 } from '../constants/mockData.js';
+import {
+  saveStorageData,
+  getStorageData,
+  removeStorageData,
+  STORAGE_KEYS,
+} from './storage.js';
 
 // Configurable API Base URL
 export const API_BASE_URL =
@@ -25,14 +31,10 @@ let cachedToken = null;
 
 export const setAuthToken = (token) => {
   cachedToken = token;
-  if (typeof window !== 'undefined' && window.localStorage) {
-    try {
-      if (token) {
-        window.localStorage.setItem('@eco_swadesh_auth_token', token);
-      } else {
-        window.localStorage.removeItem('@eco_swadesh_auth_token');
-      }
-    } catch (_e) {}
+  if (token) {
+    saveStorageData(STORAGE_KEYS.AUTH_TOKEN, token);
+  } else {
+    removeStorageData(STORAGE_KEYS.AUTH_TOKEN);
   }
 };
 
@@ -40,7 +42,7 @@ export const getAuthToken = () => {
   if (cachedToken) return cachedToken;
   if (typeof window !== 'undefined' && window.localStorage) {
     try {
-      cachedToken = window.localStorage.getItem('@eco_swadesh_auth_token');
+      cachedToken = window.localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
     } catch (_e) {}
   }
   return cachedToken;

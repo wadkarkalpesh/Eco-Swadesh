@@ -87,8 +87,8 @@ export default function ProfileScreen() {
         {
           text: 'Log Out',
           style: 'destructive',
-          onPress: () => {
-            logoutUser();
+          onPress: async () => {
+            await logoutUser();
             Alert.alert('Logged Out', 'You have been successfully logged out of your session.');
             router.replace('/auth/login');
           },
