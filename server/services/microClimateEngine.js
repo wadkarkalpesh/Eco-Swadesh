@@ -1,5 +1,5 @@
 /**
- * Eco Swadesh Phase 28: Micro-Climate Predictive Agronomy Engine
+ * Deccan Origin Phase 28: Micro-Climate Predictive Agronomy Engine
  * Ingests hyper-local weather parameters (temperature, humidity, dew point, wind, soil moisture)
  * and forecasts agro-climatic risks: frost damage, powdery mildew, blight, and heat stress.
  */

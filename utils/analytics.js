@@ -1,5 +1,5 @@
 /**
- * Eco Swadesh Analytics & Telemetry Engine
+ * Deccan Origin Analytics & Telemetry Engine
  * Measures Verified Transparency Tonnage (VTT), Escrow Throughput,
  * and User Engagement Metrics across the platform.
  */
@@ -18,7 +18,7 @@ class AnalyticsEngine {
 
     this.sessionEvents.push(eventRecord);
     if (typeof console !== 'undefined' && console.log) {
-      console.log(`[EcoSwadesh Telemetry] 📊 ${eventName}:`, payload);
+      console.log(`[DeccanOrigin Telemetry] 📊 ${eventName}:`, payload);
     }
     return eventRecord;
   }

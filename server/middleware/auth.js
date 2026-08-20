@@ -1,5 +1,5 @@
 /**
- * Eco Swadesh Authentication & Authorization Middleware
+ * Deccan Origin Authentication & Authorization Middleware
  * Provides JWT token signing, verification, and role-based access control (RBAC)
  * Supports Multi-Persona Architecture: farmer, consumer, bulkBuyer, seller, expert, admin
  */

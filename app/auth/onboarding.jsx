@@ -35,7 +35,7 @@ export default function OnboardingScreen() {
 
   // Personal Information Fields
   const [fullName, setFullName] = useState(isSeller ? 'Ramesh Patel' : 'Baldev Singh');
-  const [email, setEmail] = useState(isSeller ? 'ramesh.patel@ecoswadesh.com' : 'baldev.singh@ecoswadesh.com');
+  const [email, setEmail] = useState(isSeller ? 'ramesh.patel@deccanorigin.com' : 'baldev.singh@deccanorigin.com');
   const [stateName, setStateName] = useState(isSeller ? 'Madhya Pradesh' : 'Punjab');
   const [district, setDistrict] = useState(isSeller ? 'Ujjain' : 'Ludhiana');
   const [address, setAddress] = useState('Central District Farmer Collective Hub, Main Road');
@@ -88,7 +88,7 @@ export default function OnboardingScreen() {
         changePersona(selectedRole === 'seller' ? 'farmer' : (selectedRole === 'gardener' ? 'gardener' : 'consumer'));
         Alert.alert(
           '🎉 Onboarding Complete!',
-          `Welcome to Eco-Swadesh, ${fullName}! Your account has been registered with DPDP 2023 compliance.`
+          `Welcome to Deccan-Origin, ${fullName}! Your account has been registered with DPDP 2023 compliance.`
         );
         router.replace('/(tabs)');
       }

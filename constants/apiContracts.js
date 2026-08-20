@@ -1,12 +1,12 @@
 /**
- * Eco Swadesh - Production Backend API Contract Specifications
+ * Deccan Origin - Production Backend API Contract Specifications
  * Target Backend Engineer: Kalpesh
  * Architecture: RESTful / Node.js Express / Firebase Cloud Functions / Firestore
  */
 
 export const API_CONTRACTS = {
   version: '1.0.0',
-  baseUrl: 'https://api.ecoswadesh.com/v1',
+  baseUrl: 'https://api.deccanorigin.com/v1',
   
   endpoints: {
     // 1. Authentication & Onboarding

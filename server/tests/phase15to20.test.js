@@ -1,5 +1,5 @@
 /**
- * Eco Swadesh Phase 15 to 20 Automated Test Suite
+ * Deccan Origin Phase 15 to 20 Automated Test Suite
  * Validates:
  * 1. Farmer FPO Group-Buying Procurement & Tier Discounts
  * 2. Arrhenius Biological Shelf-Life Degradation Kinetics
@@ -55,7 +55,7 @@ const request = (method, path, body = null, headers = {}) => {
 };
 
 const runPhase15Tests = async () => {
-  console.log('🌾 Running Eco Swadesh Phase 15 to 20 Rural Agri-Tech Automated Test Suite...\n');
+  console.log('🌾 Running Deccan Origin Phase 15 to 20 Rural Agri-Tech Automated Test Suite...\n');
   let passed = 0;
   let failed = 0;
 

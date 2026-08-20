@@ -1,5 +1,5 @@
 /**
- * Eco Swadesh Token Bucket Rate Limiting Middleware
+ * Deccan Origin Token Bucket Rate Limiting Middleware
  * Protects endpoints from brute-force authentication attempts, API flooding, and DDoS attacks.
  * Conforms to IETF RateLimit Header specifications.
  */

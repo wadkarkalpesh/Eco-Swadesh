@@ -1,5 +1,5 @@
 /**
- * Eco Swadesh Full-Stack Complete Integration Test Suite
+ * Deccan Origin Full-Stack Complete Integration Test Suite
  * End-to-End verification of all 30 subsystem domains bridging Frontend & Backend.
  */
 
@@ -54,7 +54,7 @@ const request = (method, path, body = null, headers = {}) => {
 };
 
 const runFullStackIntegrationSuite = async () => {
-  console.log('🌿 Starting Eco Swadesh Full-Stack End-to-End Enterprise Integration Suite...\n');
+  console.log('🌿 Starting Deccan Origin Full-Stack End-to-End Enterprise Integration Suite...\n');
   let passed = 0;
   let failed = 0;
 

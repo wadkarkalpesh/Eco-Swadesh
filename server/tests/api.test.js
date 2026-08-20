@@ -1,5 +1,5 @@
 /**
- * Eco Swadesh Backend API Automated Test Suite
+ * Deccan Origin Backend API Automated Test Suite
  * Validates all 8 domain modules and 30+ endpoints for functional correctness.
  */
 
@@ -54,7 +54,7 @@ const request = (method, path, body = null, headers = {}) => {
 };
 
 const runAllTests = async () => {
-  console.log('🧪 Starting Eco Swadesh Backend API Automated Verification Suite...\n');
+  console.log('🧪 Starting Deccan Origin Backend API Automated Verification Suite...\n');
   let passed = 0;
   let failed = 0;
 
@@ -103,7 +103,7 @@ const runAllTests = async () => {
     // 5.1 Auth Module - Update Personal Information & Onboarding Profile
     const profileRes = await request('PUT', '/v1/auth/profile', {
       name: 'Ramesh Patel',
-      email: 'ramesh.patel@ecoswadesh.com',
+      email: 'ramesh.patel@deccanorigin.com',
       state: 'Madhya Pradesh',
       district: 'Ujjain',
     });

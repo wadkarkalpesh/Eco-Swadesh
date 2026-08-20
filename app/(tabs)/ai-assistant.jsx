@@ -81,7 +81,7 @@ export default function AIAssistantScreen() {
     {
       id: '1',
       sender: 'ai',
-      text: 'Hello! I am your Eco Swadesh AI Crop Doctor & Soil Advisor. Take a photo or upload a leaf image to diagnose crop diseases & get organic recipes.',
+      text: 'Hello! I am your Deccan Origin AI Crop Doctor & Soil Advisor. Take a photo or upload a leaf image to diagnose crop diseases & get organic recipes.',
     },
   ]);
   const [inputMessage, setInputMessage] = useState('');

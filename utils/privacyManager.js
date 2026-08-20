@@ -1,5 +1,5 @@
 /**
- * Eco Swadesh DPDP Act 2023 Consent & Privacy Data Manager
+ * Deccan Origin DPDP Act 2023 Consent & Privacy Data Manager
  * Compliant with India's Digital Personal Data Protection Act (DPDP Act 2023)
  * Features:
  * - Explicit Opt-In Consent Tracking & Timestamping

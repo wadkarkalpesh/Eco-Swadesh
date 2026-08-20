@@ -1,5 +1,5 @@
 /**
- * Eco Swadesh Phase 27: Electronic Phytosanitary Inspection Dispatch Engine
+ * Deccan Origin Phase 27: Electronic Phytosanitary Inspection Dispatch Engine
  * Automates field auditor allocation, digital inspection scheduling,
  * GPS geo-stamping, and real-time APEDA/NPOP compliance auditing.
  */

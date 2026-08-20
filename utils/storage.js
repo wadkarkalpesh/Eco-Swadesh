@@ -1,4 +1,4 @@
-// Client-side storage persistence utility for Eco Swadesh Front-End App
+// Client-side storage persistence utility for Deccan Origin Front-End App
 
 const STORAGE_KEYS = {
   CART: '@eco_swadesh_cart',

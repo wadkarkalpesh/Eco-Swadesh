@@ -31,7 +31,7 @@ export default function WelcomeScreen() {
       <Card bg={safePrimaryDark} style={styles.heroCard}>
         <View style={styles.logoRow}>
           <Ionicons name="leaf" size={40} color={safeSunGold} />
-          <Text style={styles.logoTitle}>Eco-Swadesh</Text>
+          <Text style={styles.logoTitle}>Deccan-Origin</Text>
         </View>
         <Text style={styles.heroSub}>
           Global Sustainable Agriculture Platform • Farm-to-Consumer & Bio-Input Ecosystem

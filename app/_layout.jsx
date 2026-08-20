@@ -38,28 +38,28 @@ export default function RootLayout() {
           <Stack.Screen
             name="auth/register"
             options={{
-              title: 'Eco-Swadesh | Registration',
+              title: 'Deccan-Origin | Registration',
               headerShown: false,
             }}
           />
           <Stack.Screen
             name="auth/login"
             options={{
-              title: 'Eco-Swadesh | Sign In',
+              title: 'Deccan-Origin | Sign In',
               headerShown: false,
             }}
           />
           <Stack.Screen
             name="auth/welcome"
             options={{
-              title: 'Eco-Swadesh | Gateway',
+              title: 'Deccan-Origin | Gateway',
               headerShown: false,
             }}
           />
           <Stack.Screen
             name="auth/onboarding"
             options={{
-              title: 'Eco-Swadesh | Onboarding',
+              title: 'Deccan-Origin | Onboarding',
             }}
           />
           <Stack.Screen
@@ -185,7 +185,7 @@ export default function RootLayout() {
           <Stack.Screen
             name="notifications"
             options={{
-              title: 'Eco-Swadesh Notifications',
+              title: 'Deccan-Origin Notifications',
             }}
           />
           <Stack.Screen

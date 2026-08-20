@@ -58,7 +58,7 @@ const fundEarnestMargin = (req, res) => {
       action: 'FUND_FORWARD_EARNEST_MARGIN',
       targetType: 'FORWARD_AGREEMENT',
       targetId: id,
-      reason: `Locked ₹${updated.earnestMargin20PctINR} earnest margin (20%) in Eco Swadesh Escrow Pool`,
+      reason: `Locked ₹${updated.earnestMargin20PctINR} earnest margin (20%) in Deccan Origin Escrow Pool`,
     });
 
     return res.status(200).json({

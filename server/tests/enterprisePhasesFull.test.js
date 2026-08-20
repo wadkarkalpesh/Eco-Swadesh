@@ -1,5 +1,5 @@
 /**
- * Eco Swadesh Full Enterprise Infrastructure & DLQ Verification Suite
+ * Deccan Origin Full Enterprise Infrastructure & DLQ Verification Suite
  * Validates Dead-Letter Queues, Topic Event Bus, Schema Migration Runner,
  * and Pre-Harvest Forward Contract Margin Calculations.
  */
@@ -55,7 +55,7 @@ const request = (method, path, body = null, headers = {}) => {
 };
 
 const runEnterprisePhasesFullTests = async () => {
-  console.log('🏛️ Starting Eco Swadesh Advanced Enterprise & DLQ Verification Suite...\n');
+  console.log('🏛️ Starting Deccan Origin Advanced Enterprise & DLQ Verification Suite...\n');
   let passed = 0;
   let failed = 0;
 

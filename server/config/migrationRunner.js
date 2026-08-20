@@ -1,5 +1,5 @@
 /**
- * Eco Swadesh Database Schema Migration Runner
+ * Deccan Origin Database Schema Migration Runner
  * Lead Architect: Principal Database Engineer
  * Implements: Versioned DDL Schema Migrations, Rollback Hooks, and Migration Status Auditing
  */

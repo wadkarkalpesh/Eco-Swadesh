@@ -1,5 +1,5 @@
 /**
- * Eco Swadesh Database Engine (Supabase & PostgreSQL Architecture Compatible)
+ * Deccan Origin Database Engine (Supabase & PostgreSQL Architecture Compatible)
  * Implements in-memory indexing, CRUD operators, and atomic collections
  * for users, products, listings, orders, escrow pools, logistics, AI diagnoses, and audit logs.
  */
@@ -47,7 +47,7 @@ const DEFAULT_PLATFORM_CONFIG = [
   },
 ];
 
-class EcoSwadeshDB {
+class DeccanOriginDB {
   constructor() {
     this.users = [...SEED_USERS];
     this.certifications = [...SEED_CERTIFICATIONS];
@@ -145,7 +145,7 @@ class EcoSwadeshDB {
       action,
       targetType,
       targetId,
-      reason: reason || 'Audit logged by Eco Swadesh compliance engine',
+      reason: reason || 'Audit logged by Deccan Origin compliance engine',
       timestamp: new Date().toISOString(),
     };
     this.auditLogs.unshift(auditRecord);
@@ -213,6 +213,6 @@ class EcoSwadeshDB {
 }
 
 // Global Singleton Instance
-const db = new EcoSwadeshDB();
+const db = new DeccanOriginDB();
 
 module.exports = db;

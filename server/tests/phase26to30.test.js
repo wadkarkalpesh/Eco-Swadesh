@@ -1,5 +1,5 @@
 /**
- * Eco Swadesh Phases 26 to 30 Automated Test Suite
+ * Deccan Origin Phases 26 to 30 Automated Test Suite
  * Validates:
  * 1. Phase 26: Cryptographic Blockchain/Merkle Ledger Proofs & Chain Verifier
  * 2. Phase 27: APEDA / NPOP Electronic Phytosanitary Field Inspection Dispatch & Geo-Stamping
@@ -55,7 +55,7 @@ const request = (method, path, body = null, headers = {}) => {
 };
 
 const runPhase26to30Tests = async () => {
-  console.log('⛓️ Running Eco Swadesh Phases 26 to 30 Enterprise Test Suite...\n');
+  console.log('⛓️ Running Deccan Origin Phases 26 to 30 Enterprise Test Suite...\n');
   let passed = 0;
   let failed = 0;
 

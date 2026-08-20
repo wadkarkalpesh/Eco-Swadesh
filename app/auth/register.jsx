@@ -111,7 +111,7 @@ export default function RegisterScreen() {
       const userObj = {
         id: (res && res.user && res.user.id) || `usr-${Date.now()}`,
         name: sanitizedName,
-        email: sanitizedIdentifier.includes('@') ? sanitizedIdentifier : `${sanitizedIdentifier.replace(/\D/g, '')}@ecoswadesh.com`,
+        email: sanitizedIdentifier.includes('@') ? sanitizedIdentifier : `${sanitizedIdentifier.replace(/\D/g, '')}@deccanorigin.com`,
         phone: !sanitizedIdentifier.includes('@') ? sanitizedIdentifier : '+91 98765 43210',
         persona: selectedPersona,
         state: sanitizedState,
@@ -124,14 +124,14 @@ export default function RegisterScreen() {
 
       Alert.alert(
         '🎉 Secure Registration Successful!',
-        `Welcome to Eco-Swadesh, ${sanitizedName}! Your account has been securely registered with DPDP Act 2023 compliance.`
+        `Welcome to Deccan-Origin, ${sanitizedName}! Your account has been securely registered with DPDP Act 2023 compliance.`
       );
       router.replace('/(tabs)');
     } catch (_err) {
       const sanitizedName = sanitizeInput(fullName);
       loginUser({
         id: `usr-${Date.now()}`,
-        name: sanitizedName || 'Eco-Swadesh Member',
+        name: sanitizedName || 'Deccan-Origin Member',
         persona: selectedPersona,
         onboardingCompleted: true,
       });
@@ -189,7 +189,7 @@ export default function RegisterScreen() {
       <Card bg={safePrimaryDark} style={styles.headerCard}>
         <View style={styles.logoRow}>
           <Ionicons name="leaf" size={32} color={safeSunGold} />
-          <Text style={styles.brandTitle}>Eco-Swadesh</Text>
+          <Text style={styles.brandTitle}>Deccan-Origin</Text>
         </View>
         <Text style={styles.brandSubtitle}>
           India&apos;s Sustainable Agriculture & Bio-Input Marketplace
@@ -217,7 +217,7 @@ export default function RegisterScreen() {
 
       {/* Main Registration Form */}
       <Card style={styles.formCard}>
-        <Text style={styles.sectionHeader}>Create Your Eco-Swadesh Account</Text>
+        <Text style={styles.sectionHeader}>Create Your Deccan-Origin Account</Text>
         <Text style={styles.sectionSub}>Select your primary role on the platform:</Text>
 
         {/* Persona Role Selector */}
@@ -376,7 +376,7 @@ export default function RegisterScreen() {
           onPress={() => router.push('/auth/login')}
         >
           <Text style={styles.switchAuthText}>
-            Already registered on Eco-Swadesh?{' '}
+            Already registered on Deccan-Origin?{' '}
             <Text style={styles.switchAuthHighlight}>Sign In Here →</Text>
           </Text>
         </TouchableOpacity>

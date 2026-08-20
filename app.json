@@ -1,24 +1,24 @@
 {
   "expo": {
-    "name": "Eco-Swadesh",
-    "slug": "Eco-Swadesh",
+    "name": "Deccan Origin",
+    "slug": "deccan-origin",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "ecoswadesh",
+    "scheme": "deccanorigin",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.ecoswadesh.app",
+      "bundleIdentifier": "com.deccanorigin.app",
       "infoPlist": {
-        "NSCameraUsageDescription": "Eco-Swadesh requires camera access to scan organic leaf disease diagnostic patterns and anti-counterfeit QR seals.",
-        "NSPhotoLibraryUsageDescription": "Eco-Swadesh requires photo library access to upload lab purity certificates and soil report documents.",
-        "NSLocationWhenInUseUsageDescription": "Eco-Swadesh uses location data to verify satellite GIS 30-meter farm buffer zones and calculate freight routes."
+        "NSCameraUsageDescription": "Deccan Origin requires camera access to scan organic leaf disease diagnostic patterns and anti-counterfeit QR seals.",
+        "NSPhotoLibraryUsageDescription": "Deccan Origin requires photo library access to upload lab purity certificates and soil report documents.",
+        "NSLocationWhenInUseUsageDescription": "Deccan Origin uses location data to verify satellite GIS 30-meter farm buffer zones and calculate freight routes."
       }
     },
     "android": {
-      "package": "com.ecoswadesh.app",
+      "package": "com.deccanorigin.app",
       "permissions": [
         "CAMERA",
         "READ_EXTERNAL_STORAGE",

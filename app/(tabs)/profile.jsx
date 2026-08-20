@@ -68,7 +68,7 @@ export default function ProfileScreen() {
   // Active user details with robust fallbacks
   const userName = currentUser?.name || (isAuthenticated ? 'Ramesh Patel' : 'Guest Member');
   const userPhone = currentUser?.phone || '+91 98230 11200';
-  const userEmail = currentUser?.email || 'ramesh.patel@ecoswadesh.com';
+  const userEmail = currentUser?.email || 'ramesh.patel@deccanorigin.com';
   const userRole = (currentUser?.persona || persona || 'FARMER').toUpperCase();
   const userId = currentUser?.id || 'USR-IN-2026-9041';
   const userLocation = currentUser?.district && currentUser?.state
@@ -80,7 +80,7 @@ export default function ProfileScreen() {
 
   const handleLogout = () => {
     Alert.alert(
-      '🚪 Log Out of Eco-Swadesh',
+      '🚪 Log Out of Deccan-Origin',
       'Are you sure you want to end your current session? You can sign back in anytime with your registered phone number or email.',
       [
         { text: 'Cancel', style: 'cancel' },
@@ -538,7 +538,7 @@ export default function ProfileScreen() {
             activeOpacity={0.8}
           >
             <Ionicons name="log-out" size={20} color="#FFFFFF" />
-            <Text style={styles.logoutBtnText}>Log Out of Eco-Swadesh Account</Text>
+            <Text style={styles.logoutBtnText}>Log Out of Deccan-Origin Account</Text>
           </TouchableOpacity>
 
           <Text style={styles.logoutFooterNote}>

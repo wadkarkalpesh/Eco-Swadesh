@@ -53,7 +53,7 @@ const request = (method, path, body = null, headers = {}) => {
 };
 
 const runFarmersApiTests = async () => {
-  console.log('🧪 Starting Eco Swadesh Farmers Directory & Agri-Cluster Test Suite...\n');
+  console.log('🧪 Starting Deccan Origin Farmers Directory & Agri-Cluster Test Suite...\n');
   let passed = 0;
   let failed = 0;
 

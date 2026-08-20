@@ -191,7 +191,7 @@ export default function CartScreen() {
             >
               <Ionicons name="shield-checkmark" size={20} color={safeTrustBlue} />
               <View style={{ flex: 1, marginLeft: safeSpacingXs }}>
-                <Text style={styles.shipTitle}>Eco Swadesh Escrow Guarantee</Text>
+                <Text style={styles.shipTitle}>Deccan Origin Escrow Guarantee</Text>
                 <Text style={styles.shipSub}>Payment released to farmer/seller after lab verification</Text>
               </View>
             </TouchableOpacity>

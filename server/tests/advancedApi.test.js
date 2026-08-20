@@ -1,5 +1,5 @@
 /**
- * Eco Swadesh Advanced Backend Engines & FinTech Automated Test Suite
+ * Deccan Origin Advanced Backend Engines & FinTech Automated Test Suite
  * Validates:
  * 1. Razorpay Orders, Signatures & Webhook Handlers
  * 2. Stripe International Cross-Border Sessions
@@ -62,7 +62,7 @@ const request = (method, path, body = null, headers = {}) => {
 };
 
 const runAdvancedTests = async () => {
-  console.log('🚀 Running Eco Swadesh Advanced Engines & FinTech Automated Test Suite...\n');
+  console.log('🚀 Running Deccan Origin Advanced Engines & FinTech Automated Test Suite...\n');
   let passed = 0;
   let failed = 0;
 
@@ -118,7 +118,7 @@ const runAdvancedTests = async () => {
     const stripeRes = await request('POST', '/v1/payments/stripe/create-session', {
       amountUSD: 500,
       orderId: 'ORD-INTL-909',
-      customerEmail: 'diaspora.buyer@ecoswadesh.com',
+      customerEmail: 'diaspora.buyer@deccanorigin.com',
     });
     assert(
       stripeRes.status === 200 && stripeRes.body.equivalentINR > 40000,

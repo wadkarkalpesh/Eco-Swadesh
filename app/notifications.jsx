@@ -68,7 +68,7 @@ export default function NotificationsScreen() {
         <View style={styles.bannerRow}>
           <Ionicons name="notifications" size={36} color="#81C784" />
           <View style={{ marginLeft: 12, flex: 1 }}>
-            <Text style={styles.headerTitle}>Eco-Swadesh Notifications</Text>
+            <Text style={styles.headerTitle}>Deccan-Origin Notifications</Text>
             <Text style={styles.headerSub}>Orders, Escrow Payouts, Community & AI Alerts</Text>
           </View>
         </View>

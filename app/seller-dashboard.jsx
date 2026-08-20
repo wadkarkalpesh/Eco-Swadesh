@@ -186,7 +186,7 @@ export default function SellerDashboardScreen() {
             </View>
 
             <Button
-              title={isPublishing ? 'Publishing to Network...' : 'Publish Listing to Eco Swadesh'}
+              title={isPublishing ? 'Publishing to Network...' : 'Publish Listing to Deccan Origin'}
               variant="terracotta"
               size="md"
               onPress={handlePublish}

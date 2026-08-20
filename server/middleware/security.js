@@ -1,5 +1,5 @@
 /**
- * Eco Swadesh Security Hardening & DPDP Privacy Middleware
+ * Deccan Origin Security Hardening & DPDP Privacy Middleware
  * Enforces OWASP API Top 10 defenses, HTTP security headers, and Digital Personal Data Protection (DPDP) sanitization.
  */
 

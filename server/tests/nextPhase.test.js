@@ -1,5 +1,5 @@
 /**
- * Eco Swadesh Next Phase Automated Verification Suite
+ * Deccan Origin Next Phase Automated Verification Suite
  * Validates Prometheus SRE metrics, Redis caching, Rate Limiting,
  * PostgreSQL connection pooling, Security Headers, and DPDP privacy masking.
  */
@@ -145,7 +145,7 @@ const runNextPhaseTests = async () => {
     const rawUserData = {
       name: 'Ramesh Kumar',
       phoneNumber: '+919876543210',
-      email: 'ramesh.farmer@ecoswadesh.com',
+      email: 'ramesh.farmer@deccanorigin.com',
       aadhaarNo: '1234-5678-9012',
     };
     const maskedUserData = maskPII(rawUserData);

@@ -1,5 +1,5 @@
 # =====================================================================
-# Eco Swadesh Production Backend Containerfile
+# Deccan Origin Production Backend Containerfile
 # Multi-stage lightweight Node.js 20 Alpine distribution
 # =====================================================================
 

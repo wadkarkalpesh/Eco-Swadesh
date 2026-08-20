@@ -1,7 +1,7 @@
 {
-  "name": "eco-swadesh-backend",
+  "name": "deccan-origin-backend",
   "version": "1.0.0",
-  "description": "Eco Swadesh Production Backend API Server - Organic Agriculture, Bulk Harvest, Escrow, IoT Freight, AI Doctor, and Trust Verification",
+  "description": "Deccan Origin Production Backend API Server - Organic Agriculture, Bulk Harvest, Escrow, IoT Freight, AI Doctor, and Trust Verification",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -10,7 +10,7 @@
     "seed": "node config/seedData.js"
   },
   "keywords": [
-    "eco-swadesh",
+    "deccan-origin",
     "organic-agriculture",
     "escrow",
     "iot-freight",
@@ -26,6 +26,6 @@
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3"
   },
-  "author": "Eco Swadesh Engineering Team",
+  "author": "Deccan Origin Engineering Team",
   "license": "MIT"
 }

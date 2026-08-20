@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "EcoSwadeshApp",
-    "slug": "EcoSwadeshApp",
+    "name": "DeccanOriginApp",
+    "slug": "DeccanOriginApp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "ecoswadeshapp",
+    "scheme": "deccanoriginapp",
     "userInterfaceStyle": "automatic",
     "ios": {
       "icon": "./assets/expo.icon"

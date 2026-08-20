@@ -1,4 +1,4 @@
-name: Eco Swadesh CI
+name: Deccan Origin CI
 
 on:
   push:

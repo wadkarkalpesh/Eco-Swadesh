@@ -1,11 +1,11 @@
 /**
- * Eco Swadesh Redis Cache Client & In-Memory Fallback Engine
+ * Deccan Origin Redis Cache Client & In-Memory Fallback Engine
  * Provides high-speed key-value caching with TTL and automatic invalidation
  * for APMC Mandi trends, product catalogs, and certificate lookups.
  * Architecture: Redis / In-Memory Least-Recently-Used (LRU) Cache
  */
 
-class EcoSwadeshCache {
+class DeccanOriginCache {
   constructor() {
     this.memoryStore = new Map();
     this.ttls = new Map();
@@ -104,6 +104,6 @@ class EcoSwadeshCache {
   }
 }
 
-const cacheInstance = new EcoSwadeshCache();
+const cacheInstance = new DeccanOriginCache();
 
 module.exports = cacheInstance;

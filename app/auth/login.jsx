@@ -61,7 +61,7 @@ const DEMO_ACCOUNTS = [
   {
     role: 'admin',
     name: 'Platform Oversight Officer',
-    identifier: 'admin@ecoswadesh.com',
+    identifier: 'admin@deccanorigin.com',
     title: '🛡️ Platform Admin',
     desc: 'Audit NPOP certifications & ESG carbon credits',
   },
@@ -120,8 +120,8 @@ export default function LoginScreen() {
           ? 'Ramesh Patel'
           : cleanIdentifier.includes('98765')
           ? 'Priya Sharma'
-          : 'Eco-Swadesh Member',
-        email: cleanIdentifier.includes('@') ? cleanIdentifier : 'member@ecoswadesh.com',
+          : 'Deccan-Origin Member',
+        email: cleanIdentifier.includes('@') ? cleanIdentifier : 'member@deccanorigin.com',
         phone: !cleanIdentifier.includes('@') ? cleanIdentifier : '+91 98765 43210',
         persona: selectedPersona,
         onboardingCompleted: true,
@@ -139,7 +139,7 @@ export default function LoginScreen() {
       const cleanIdentifier = sanitizeInput(identifier);
       loginUser({
         id: `usr-${Date.now()}`,
-        name: cleanIdentifier.includes('@') ? cleanIdentifier.split('@')[0] : 'Eco-Swadesh Member',
+        name: cleanIdentifier.includes('@') ? cleanIdentifier.split('@')[0] : 'Deccan-Origin Member',
         persona: selectedPersona,
         onboardingCompleted: true,
       });
@@ -157,7 +157,7 @@ export default function LoginScreen() {
     const demoUser = {
       id: `usr-demo-${account.role}`,
       name: account.name,
-      email: account.identifier.includes('@') ? account.identifier : `${account.role}@ecoswadesh.com`,
+      email: account.identifier.includes('@') ? account.identifier : `${account.role}@deccanorigin.com`,
       phone: !account.identifier.includes('@') ? account.identifier : '+91 98765 43210',
       persona: account.role,
       onboardingCompleted: true,
@@ -179,7 +179,7 @@ export default function LoginScreen() {
       <Card bg={safePrimaryDark} style={styles.headerCard}>
         <View style={styles.logoRow}>
           <Ionicons name="leaf" size={32} color={safeSunGold} />
-          <Text style={styles.brandTitle}>Eco-Swadesh</Text>
+          <Text style={styles.brandTitle}>Deccan-Origin</Text>
         </View>
         <Text style={styles.brandSubtitle}>
           Secure Authentication & Access Gateway
@@ -313,7 +313,7 @@ export default function LoginScreen() {
           onPress={() => router.push('/auth/register')}
         >
           <Text style={styles.switchAuthText}>
-            New to Eco-Swadesh?{' '}
+            New to Deccan-Origin?{' '}
             <Text style={styles.switchAuthHighlight}>Register / Sign Up First →</Text>
           </Text>
         </TouchableOpacity>

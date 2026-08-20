@@ -1,5 +1,5 @@
 /**
- * Eco Swadesh Audit Logger Middleware
+ * Deccan Origin Audit Logger Middleware
  * Implements IEEE 830 FR-11 compliance: Immutable audit logging of all
  * certification, moderation, dispute, and escrow decisions.
  */

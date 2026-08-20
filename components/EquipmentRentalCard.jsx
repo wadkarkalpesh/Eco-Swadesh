@@ -1,5 +1,5 @@
 /**
- * Eco Swadesh - Farm Equipment & Drone Rental Component
+ * Deccan Origin - Farm Equipment & Drone Rental Component
  * Provides direct farmer-to-farmer and cooperative farm machinery booking:
  * Solar Tractors, Drone Bio-Sprayers, Laser Levelers, and Combine Harvesters.
  */

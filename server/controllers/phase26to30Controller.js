@@ -1,5 +1,5 @@
 /**
- * Eco Swadesh Phases 26-30 Controller
+ * Deccan Origin Phases 26-30 Controller
  * Endpoints for:
  * 1. Cryptographic Blockchain Merkle Ledger Proofs
  * 2. APEDA / NPOP Electronic Phytosanitary Inspection Dispatch

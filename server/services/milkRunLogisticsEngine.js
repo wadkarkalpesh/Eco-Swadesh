@@ -1,5 +1,5 @@
 /**
- * Eco Swadesh Phase 29: Multi-Farmer LTL (Less-Than-Truckload) Milk-Run Freight Consolidation Engine
+ * Deccan Origin Phase 29: Multi-Farmer LTL (Less-Than-Truckload) Milk-Run Freight Consolidation Engine
  * Combines smaller harvest consignments (e.g. 2-5 tons) from neighboring rural farmers into single
  * dedicated 16-32 ton heavy freight multi-axle trucks, slashing per-ton transport costs by up to 45%.
  */

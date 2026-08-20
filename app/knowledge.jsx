@@ -49,7 +49,7 @@ const KNOWLEDGE_ARTICLES = [
     category: 'Farm GIS & Buffer',
     readTime: '5 min read',
     summary: 'Establishing biological hedges and barrier trees to protect certified organic crops from adjacent synthetic pesticide spray drift.',
-    author: 'Eco-Swadesh GIS Team',
+    author: 'Deccan-Origin GIS Team',
     tag: 'GIS AUDIT',
   },
   {

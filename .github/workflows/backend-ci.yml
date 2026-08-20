@@ -1,4 +1,4 @@
-name: Eco Swadesh Backend CI/CD Pipeline
+name: Deccan Origin Backend CI/CD Pipeline
 
 on:
   push:

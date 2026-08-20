@@ -1,5 +1,5 @@
 /**
- * Eco Swadesh Production Backend API Server
+ * Deccan Origin Production Backend API Server
  * Architecture: Node.js / Express / Supabase & PostgreSQL Extensible Architecture
  * Target Lead: Kalpesh Wadkar
  */
@@ -59,7 +59,7 @@ app.use((req, res, next) => {
   const start = Date.now();
   res.on('finish', () => {
     const duration = Date.now() - start;
-    console.log(`[EcoSwadesh API] ${req.method} ${req.originalUrl} -> ${res.statusCode} (${duration}ms)`);
+    console.log(`[DeccanOrigin API] ${req.method} ${req.originalUrl} -> ${res.statusCode} (${duration}ms)`);
   });
   next();
 });
@@ -67,10 +67,10 @@ app.use((req, res, next) => {
 // Root & Health Verification Endpoints
 app.get('/', (req, res) => {
   return res.status(200).json({
-    name: 'Eco Swadesh Production Backend API',
+    name: 'Deccan Origin Production Backend API',
     version: '1.0.0',
     status: 'HEALTHY_ONLINE',
-    documentation: 'https://docs.ecoswadesh.com/api/v1',
+    documentation: 'https://docs.deccanorigin.com/api/v1',
     cacheEngine: cache.getHealth().engine,
     databaseEngine: postgres.getHealth().engine,
     timestamp: new Date().toISOString(),
@@ -154,17 +154,17 @@ app.use((req, res) => {
   return res.status(404).json({
     success: false,
     error: 'ENDPOINT_NOT_FOUND',
-    message: `The endpoint '${req.method} ${req.originalUrl}' does not exist on Eco Swadesh v1 API.`,
+    message: `The endpoint '${req.method} ${req.originalUrl}' does not exist on Deccan Origin v1 API.`,
   });
 });
 
 // Global Error Handler
 app.use((err, req, res, next) => {
-  console.error('[EcoSwadesh Server Error]:', err);
+  console.error('[DeccanOrigin Server Error]:', err);
   return res.status(err.status || 500).json({
     success: false,
     error: err.name || 'INTERNAL_SERVER_ERROR',
-    message: err.message || 'An unexpected error occurred on the Eco Swadesh backend server.',
+    message: err.message || 'An unexpected error occurred on the Deccan Origin backend server.',
   });
 });
 
@@ -172,7 +172,7 @@ app.use((err, req, res, next) => {
 if (require.main === module) {
   app.listen(PORT, () => {
     console.log(`\n======================================================`);
-    console.log(`🌿 Eco Swadesh Production Backend API Server`);
+    console.log(`🌿 Deccan Origin Production Backend API Server`);
     console.log(`🚀 Live listening on http://localhost:${PORT}/v1`);
     console.log(`🌱 Health Check: http://localhost:${PORT}/v1/health`);
     console.log(`======================================================\n`);

@@ -1,5 +1,5 @@
 /**
- * Eco Swadesh Unified API Client SDK for React Native & Expo v54
+ * Deccan Origin Unified API Client SDK for React Native & Expo v54
  * Bridges the Frontend with the Node.js / Express / Supabase Production Backend.
  * Features:
  * - Automatic Bearer Token Authorization Injection
@@ -81,7 +81,7 @@ async function request(endpoint, options = {}, fallbackData = null) {
 
     return await response.json();
   } catch (error) {
-    console.warn(`[EcoSwadesh API Client Warning] ${options.method || 'GET'} ${endpoint} failed: ${error.message}. Returning fallback.`);
+    console.warn(`[DeccanOrigin API Client Warning] ${options.method || 'GET'} ${endpoint} failed: ${error.message}. Returning fallback.`);
     if (fallbackData !== null) {
       return typeof fallbackData === 'function' ? fallbackData() : fallbackData;
     }
@@ -120,7 +120,7 @@ export const authApi = {
         token: 'mock_jwt_token_eco_swadesh_farmer',
         user: {
           id: `usr_${persona}_01`,
-          name: name || (persona === 'farmer' ? 'Ramesh Patel' : 'Eco Swadesh Member'),
+          name: name || (persona === 'farmer' ? 'Ramesh Patel' : 'Deccan Origin Member'),
           persona,
           roles: [persona],
           verified: true,
@@ -616,7 +616,7 @@ export const paymentsApi = {
       },
       {
         success: true,
-        keyId: 'rzp_test_ecoswadesh2026_key',
+        keyId: 'rzp_test_deccanorigin2026_key',
         order: { id: `order_mock_${Date.now()}`, amount: amountINR * 100, currency: 'INR' },
       }
     ),

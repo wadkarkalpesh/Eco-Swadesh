@@ -1,5 +1,5 @@
 /**
- * Eco Swadesh Supabase Service Layer
+ * Deccan Origin Supabase Service Layer
  * Encapsulates PostgreSQL CRUD, PostGIS queries, Auth, Certifications,
  * Escrow order lifecycles, and Supabase Realtime subscriptions.
  */

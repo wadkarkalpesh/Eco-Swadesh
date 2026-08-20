@@ -14,7 +14,7 @@ const webhookDispatchLogs = [];
 webhookSubscriptions.set('sub_sap_tata_01', {
   id: 'sub_sap_tata_01',
   enterpriseName: 'Tata Consumer Products ERP (SAP S/4HANA)',
-  targetUrl: 'https://erp.tataconsumer.com/api/v2/ecoswadesh-webhook',
+  targetUrl: 'https://erp.tataconsumer.com/api/v2/deccanorigin-webhook',
   events: ['order.created', 'escrow.funded', 'quality.nabl_certified', 'shipment.delivered'],
   signingSecret: 'sec_wh_tata_enterprise_2026_phrase',
   status: 'ACTIVE',
@@ -71,8 +71,8 @@ class ErpWebhookService {
           event: eventType,
           headers: {
             'Content-Type': 'application/json',
-            'X-EcoSwadesh-Event': eventType,
-            'X-EcoSwadesh-Signature': `sha256=${signature}`,
+            'X-DeccanOrigin-Event': eventType,
+            'X-DeccanOrigin-Signature': `sha256=${signature}`,
           },
           status: 'DELIVERED_HTTP_200',
           sentAt: new Date().toISOString(),

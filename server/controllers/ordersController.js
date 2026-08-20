@@ -90,7 +90,7 @@ const createEscrowOrder = (req, res) => {
     origin: product.origin || 'Maharashtra, India',
     destination: effectiveAddress,
     status: 'DISPATCH_QUEUED',
-    carrier: 'Eco Swadesh Reefer Fleet #42',
+    carrier: 'Deccan Origin Reefer Fleet #42',
     temperatureC: 4.2,
     humidityPct: 82,
     driverPhone: '+919811223344',

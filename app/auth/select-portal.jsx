@@ -44,7 +44,7 @@ export default function SelectPortalScreen() {
       <Card bg={safePrimaryDark} style={styles.headerCard}>
         <View style={styles.logoRow}>
           <Ionicons name="leaf" size={32} color={safeSunGold} />
-          <Text style={styles.headerTitle}>Eco-Swadesh</Text>
+          <Text style={styles.headerTitle}>Deccan-Origin</Text>
         </View>
         <Text style={styles.headerSub}>
           India&apos;s Direct Sustainable Agriculture & Certified Bio-Input Marketplace

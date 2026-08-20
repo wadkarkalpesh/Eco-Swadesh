@@ -25,7 +25,7 @@ export default class ErrorBoundary extends React.Component {
   }
 
   componentDidCatch(error, errorInfo) {
-    console.error('Eco Swadesh ErrorBoundary caught an exception:', error, errorInfo);
+    console.error('Deccan Origin ErrorBoundary caught an exception:', error, errorInfo);
   }
 
   handleReload = () => {
@@ -42,7 +42,7 @@ export default class ErrorBoundary extends React.Component {
             </View>
             <Text style={styles.title}>Application Recovery State</Text>
             <Text style={styles.sub}>
-              Eco Swadesh encountered a transient rendering error. Your data and cart state are safely preserved.
+              Deccan Origin encountered a transient rendering error. Your data and cart state are safely preserved.
             </Text>
 
             {this.state.error && (
@@ -55,7 +55,7 @@ export default class ErrorBoundary extends React.Component {
 
             <TouchableOpacity style={styles.reloadBtn} onPress={this.handleReload}>
               <Ionicons name="refresh-outline" size={18} color={safeTextLight} style={{ marginRight: 6 }} />
-              <Text style={styles.reloadBtnText}>Reload Eco Swadesh Application</Text>
+              <Text style={styles.reloadBtnText}>Reload Deccan Origin Application</Text>
             </TouchableOpacity>
           </View>
         </View>

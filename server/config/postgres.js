@@ -1,16 +1,16 @@
 /**
- * Eco Swadesh PostgreSQL Connection Pool & Schema Manager
+ * Deccan Origin PostgreSQL Connection Pool & Schema Manager
  * Provides ACID transaction wrappers, query helpers, and relational table abstractions
  * for the financial escrow ledger, tax invoices, and dispute apportionments.
  */
 
 const { EventEmitter } = require('events');
 
-class EcoSwadeshPostgres extends EventEmitter {
+class DeccanOriginPostgres extends EventEmitter {
   constructor() {
     super();
     this.isConnected = false;
-    this.connectionString = process.env.POSTGRES_URL || 'postgresql://ecoswadesh:securepass@localhost:5432/ecoswadesh_db';
+    this.connectionString = process.env.POSTGRES_URL || 'postgresql://deccanorigin:securepass@localhost:5432/deccanorigin_db';
     this.poolStats = {
       totalCount: 10,
       idleCount: 10,
@@ -85,6 +85,6 @@ class EcoSwadeshPostgres extends EventEmitter {
   }
 }
 
-const postgresInstance = new EcoSwadeshPostgres();
+const postgresInstance = new DeccanOriginPostgres();
 
 module.exports = postgresInstance;

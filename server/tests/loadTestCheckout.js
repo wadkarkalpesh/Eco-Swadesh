@@ -95,7 +95,7 @@ async function runCheckoutLoadTest(concurrentUsers = 50) {
           };
 
           const signature = crypto
-            .createHmac('sha256', 'rzp_sec_ecoswadesh2026_secret_phrase')
+            .createHmac('sha256', 'rzp_sec_deccanorigin2026_secret_phrase')
             .update(JSON.stringify(webhookBody))
             .digest('hex');
 

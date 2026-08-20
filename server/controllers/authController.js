@@ -127,7 +127,7 @@ const verifyOTP = (req, res) => {
     onboardingCompleted: user.onboardingCompleted !== false && (isExistingUser || !!user.name),
     user: {
       id: user.id,
-      name: user.name || (persona === 'farmer' ? 'Organic Farmer' : persona === 'seller' ? 'Organic Seller' : 'Eco Swadesh Buyer'),
+      name: user.name || (persona === 'farmer' ? 'Organic Farmer' : persona === 'seller' ? 'Organic Seller' : 'Deccan Origin Buyer'),
       phoneNumber: user.phoneNumber,
       email: user.email,
       persona: user.persona,

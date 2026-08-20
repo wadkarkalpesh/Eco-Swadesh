@@ -8,9 +8,9 @@ const crypto = require('crypto');
 const db = require('../config/db');
 const { eventBus } = require('../services/eventStream');
 
-const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID || 'rzp_test_ecoswadesh2026_key';
-const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET || 'rzp_sec_ecoswadesh2026_secret_phrase';
-const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY || 'sk_test_ecoswadesh2026_stripe_international';
+const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID || 'rzp_test_deccanorigin2026_key';
+const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET || 'rzp_sec_deccanorigin2026_secret_phrase';
+const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY || 'sk_test_deccanorigin2026_stripe_international';
 
 /**
  * Create Razorpay Order with Route Split Payouts (Phase 5.2 & 5.4)
@@ -71,7 +71,7 @@ const createRazorpayOrder = (req, res) => {
     attempts: 0,
     transfers: transfers.length > 0 ? transfers : undefined,
     notes: {
-      platform: 'Eco Swadesh Organic Marketplace',
+      platform: 'Deccan Origin Organic Marketplace',
       escrowPool: 'HELD_IN_ESCROW_POOL',
       orderId: orderId || 'ORD-DIRECT',
       ...notes,
@@ -169,7 +169,7 @@ const verifyRazorpayPayment = (req, res) => {
     verified: true,
     escrowStatus: 'HELD_IN_ESCROW_POOL',
     paymentId: razorpay_payment_id,
-    message: 'Payment verified and funds successfully locked in Eco Swadesh Escrow Pool.',
+    message: 'Payment verified and funds successfully locked in Deccan Origin Escrow Pool.',
   });
 };
 
@@ -337,10 +337,10 @@ const createStripeSession = (req, res) => {
     object: 'checkout.session',
     amount_total: Math.round(amountUSD * 100),
     currency: currency.toLowerCase(),
-    customer_email: customerEmail || 'diaspora.buyer@ecoswadesh.com',
+    customer_email: customerEmail || 'diaspora.buyer@deccanorigin.com',
     payment_status: 'unpaid',
-    success_url: `https://app.ecoswadesh.com/orders/${orderId}?session_id=${sessionId}`,
-    cancel_url: `https://app.ecoswadesh.com/cart`,
+    success_url: `https://app.deccanorigin.com/orders/${orderId}?session_id=${sessionId}`,
+    cancel_url: `https://app.deccanorigin.com/cart`,
     metadata: {
       orderId: orderId || 'ORD-INTL-99',
       equivalentINR,

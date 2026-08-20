@@ -157,7 +157,7 @@ const uploadCertificate = (req, res) => {
     success: true,
     certificateId: newCert.id,
     certificate: newCert,
-    message: 'Certificate submitted successfully. Under active review by the Eco Swadesh Trust Team.',
+    message: 'Certificate submitted successfully. Under active review by the Deccan Origin Trust Team.',
   });
 };
 

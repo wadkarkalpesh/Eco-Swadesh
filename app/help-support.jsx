@@ -24,7 +24,7 @@ const safeSpacingXxl = (SPACING && SPACING.xxl) || 48;
 
 const FAQS = [
   {
-    q: 'How does Eco-Swadesh Trade Escrow protect my funds?',
+    q: 'How does Deccan-Origin Trade Escrow protect my funds?',
     a: 'When you place an order, payment is held in an audited Escrow pool. Funds are only released to the seller after cold-chain delivery is confirmed and quality inspection passes.',
   },
   {
@@ -63,7 +63,7 @@ export default function HelpSupportScreen() {
         <View style={styles.bannerRow}>
           <Ionicons name="help-buoy" size={36} color="#81C784" />
           <View style={{ marginLeft: 12, flex: 1 }}>
-            <Text style={styles.headerTitle}>Eco-Swadesh Help & Support Center</Text>
+            <Text style={styles.headerTitle}>Deccan-Origin Help & Support Center</Text>
             <Text style={styles.headerSub}>24/7 Agronomy Support & Order Dispute Assistance</Text>
           </View>
         </View>

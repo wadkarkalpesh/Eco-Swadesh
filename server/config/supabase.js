@@ -1,5 +1,5 @@
 /**
- * Eco Swadesh Server-Side Supabase Admin Client
+ * Deccan Origin Server-Side Supabase Admin Client
  * Provides privileged administrative database operations using SUPABASE_SERVICE_ROLE_KEY
  * for Razorpay webhooks, dispute settlements, trust scoring, and background workers.
  */

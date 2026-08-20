@@ -60,7 +60,7 @@ export default function TrustBadge({
       {showQRSeal && (
         <View style={styles.qrSealRow}>
           <Ionicons name="qr-code-outline" size={14} color={safeTextMuted} />
-          <Text style={styles.qrText}>Eco Swadesh Anti-Counterfeit Seal Active</Text>
+          <Text style={styles.qrText}>Deccan Origin Anti-Counterfeit Seal Active</Text>
         </View>
       )}
     </View>

@@ -1,5 +1,5 @@
 /**
- * Live Demonstration Script - Eco Swadesh Backend API
+ * Live Demonstration Script - Deccan Origin Backend API
  * Queries and displays live endpoints for Farmers, Products, and Governance Data
  */
 

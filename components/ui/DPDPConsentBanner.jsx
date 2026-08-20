@@ -67,7 +67,7 @@ export default function DPDPConsentBanner() {
             <View style={{ flex: 1, marginLeft: safeSpacingSm }}>
               <Text style={styles.bannerTitle}>DPDP Privacy & Data Transparency Notice</Text>
               <Text style={styles.bannerSub}>
-                Eco-Swadesh processes essential farm order data & organic certification seals in compliance with India&apos;s DPDP Act 2023.
+                Deccan-Origin processes essential farm order data & organic certification seals in compliance with India&apos;s DPDP Act 2023.
               </Text>
             </View>
           </View>

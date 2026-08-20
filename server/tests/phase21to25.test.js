@@ -1,5 +1,5 @@
 /**
- * Eco Swadesh Phase 21 to 25 Automated Test Suite
+ * Deccan Origin Phase 21 to 25 Automated Test Suite
  * Validates:
  * 1. Active IoT Telematics Actuator & Compressor Remote Commands
  * 2. Pre-Harvest Forward Contracts & 20% Earnest Margin Escrow Locks
@@ -55,7 +55,7 @@ const request = (method, path, body = null, headers = {}) => {
 };
 
 const runPhase21Tests = async () => {
-  console.log('⚡ Running Eco Swadesh Phase 21 to 25 Industrial IoT & Forward FinTech Test Suite...\n');
+  console.log('⚡ Running Deccan Origin Phase 21 to 25 Industrial IoT & Forward FinTech Test Suite...\n');
   let passed = 0;
   let failed = 0;
 

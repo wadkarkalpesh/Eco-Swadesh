@@ -1,5 +1,5 @@
 /**
- * Eco Swadesh Enterprise Processes & Agri-FinTech Test Suite (Phase 9 to 14)
+ * Deccan Origin Enterprise Processes & Agri-FinTech Test Suite (Phase 9 to 14)
  * Validates:
  * 1. APEDA / USDA Phytosanitary Export Certificates & Heavy Metal Screening
  * 2. Multi-Mandi APMC Price Aggregator & 30/60/90-Day AI Forecasting
@@ -55,7 +55,7 @@ const request = (method, path, body = null, headers = {}) => {
 };
 
 const runEnterpriseTests = async () => {
-  console.log('🏛️ Running Eco Swadesh Enterprise Processes & Agri-FinTech Automated Test Suite...\n');
+  console.log('🏛️ Running Deccan Origin Enterprise Processes & Agri-FinTech Automated Test Suite...\n');
   let passed = 0;
   let failed = 0;
 
@@ -165,7 +165,7 @@ const runEnterpriseTests = async () => {
     // 10. Enterprise ERP: Webhook Subscription Registration
     const subRes = await request('POST', '/v1/webhooks/subscribe', {
       enterpriseName: 'Nestle Agri Sourcing Odoo ERP',
-      targetUrl: 'https://odoo.nestle.com/webhooks/ecoswadesh',
+      targetUrl: 'https://odoo.nestle.com/webhooks/deccanorigin',
       events: ['order.created', 'quality.nabl_certified'],
     });
     assert(

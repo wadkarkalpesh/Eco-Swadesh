@@ -1,5 +1,5 @@
 /**
- * Eco Swadesh Phase 26: Cryptographic Blockchain/Merkle Ledger Proof Engine
+ * Deccan Origin Phase 26: Cryptographic Blockchain/Merkle Ledger Proof Engine
  * Generates immutable SHA-256 Merkle tree leaves, digital provenance hashes,
  * and verifiable chain proofs for agricultural batches, lab tests, and escrow payouts.
  */
@@ -81,7 +81,7 @@ class LedgerProofEngine {
       metadata: metadata || {},
       timestamp,
       verificationStatus: 'CRYPTOGRAPHICALLY_SEALED',
-      explorerUrl: `https://ledger.ecoswadesh.com/proof/${blockHash}`,
+      explorerUrl: `https://ledger.deccanorigin.com/proof/${blockHash}`,
     };
 
     this.chainLedger.set(blockHash, proofBlock);

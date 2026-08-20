@@ -1,5 +1,5 @@
 /**
- * Eco Swadesh Prometheus SRE Observability Metrics Route
+ * Deccan Origin Prometheus SRE Observability Metrics Route
  * Exposes standardized text metrics for Prometheus / Grafana scraping.
  */
 
@@ -15,7 +15,7 @@ router.get('/', (req, res) => {
   requestCount++;
 
   const metricsData = `
-# HELP http_requests_total Total number of HTTP requests made to Eco Swadesh API
+# HELP http_requests_total Total number of HTTP requests made to Deccan Origin API
 # TYPE http_requests_total counter
 http_requests_total{status="200"} ${requestCount - errorCount}
 http_requests_total{status="500"} ${errorCount}
@@ -33,7 +33,7 @@ http_request_duration_seconds_count ${requestCount}
 # TYPE active_sse_telematics_connections gauge
 active_sse_telematics_connections 14
 
-# HELP process_uptime_seconds Total runtime of the Eco Swadesh node process
+# HELP process_uptime_seconds Total runtime of the Deccan Origin node process
 # TYPE process_uptime_seconds gauge
 process_uptime_seconds ${Math.floor(uptime)}
 

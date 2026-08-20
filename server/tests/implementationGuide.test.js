@@ -1,6 +1,6 @@
 /**
- * Eco Swadesh Backend Implementation Guide Verification Test Suite
- * Fully validates all 10 Phases of EcoSwadesh_Backend_Implementation_Guide.docx
+ * Deccan Origin Backend Implementation Guide Verification Test Suite
+ * Fully validates all 10 Phases of DeccanOrigin_Backend_Implementation_Guide.docx
  */
 
 const assert = require('assert');
@@ -399,7 +399,7 @@ runTest('5.3: Webhook with valid signature creates payment record and confirms o
   };
 
   const expectedSig = crypto
-    .createHmac('sha256', 'rzp_sec_ecoswadesh2026_secret_phrase')
+    .createHmac('sha256', 'rzp_sec_deccanorigin2026_secret_phrase')
     .update(JSON.stringify(webhookBody))
     .digest('hex');
 

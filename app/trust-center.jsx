@@ -99,7 +99,7 @@ export default function TrustCenterScreen() {
         <View style={styles.headerRow}>
           <Ionicons name="shield-checkmark" size={32} color={safeGovGold} />
           <View style={{ marginLeft: safeSpacingSm, flex: 1 }}>
-            <Text style={styles.headerTitle}>Eco Swadesh Organic Trust & Certification Center</Text>
+            <Text style={styles.headerTitle}>Deccan Origin Organic Trust & Certification Center</Text>
             <Text style={styles.headerSub}>Verifying National Authorities & Local Government Regional Norms</Text>
           </View>
         </View>
@@ -225,7 +225,7 @@ export default function TrustCenterScreen() {
           <View style={{ marginLeft: safeSpacingSm, flex: 1 }}>
             <Text style={styles.guaranteeTitle}>Anti-Counterfeit Protection Guarantee</Text>
             <Text style={styles.guaranteeSub}>
-              Every fertilizer packet and bulk ton harvest listed on Eco Swadesh undergoes double-layer verification: Lab Chemical Analysis + QR Code Tracking. Zero fake products permitted.
+              Every fertilizer packet and bulk ton harvest listed on Deccan Origin undergoes double-layer verification: Lab Chemical Analysis + QR Code Tracking. Zero fake products permitted.
             </Text>
           </View>
         </View>

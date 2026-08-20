@@ -1,5 +1,5 @@
 /**
- * Eco Swadesh Supabase Client (React Native / Expo SDK 54 & Web SSR Safe)
+ * Deccan Origin Supabase Client (React Native / Expo SDK 54 & Web SSR Safe)
  * Configured with AsyncStorage session persistence, auto-refresh tokens,
  * SSR-safe storage adapter, and resilient offline/local mode fallback.
  */
@@ -68,7 +68,7 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   },
   global: {
     headers: {
-      'x-application-name': 'EcoSwadesh-Mobile-Expo',
+      'x-application-name': 'DeccanOrigin-Mobile-Expo',
     },
   },
 });

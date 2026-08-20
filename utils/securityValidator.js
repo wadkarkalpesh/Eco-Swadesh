@@ -1,5 +1,5 @@
 /**
- * Eco-Swadesh Comprehensive Security & Data Sanitization Module
+ * Deccan-Origin Comprehensive Security & Data Sanitization Module
  * Enforces OWASP Frontend Security Standards & DPDP Act 2023 Compliance:
  * - Input Sanitization & Anti-XSS Filters
  * - Strict E.164 Phone & RFC 5322 Email Validation

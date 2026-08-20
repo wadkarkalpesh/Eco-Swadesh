@@ -1,5 +1,5 @@
 -- ============================================================================
--- ECO SWADESH - SUPABASE SEED DATA
+-- DECCAN ORIGIN - SUPABASE SEED DATA
 -- Authentic Organic Farmers, NPOP Certifications, Products & Escrow Records
 -- ============================================================================
 
@@ -12,7 +12,7 @@ INSERT INTO public.profiles (
 (
   '00000000-0000-0000-0000-000000000001',
   '+91 98230 11200',
-  'ramesh.patel@ecoswadesh.com',
+  'ramesh.patel@deccanorigin.com',
   'Ramesh Patel',
   'farmer',
   ARRAY['farmer', 'seller'],
@@ -32,7 +32,7 @@ INSERT INTO public.profiles (
 (
   '00000000-0000-0000-0000-000000000002',
   '+91 98765 43210',
-  'priya.sharma@ecoswadesh.com',
+  'priya.sharma@deccanorigin.com',
   'Priya Sharma',
   'consumer',
   ARRAY['buyer', 'consumer'],
