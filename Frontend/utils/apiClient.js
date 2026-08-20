@@ -198,7 +198,62 @@ export const authApi = {
       }
     ),
 
-  logout: () => {
+  register: async (registrationData) => {
+    const res = await request(
+      '/auth/register',
+      {
+        method: 'POST',
+        body: JSON.stringify(registrationData),
+      },
+      {
+        success: true,
+        token: `mock_jwt_token_${registrationData.persona || 'farmer'}`,
+        user: {
+          id: `usr_${registrationData.persona || 'farmer'}_${Date.now()}`,
+          name: registrationData.name || 'Deccan Member',
+          persona: registrationData.persona || 'farmer',
+          roles: [registrationData.persona || 'farmer'],
+          verified: true,
+          onboardingCompleted: true,
+        },
+      }
+    );
+    if (res && res.token) {
+      setAuthToken(res.token);
+    }
+    return res;
+  },
+
+  login: async (credentials) => {
+    const res = await request(
+      '/auth/login',
+      {
+        method: 'POST',
+        body: JSON.stringify(credentials),
+      },
+      {
+        success: true,
+        token: `mock_jwt_token_${credentials.persona || 'farmer'}`,
+        user: {
+          id: `usr_${credentials.persona || 'farmer'}_${Date.now()}`,
+          name: credentials.identifier && credentials.identifier.includes('@') ? credentials.identifier.split('@')[0] : 'Deccan Member',
+          persona: credentials.persona || 'farmer',
+          roles: [credentials.persona || 'farmer'],
+          verified: true,
+          onboardingCompleted: true,
+        },
+      }
+    );
+    if (res && res.token) {
+      setAuthToken(res.token);
+    }
+    return res;
+  },
+
+  logout: async () => {
+    try {
+      await request('/auth/logout', { method: 'POST' }).catch(() => null);
+    } catch (_e) {}
     setAuthToken(null);
     return { success: true, message: 'Session terminated.' };
   },

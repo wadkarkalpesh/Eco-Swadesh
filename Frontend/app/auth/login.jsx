@@ -111,7 +111,9 @@ export default function LoginScreen() {
 
       let res;
       if (authMode === 'otp') {
-        res = await authApi.verifyOTP('sess_login', cleanSecret || '123456', selectedPersona).catch(() => null);
+        res = await authApi.verifyOTP('sess_login', cleanSecret || '123456', selectedPersona, cleanIdentifier);
+      } else {
+        res = await authApi.login({ identifier: cleanIdentifier, secretOrOtp: cleanSecret, persona: selectedPersona });
       }
 
       const userObj = sanitizeObject((res && res.user) || {
@@ -127,7 +129,7 @@ export default function LoginScreen() {
         onboardingCompleted: true,
       });
 
-      loginUser(userObj);
+      loginUser(userObj, res?.token);
       changePersona(selectedPersona);
 
       Alert.alert(

@@ -45,7 +45,7 @@ const PERSONA_OPTIONS = [
 
 export default function RegisterScreen() {
   const router = useRouter();
-  const { loginUser, changePersona } = useApp();
+  const { registerUser, changePersona } = useApp();
 
   const [selectedPersona, setSelectedPersona] = useState('farmer');
   const [fullName, setFullName] = useState('');
@@ -103,39 +103,18 @@ export default function RegisterScreen() {
         district: sanitizedDistrict,
         extraDetail: sanitizedExtra,
         dpdpConsent: true,
-        clientSecurityToken: `sec_${Date.now()}`,
       });
 
-      const res = await authApi.updateProfile(payload).catch(() => null);
-
-      const userObj = {
-        id: (res && res.user && res.user.id) || `usr-${Date.now()}`,
-        name: sanitizedName,
-        email: sanitizedIdentifier.includes('@') ? sanitizedIdentifier : `${sanitizedIdentifier.replace(/\D/g, '')}@deccanorigin.com`,
-        phone: !sanitizedIdentifier.includes('@') ? sanitizedIdentifier : '+91 98765 43210',
-        persona: selectedPersona,
-        state: sanitizedState,
-        district: sanitizedDistrict,
-        onboardingCompleted: true,
-      };
-
-      loginUser(userObj);
-      changePersona(selectedPersona);
+      const res = await registerUser(payload);
+      const userName = (res && res.user && res.user.name) || sanitizedName;
 
       Alert.alert(
         '🎉 Secure Registration Successful!',
-        `Welcome to Deccan-Origin, ${sanitizedName}! Your account has been securely registered with DPDP Act 2023 compliance.`
+        `Welcome to Deccan-Origin, ${userName}! Your account has been registered with DPDP Act 2023 compliance.`
       );
       router.replace('/(tabs)');
     } catch (_err) {
-      const sanitizedName = sanitizeInput(fullName);
-      loginUser({
-        id: `usr-${Date.now()}`,
-        name: sanitizedName || 'Deccan-Origin Member',
-        persona: selectedPersona,
-        onboardingCompleted: true,
-      });
-      router.replace('/(tabs)');
+      Alert.alert('Registration Error', _err.message || 'Could not complete registration.');
     } finally {
       setLoading(false);
     }

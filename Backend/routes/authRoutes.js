@@ -3,6 +3,9 @@ const router = express.Router();
 const {
   sendOTP,
   verifyOTP,
+  registerUser,
+  loginUser,
+  logoutUser,
   addRole,
   getMe,
   switchPersona,
@@ -14,6 +17,9 @@ const { authRateLimiter } = require('../middleware/rateLimiter');
 
 router.post('/send-otp', authRateLimiter, sendOTP);
 router.post('/verify-otp', authRateLimiter, verifyOTP);
+router.post('/register', authRateLimiter, registerUser);
+router.post('/login', authRateLimiter, loginUser);
+router.post('/logout', logoutUser);
 router.post('/roles', authenticateJWT, addRole);
 router.post('/add-role', authenticateJWT, addRole);
 router.get('/me', authenticateJWT, getMe);

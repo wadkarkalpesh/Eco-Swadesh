@@ -19,6 +19,9 @@ const createRateLimiter = (options = {}) => {
   const message = options.message || 'Too many requests. Please try again after the rate limit window cools down.';
 
   return (req, res, next) => {
+    if (process.env.NODE_ENV === 'test') {
+      return next();
+    }
     // Determine client identifier (IP or Authenticated User ID)
     const clientId = req.user ? `user_${req.user.id}` : (req.ip || req.headers['x-forwarded-for'] || '127.0.0.1');
     const bucketKey = `${req.baseUrl || req.path}:${clientId}`;

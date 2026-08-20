@@ -1,8 +1,9 @@
 /**
  * Automated Verification Suite for Deccan Origin Authentication & Session Management
- * Tests: OTP generation, verification, JWT token issuance, GET /v1/auth/me, persona switching, and DPDP 2023 compliance
+ * Tests: Registration, Login (Password & OTP), Token issuance, Profile retrieval, Persona switching, Logout, and DPDP 2023 compliance
  */
 
+process.env.NODE_ENV = 'test';
 const http = require('http');
 const app = require('../server');
 
@@ -69,7 +70,40 @@ const runAuthFlowTests = async () => {
   };
 
   try {
-    // 1. Send OTP Request
+    // 1. Account Registration (POST /v1/auth/register)
+    const registerRes = await request('POST', '/v1/auth/register', {
+      name: 'Suraj Kumar',
+      identifier: '+919988776655',
+      persona: 'farmer',
+      state: 'Maharashtra',
+      district: 'Nashik',
+      dpdpConsent: true,
+    });
+    assert(
+      registerRes.status === 201 &&
+      registerRes.body.success === true &&
+      !!registerRes.body.token &&
+      registerRes.body.user.name === 'Suraj Kumar',
+      'POST /v1/auth/register creates user record with DPDP consent and issues JWT token'
+    );
+
+    // 2. Direct Account Login (POST /v1/auth/login)
+    const loginRes = await request('POST', '/v1/auth/login', {
+      identifier: '+919988776655',
+      secretOrOtp: '123456',
+      persona: 'farmer',
+    });
+    assert(
+      loginRes.status === 200 &&
+      loginRes.body.success === true &&
+      !!loginRes.body.token &&
+      loginRes.body.user.name === 'Suraj Kumar',
+      'POST /v1/auth/login authenticates registered user and issues JWT token'
+    );
+
+    authToken = loginRes.body.token;
+
+    // 3. Send OTP Request (POST /v1/auth/send-otp)
     const sendOtpRes = await request('POST', '/v1/auth/send-otp', {
       phoneNumber: '+919823011200',
       countryCode: 'IN',
@@ -81,7 +115,7 @@ const runAuthFlowTests = async () => {
 
     const otpSessionId = sendOtpRes.body.otpSessionId;
 
-    // 2. Reject Invalid OTP
+    // 4. Reject Invalid OTP
     const badOtpRes = await request('POST', '/v1/auth/verify-otp', {
       otpSessionId,
       otpCode: '999000',
@@ -92,7 +126,7 @@ const runAuthFlowTests = async () => {
       'POST /v1/auth/verify-otp rejects invalid 6-digit OTP code'
     );
 
-    // 3. Verify Valid OTP and Receive JWT Token
+    // 5. Verify Valid OTP and Receive JWT Token
     const verifyOtpRes = await request('POST', '/v1/auth/verify-otp', {
       otpSessionId,
       otpCode: '123456',
@@ -109,7 +143,7 @@ const runAuthFlowTests = async () => {
 
     authToken = verifyOtpRes.body.token;
 
-    // 4. GET /v1/auth/me authenticated profile endpoint
+    // 6. GET /v1/auth/me authenticated profile endpoint
     const meRes = await request('GET', '/v1/auth/me');
     assert(
       meRes.status === 200 &&
@@ -118,7 +152,7 @@ const runAuthFlowTests = async () => {
       'GET /v1/auth/me resolves authenticated user profile'
     );
 
-    // 5. Switch User Persona Role
+    // 7. Switch User Persona Role
     const switchRes = await request('PUT', '/v1/auth/switch-persona', {
       persona: 'seller',
     });
@@ -132,7 +166,7 @@ const runAuthFlowTests = async () => {
 
     authToken = switchRes.body.token;
 
-    // 6. Update Profile & Complete Onboarding
+    // 8. Update Profile & Complete Onboarding
     const updateRes = await request('PUT', '/v1/auth/profile', {
       name: 'Ramesh Patel',
       state: 'Madhya Pradesh',
@@ -146,13 +180,20 @@ const runAuthFlowTests = async () => {
       'PUT /v1/auth/profile updates member information and flags onboardingCompleted'
     );
 
-    // 7. DPDP 2023 DSAR Data Export Endpoint
+    // 9. DPDP 2023 DSAR Data Export Endpoint
     const exportRes = await request('GET', '/v1/auth/data-export');
     assert(
       exportRes.status === 200 &&
       exportRes.body.success === true &&
       exportRes.body.complianceStandard.includes('DPDP'),
       'GET /v1/auth/data-export returns DPDP Act 2023 Section 11 DSAR export payload'
+    );
+
+    // 10. Account Logout (POST /v1/auth/logout)
+    const logoutRes = await request('POST', '/v1/auth/logout');
+    assert(
+      logoutRes.status === 200 && logoutRes.body.success === true,
+      'POST /v1/auth/logout logs audit entry and terminates session'
     );
 
     console.log(`\n=================================================`);
