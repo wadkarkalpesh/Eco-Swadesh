@@ -40,7 +40,7 @@ function killPort(port) {
         try {
           execSync(`taskkill /pid ${pid} /f /t`, { stdio: 'ignore' });
           console.log(`🧹 Freed occupied port ${port} (Killed PID ${pid})`);
-        } catch (_e) {}
+        } catch (_e) { }
       });
     } else {
       execSync(`lsof -t -i:${port} | xargs kill -9 2>/dev/null || true`, { stdio: 'ignore' });
@@ -73,7 +73,6 @@ const frontendProcess = spawn(npmCmd, frontendArgs, {
   env: {
     ...process.env,
     EXPO_PUBLIC_API_URL: process.env.EXPO_PUBLIC_API_URL || 'http://localhost:5000/v1',
-    CI: '1', // Prevents non-interactive prompt freezes
   },
 });
 
@@ -118,7 +117,7 @@ function shutdown() {
       } else {
         backendProcess.kill('SIGINT');
       }
-    } catch (_e) {}
+    } catch (_e) { }
   }
   if (frontendProcess && !frontendProcess.killed) {
     try {
@@ -127,7 +126,7 @@ function shutdown() {
       } else {
         frontendProcess.kill('SIGINT');
       }
-    } catch (_e) {}
+    } catch (_e) { }
   }
   process.exit(0);
 }

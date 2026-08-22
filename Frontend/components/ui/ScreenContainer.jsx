@@ -61,7 +61,7 @@ export default function ScreenContainer({
     </View>
   );
 
-  if (withSafeArea) {
+  if (withSafeArea && !isWeb) {
     return (
       <SafeAreaView style={[styles.safeArea, { backgroundColor: safeBg }]} edges={edges}>
         <View style={styles.outerWebWrapper}>

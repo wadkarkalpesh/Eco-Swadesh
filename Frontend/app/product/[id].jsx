@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, RADIUS, SPACING } from '../../constants/theme';
+import { COLORS, RADIUS, SPACING, CATEGORY_THEMES } from '../../constants/theme';
 import { useApp } from '../../context/AppContext';
 import Card from '../../components/ui/Card';
 import Badge from '../../components/ui/Badge';
@@ -48,6 +48,7 @@ export default function ProductDetailScreen() {
   const [showNurseryBatch, setShowNurseryBatch] = useState(false);
 
   const isBulk = buyMode === 'BULK';
+  const categoryTheme = CATEGORY_THEMES[product.category] || CATEGORY_THEMES.fertilizers;
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.scrollBody}>
@@ -57,7 +58,11 @@ export default function ProductDetailScreen() {
       <View style={styles.content}>
         {/* Category & Badge */}
         <View style={styles.badgeRow}>
-          <Badge label={product.category.toUpperCase()} variant="primary" size="sm" />
+          <Badge
+            label={categoryTheme.name.toUpperCase()}
+            variant={product.category}
+            size="sm"
+          />
           {product.certifiedType === 'LOCAL_GOV' ? (
             <Badge label="LOCAL GOVT SEAL APPROVED" variant="gov" size="sm" style={{ marginLeft: 4 }} />
           ) : (
@@ -150,6 +155,106 @@ export default function ProductDetailScreen() {
           )}
         </Card>
 
+        {/* Category-Specific Tailored Module Cards */}
+
+        {/* Category 1: Bio-Fertilizers & Soil Inputs */}
+        {product.category === 'fertilizers' && (
+          <Card bg="#E8F5E9" style={{ marginVertical: safeSpacingSm, borderColor: '#A5D6A7' }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
+              <Ionicons name="flask" size={20} color="#1B5E20" style={{ marginRight: 6 }} />
+              <Text style={{ fontSize: 14, fontWeight: '800', color: '#1B5E20' }}>
+                Soil Health & N-P-K Nutrient Analysis
+              </Text>
+            </View>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#FFF', padding: 10, borderRadius: safeRadiusSm, marginBottom: 8 }}>
+              <View style={{ alignItems: 'center' }}>
+                <Text style={{ fontSize: 10, color: safeTextMuted }}>NPK Ratio</Text>
+                <Text style={{ fontSize: 13, fontWeight: '800', color: '#1B5E20' }}>{product.npkRatio || '4:2:1 (Organic)'}</Text>
+              </View>
+              <View style={{ alignItems: 'center' }}>
+                <Text style={{ fontSize: 10, color: safeTextMuted }}>Organic Carbon</Text>
+                <Text style={{ fontSize: 13, fontWeight: '800', color: '#1B5E20' }}>&gt; 18.5%</Text>
+              </View>
+              <View style={{ alignItems: 'center' }}>
+                <Text style={{ fontSize: 10, color: safeTextMuted }}>Target Soil pH</Text>
+                <Text style={{ fontSize: 13, fontWeight: '800', color: '#1B5E20' }}>6.5 - 7.8</Text>
+              </View>
+            </View>
+            <Text style={{ fontSize: 11, color: '#2E7D32' }}>
+              💡 Application Tip: Mix {product.usageDose || '50 kg / acre'} with irrigation water or moist compost during seed bed preparation.
+            </Text>
+          </Card>
+        )}
+
+        {/* Category 2: Bio-Pesticides & Crop Protection */}
+        {product.category === 'bioPesticides' && (
+          <Card bg="#E0F2F1" style={{ marginVertical: safeSpacingSm, borderColor: '#80CBC4' }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
+              <Ionicons name="shield-checkmark" size={20} color="#004D40" style={{ marginRight: 6 }} />
+              <Text style={{ fontSize: 14, fontWeight: '800', color: '#004D40' }}>
+                Botanical Bio-Control & Eco-Safety
+              </Text>
+            </View>
+            <View style={{ gap: 4 }}>
+              <Text style={{ fontSize: 12, color: '#00695C', fontWeight: '700' }}>
+                🎯 Target Pests: Aphids, Whiteflies, Bollworms, Stem Borers
+              </Text>
+              <Text style={{ fontSize: 11, color: safeTextSecondary }}>
+                🌿 Active Bio-organism: Azadirachtin / Trichoderma Harzianum (10,000 PPM)
+              </Text>
+              <Text style={{ fontSize: 11, color: '#004D40', fontWeight: '600' }}>
+                ✅ Harvest Safety Interval: 0 Days (100% Non-Toxic to Bees & Soil Microbes)
+              </Text>
+            </View>
+          </Card>
+        )}
+
+        {/* Category 3: Certified Seeds & Planting Material */}
+        {product.category === 'seeds' && (
+          <Card bg="#F1F8E9" style={{ marginVertical: safeSpacingSm, borderColor: '#C5E1A5' }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
+              <Ionicons name="leaf" size={20} color="#33691E" style={{ marginRight: 6 }} />
+              <Text style={{ fontSize: 14, fontWeight: '800', color: '#33691E' }}>
+                Desi Heritage Seed Passport & Quality Assurance
+              </Text>
+            </View>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#FFF', padding: 8, borderRadius: safeRadiusSm }}>
+              <Text style={{ fontSize: 11, fontWeight: '700', color: '#33691E' }}>Germination: 98% Min</Text>
+              <Text style={{ fontSize: 11, fontWeight: '700', color: '#33691E' }}>Purity: 99.2%</Text>
+              <Text style={{ fontSize: 11, fontWeight: '700', color: '#33691E' }}>Treated: Bio-Jeevamrutha</Text>
+            </View>
+          </Card>
+        )}
+
+        {/* Category 4: Bulk Harvest Tiered Pricing Table */}
+        {product.category === 'bulkHarvest' && (
+          <Card bg="#FBE9E7" style={{ marginVertical: safeSpacingSm, borderColor: '#FFAB91' }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
+              <Ionicons name="bus" size={20} color="#BF360C" style={{ marginRight: 6 }} />
+              <Text style={{ fontSize: 14, fontWeight: '800', color: '#BF360C' }}>
+                B2B Tiered Volume Pricing & APMC Mandi Rates
+              </Text>
+            </View>
+            <View style={{ backgroundColor: '#FFF', borderRadius: safeRadiusSm, overflow: 'hidden' }}>
+              <View style={{ flexDirection: 'row', padding: 8, backgroundColor: '#FFCCBC' }}>
+                <Text style={{ flex: 1, fontSize: 11, fontWeight: '800', color: '#BF360C' }}>Order Volume</Text>
+                <Text style={{ flex: 1, fontSize: 11, fontWeight: '800', color: '#BF360C' }}>Price / Ton</Text>
+                <Text style={{ flex: 1, fontSize: 11, fontWeight: '800', color: '#BF360C' }}>Freight Rebate</Text>
+              </View>
+              <View style={{ flexDirection: 'row', padding: 8, borderBottomWidth: 1, borderColor: '#FBE9E7' }}>
+                <Text style={{ flex: 1, fontSize: 11, color: safeTextPrimary }}>2 - 10 Tons</Text>
+                <Text style={{ flex: 1, fontSize: 11, fontWeight: '700', color: safeTerracotta }}>{formatPrice(product.bulkPricePerTon, true)}</Text>
+                <Text style={{ flex: 1, fontSize: 11, color: safeTextSecondary }}>Standard</Text>
+              </View>
+              <View style={{ flexDirection: 'row', padding: 8 }}>
+                <Text style={{ flex: 1, fontSize: 11, color: safeTextPrimary }}>10+ Tons (Direct)</Text>
+                <Text style={{ flex: 1, fontSize: 11, fontWeight: '700', color: safeTerracotta }}>{formatPrice(product.bulkPricePerTon * 0.95, true)}</Text>
+                <Text style={{ flex: 1, fontSize: 11, fontWeight: '700', color: '#2E7D32' }}>5% Bulk Subsidy</Text>
+              </View>
+            </View>
+          </Card>
+        )}
+
         {/* Description & Specifications */}
         <Card style={styles.descCard}>
           <Text style={styles.sectionHeader}>Product Overview</Text>
@@ -174,6 +279,7 @@ export default function ProductDetailScreen() {
             </View>
           )}
         </Card>
+
 
         {/* Lab Certification Report & Digital Contract Buttons */}
         <View style={{ flexDirection: 'row', gap: safeSpacingXs, marginVertical: safeSpacingSm }}>

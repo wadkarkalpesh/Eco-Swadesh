@@ -482,6 +482,7 @@ export function AppProvider({ children }) {
   return (
     <AppContext.Provider
       value={{
+        authInitialized,
         isAuthenticated,
         currentUser,
         loginUser,

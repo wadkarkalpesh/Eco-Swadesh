@@ -850,6 +850,13 @@ export const voiceApi = {
     request('/ai/voice/voice-advisory', {
       method: 'POST',
       body: JSON.stringify({ langCode, cropName, diseaseDetected }),
+    }, {
+      success: true,
+      speechScript: "नमस्कार! आपकी फसल सुरक्षा के लिए 100% जैविक ट्राइकोडरमा एवं नीम तेल का उपयोग करें।",
+      vernacularAdvisory: {
+        englishSummary: "Organic crop protection & bio-fungicide recipe.",
+        organicInterventionScript: "Spray cold-pressed Neem Oil (10,000 PPM) @ 5ml/L mixed with Jeevamrutha bio-fertilizer."
+      }
     }),
 };
 

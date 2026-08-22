@@ -11,7 +11,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { COLORS, RADIUS, SPACING } from '../../constants/theme';
+import { COLORS, RADIUS, SPACING, CATEGORY_THEMES } from '../../constants/theme';
 import { useApp } from '../../context/AppContext';
 import Input from '../../components/ui/Input';
 import Card from '../../components/ui/Card';
@@ -24,6 +24,7 @@ const safePrimary = (COLORS && COLORS.primary) || '#1E4D2B';
 const safePrimaryDark = (COLORS && COLORS.primaryDark) || '#12361C';
 const safeTextLight = (COLORS && COLORS.textLight) || '#FFFFFF';
 const safeTextPrimary = (COLORS && COLORS.textPrimary) || '#1A2E1E';
+const safeTextSecondary = (COLORS && COLORS.textSecondary) || '#5A6E5D';
 const safeTextMuted = (COLORS && COLORS.textMuted) || '#8A9E8C';
 const safeCard = (COLORS && COLORS.card) || '#FFFFFF';
 const safeBorder = (COLORS && COLORS.border) || '#E2E8E2';
@@ -41,10 +42,11 @@ const safeSpacingXxl = (SPACING && SPACING.xxl) || 48;
 
 const CATEGORIES = [
   { id: 'all', labelKey: 'allCategories', icon: 'grid-outline' },
-  { id: 'fertilizers', labelKey: 'fertilizers', icon: 'flask-outline' },
   { id: 'bulkHarvest', labelKey: 'bulkHarvest', icon: 'bus-outline' },
+  { id: 'fertilizers', labelKey: 'fertilizers', icon: 'flask-outline' },
   { id: 'bioPesticides', labelKey: 'bioPesticides', icon: 'shield-outline' },
   { id: 'seeds', labelKey: 'seeds', icon: 'leaf-outline' },
+  { id: 'equipment', labelKey: 'equipment', icon: 'construct-outline' },
 ];
 
 export default function MarketplaceScreen() {
@@ -65,11 +67,17 @@ export default function MarketplaceScreen() {
   } = useApp();
 
   const filteredProducts = products.filter((p) => {
+    if (!p) return false;
+    const nameStr = (p.name || '').toLowerCase();
+    const sellerStr = (p.sellerName || '').toLowerCase();
+    const originStr = (p.origin || '').toLowerCase();
+    const query = searchQuery.toLowerCase();
+
     // Search Filter
     const matchesSearch =
-      p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.sellerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.origin.toLowerCase().includes(searchQuery.toLowerCase());
+      nameStr.includes(query) ||
+      sellerStr.includes(query) ||
+      originStr.includes(query);
 
     // Category Filter
     const matchesCategory =
@@ -83,6 +91,14 @@ export default function MarketplaceScreen() {
 
     return matchesSearch && matchesCategory && matchesCert;
   });
+
+  // Calculate item counts per category
+  const getCategoryCount = (catId) => {
+    if (catId === 'all') return products.length;
+    return products.filter((p) => p.category === catId).length;
+  };
+
+  const activeCategoryTheme = selectedCategory !== 'all' ? (CATEGORY_THEMES[selectedCategory] || CATEGORY_THEMES.fertilizers) : null;
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
@@ -175,17 +191,25 @@ export default function MarketplaceScreen() {
         contentContainerStyle={styles.categoryScroll}
       >
         {CATEGORIES.map((cat) => {
+          if (!cat) return null;
           const isSelected = selectedCategory === cat.id;
+          const theme = (CATEGORY_THEMES && CATEGORY_THEMES[cat.id]) ? CATEGORY_THEMES[cat.id] : null;
+          const activeBg = (theme && theme.primary) ? theme.primary : safePrimary;
+          const count = getCategoryCount(cat.id);
+
           return (
             <TouchableOpacity
               key={cat.id}
               onPress={() => setSelectedCategory(cat.id)}
-              style={[styles.categoryChip, isSelected && styles.selectedCategoryChip]}
+              style={[
+                styles.categoryChip,
+                isSelected && { backgroundColor: activeBg, borderColor: activeBg },
+              ]}
             >
               <Ionicons
-                name={cat.icon}
+                name={cat.icon || 'grid-outline'}
                 size={14}
-                color={isSelected ? safeTextLight : safePrimary}
+                color={isSelected ? safeTextLight : (theme && theme.primary ? theme.primary : safePrimary)}
               />
               <Text
                 style={[
@@ -193,12 +217,60 @@ export default function MarketplaceScreen() {
                   isSelected && { color: safeTextLight, fontWeight: '700' },
                 ]}
               >
-                {t(cat.labelKey)}
+                {cat.id === 'all' ? (t(cat.labelKey) || 'All Categories') : (theme && theme.name ? theme.name : (t(cat.labelKey) || cat.id))}
               </Text>
+              <View
+                style={[
+                  styles.countBadge,
+                  isSelected
+                    ? { backgroundColor: 'rgba(255,255,255,0.25)' }
+                    : { backgroundColor: theme && theme.lightBg ? theme.lightBg : safeAccentLight },
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.countBadgeText,
+                    isSelected
+                      ? { color: safeTextLight }
+                      : { color: theme && theme.badgeText ? theme.badgeText : safePrimaryDark },
+                  ]}
+                >
+                  {count}
+                </Text>
+              </View>
             </TouchableOpacity>
           );
         })}
       </ScrollView>
+
+      {/* Active Category Hero Header Banner */}
+      {activeCategoryTheme && (
+        <View
+          style={[
+            styles.categoryHeroBanner,
+            { backgroundColor: activeCategoryTheme.lightBg, borderColor: activeCategoryTheme.badgeBg },
+          ]}
+        >
+          <View style={styles.heroBannerLeft}>
+            <View style={[styles.heroIconBox, { backgroundColor: activeCategoryTheme.primary }]}>
+              <Ionicons name={activeCategoryTheme.icon} size={20} color="#FFFFFF" />
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={[styles.heroTitle, { color: activeCategoryTheme.primary }]}>
+                {activeCategoryTheme.name}
+              </Text>
+              <Text style={styles.heroTagline}>{activeCategoryTheme.tagline}</Text>
+            </View>
+          </View>
+          <View style={styles.heroMetrics}>
+            <Text style={[styles.heroMetricNumber, { color: activeCategoryTheme.primary }]}>
+              {getCategoryCount(selectedCategory)}
+            </Text>
+            <Text style={styles.heroMetricLabel}>Verified Listings</Text>
+          </View>
+        </View>
+      )}
+
 
       {/* Products Catalog */}
       <FlatList
@@ -379,7 +451,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: safeCard,
-    paddingHorizontal: safeSpacingSm + 2,
+    paddingHorizontal: safeSpacingSm + 4,
     paddingVertical: 6,
     borderRadius: safeRadiusFull,
     borderWidth: 1,
@@ -394,6 +466,62 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: safeTextPrimary,
     marginLeft: 4,
+    fontWeight: '600',
+  },
+  countBadge: {
+    marginLeft: 6,
+    paddingHorizontal: 6,
+    paddingVertical: 1,
+    borderRadius: safeRadiusFull,
+  },
+  countBadgeText: {
+    fontSize: 10,
+    fontWeight: '800',
+  },
+  categoryHeroBanner: {
+    marginHorizontal: safeSpacingMd,
+    marginBottom: safeSpacingXs,
+    padding: safeSpacingSm + 2,
+    borderRadius: safeRadiusMd,
+    borderWidth: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  heroBannerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  heroIconBox: {
+    width: 36,
+    height: 36,
+    borderRadius: safeRadiusSm,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: safeSpacingSm,
+  },
+  heroTitle: {
+    fontSize: 14,
+    fontWeight: '800',
+  },
+  heroTagline: {
+    fontSize: 11,
+    color: safeTextSecondary,
+    marginTop: 1,
+  },
+  heroMetrics: {
+    alignItems: 'flex-end',
+    marginLeft: safeSpacingSm,
+  },
+  heroMetricNumber: {
+    fontSize: 18,
+    fontWeight: '900',
+  },
+  heroMetricLabel: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: safeTextMuted,
   },
   listContainer: {
     padding: safeSpacingMd,

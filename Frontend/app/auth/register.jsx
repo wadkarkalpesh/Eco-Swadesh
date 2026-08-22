@@ -14,7 +14,6 @@ import Card from '../../components/ui/Card';
 import Badge from '../../components/ui/Badge';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
-import { authApi } from '../../utils/apiClient';
 import { useApp } from '../../context/AppContext';
 import {
   validateName,
@@ -45,7 +44,7 @@ const PERSONA_OPTIONS = [
 
 export default function RegisterScreen() {
   const router = useRouter();
-  const { registerUser, changePersona } = useApp();
+  const { registerUser } = useApp();
 
   const [selectedPersona, setSelectedPersona] = useState('farmer');
   const [fullName, setFullName] = useState('');

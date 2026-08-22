@@ -21,7 +21,16 @@ export default function Badge({
       case 'gov':
         return { bg: '#FFF8E1', text: '#9C6F16', border: c.govGold || '#C5A059' };
       case 'bulk':
+      case 'bulkHarvest':
         return { bg: '#FBE9E7', text: c.terracotta || '#D84315', border: '#FFAB91' };
+      case 'fertilizers':
+        return { bg: '#E8F5E9', text: '#1B5E20', border: '#A5D6A7' };
+      case 'bioPesticides':
+        return { bg: '#E0F2F1', text: '#004D40', border: '#80CBC4' };
+      case 'seeds':
+        return { bg: '#F1F8E9', text: '#33691E', border: '#C5E1A5' };
+      case 'equipment':
+        return { bg: '#ECEFF1', text: '#263238', border: '#B0BEC5' };
       case 'success':
         return { bg: c.accentLight || '#E8F5E9', text: c.success || '#2E7D32', border: '#A5D6A7' };
       case 'warning':

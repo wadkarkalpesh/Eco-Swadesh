@@ -119,10 +119,88 @@ export const RADIUS = {
   full: 9999,
 };
 
+export const CATEGORY_THEMES = {
+  all: {
+    id: 'all',
+    name: 'All Categories',
+    icon: 'grid-outline',
+    primary: '#1E4D2B',
+    lightBg: '#E8F5E9',
+    badgeBg: '#C8E6C9',
+    badgeText: '#1B5E20',
+    tagline: 'Complete Verified Organic & Bio-Input Marketplace',
+  },
+  bulkHarvest: {
+    id: 'bulkHarvest',
+    name: 'Bulk Produce & Direct Trade',
+    icon: 'bus',
+    primary: '#D84315',
+    lightBg: '#FBE9E7',
+    badgeBg: '#FFCCBC',
+    badgeText: '#BF360C',
+    tagline: 'Direct Mandi & Large Scale Harvest Supply',
+  },
+  fertilizers: {
+    id: 'fertilizers',
+    name: 'Bio-Fertilizers & Soil Health',
+    icon: 'flask',
+    primary: '#1E4D2B',
+    lightBg: '#E8F5E9',
+    badgeBg: '#C8E6C9',
+    badgeText: '#1B5E20',
+    tagline: 'NPOP & PGS Certified Organic Soil Inputs',
+  },
+  bioPesticides: {
+    id: 'bioPesticides',
+    name: 'Bio-Pesticides & Protection',
+    icon: 'shield-checkmark',
+    primary: '#00796B',
+    lightBg: '#E0F2F1',
+    badgeBg: '#B2DFDB',
+    badgeText: '#004D40',
+    tagline: 'Botanical & Microalgal Crop Protection',
+  },
+  seeds: {
+    id: 'seeds',
+    name: 'Heritage & Hybrid Seeds',
+    icon: 'leaf',
+    primary: '#388E3C',
+    lightBg: '#F1F8E9',
+    badgeBg: '#DCEDC8',
+    badgeText: '#33691E',
+    tagline: 'High Germination Desi & Certified Hybrids',
+  },
+  equipment: {
+    id: 'equipment',
+    name: 'Smart Farm Machinery',
+    icon: 'construct',
+    primary: '#455A64',
+    lightBg: '#ECEFF1',
+    badgeBg: '#CFD8DC',
+    badgeText: '#263238',
+    tagline: 'Drone Sprayers, Tractors & Solar Equipment',
+  },
+  grains: {
+    id: 'grains',
+    name: 'Organic Grains & Cereals',
+    icon: 'leaf',
+    primary: '#E65100',
+    lightBg: '#FFF3E0',
+    badgeBg: '#FFE0B2',
+    badgeText: '#BF360C',
+    tagline: 'Direct Farm Harvested Wheat, Millets & Pulses',
+  },
+};
+
+export const getCategoryTheme = (category) => {
+  return CATEGORY_THEMES[category] || CATEGORY_THEMES.fertilizers;
+};
+
 export default {
   COLORS,
   Colors,
   SHADOWS,
   SPACING,
   RADIUS,
+  CATEGORY_THEMES,
 };

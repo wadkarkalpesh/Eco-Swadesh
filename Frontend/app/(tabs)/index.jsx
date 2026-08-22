@@ -72,20 +72,23 @@ export default function HomeScreen() {
     formatPrice,
     commodityTrends,
     isAuthenticated,
+    authInitialized,
   } = useApp();
 
   useEffect(() => {
-    if (!rootNavigationState?.key) return;
+    if (!rootNavigationState?.key || !authInitialized) return;
     if (!isAuthenticated) {
       const timer = setTimeout(() => {
         router.replace('/auth/register');
       }, 10);
       return () => clearTimeout(timer);
     }
-  }, [isAuthenticated, rootNavigationState?.key, router]);
+  }, [isAuthenticated, authInitialized, rootNavigationState?.key, router]);
 
   const featuredFertilizers = products.filter((p) => p.category === 'fertilizers');
   const featuredBulk = products.filter((p) => p.category === 'bulkHarvest');
+  const featuredBioPesticides = products.filter((p) => p.category === 'bioPesticides');
+  const featuredSeeds = products.filter((p) => p.category === 'seeds');
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
@@ -374,6 +377,86 @@ export default function HomeScreen() {
             </Card>
           ))}
         </ScrollView>
+
+        {/* Section: Botanical Bio-Pesticides & Crop Protection */}
+        {featuredBioPesticides.length > 0 && (
+          <>
+            <View style={styles.sectionHeaderRow}>
+              <Text style={styles.sectionTitleHeader}>🛡️ Botanical & Microalgal Bio-Pesticides</Text>
+              <TouchableOpacity onPress={() => router.push('/(tabs)/explore')}>
+                <Text style={styles.seeAllText}>See All</Text>
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontalScroll}>
+              {featuredBioPesticides.map((item) => (
+                <Card key={item.id} style={styles.productCardHorizontal} onPress={() => router.push(`/product/${item.id}`)}>
+                  <Image source={{ uri: item.image }} style={styles.productImage} />
+                  <Badge
+                    label="BIO-PROTECTION"
+                    variant="bioPesticides"
+                    size="sm"
+                    style={{ marginTop: safeSpacingXs }}
+                  />
+                  <Text style={styles.productName} numberOfLines={2}>{item.name}</Text>
+                  <Text style={styles.productSeller}>{item.sellerName}</Text>
+                  
+                  <Text style={styles.productPrice}>
+                    {formatPrice(item.retailPrice, false, item.retailUnit)}
+                  </Text>
+
+                  <Button
+                    title={t('addToCart')}
+                    variant="primary"
+                    size="sm"
+                    onPress={() => addToCart(item, false, 1)}
+                    style={{ marginTop: safeSpacingXs }}
+                  />
+                </Card>
+              ))}
+            </ScrollView>
+          </>
+        )}
+
+        {/* Section: Certified Heritage & Desi Seeds */}
+        {featuredSeeds.length > 0 && (
+          <>
+            <View style={styles.sectionHeaderRow}>
+              <Text style={styles.sectionTitleHeader}>🌱 Certified Heritage & High-Yield Seeds</Text>
+              <TouchableOpacity onPress={() => router.push('/(tabs)/explore')}>
+                <Text style={styles.seeAllText}>See All</Text>
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontalScroll}>
+              {featuredSeeds.map((item) => (
+                <Card key={item.id} style={styles.productCardHorizontal} onPress={() => router.push(`/product/${item.id}`)}>
+                  <Image source={{ uri: item.image }} style={styles.productImage} />
+                  <Badge
+                    label="DESI SEED VARIETY"
+                    variant="seeds"
+                    size="sm"
+                    style={{ marginTop: safeSpacingXs }}
+                  />
+                  <Text style={styles.productName} numberOfLines={2}>{item.name}</Text>
+                  <Text style={styles.productSeller}>{item.sellerName}</Text>
+                  
+                  <Text style={styles.productPrice}>
+                    {formatPrice(item.retailPrice, false, item.retailUnit)}
+                  </Text>
+
+                  <Button
+                    title={t('addToCart')}
+                    variant="primary"
+                    size="sm"
+                    onPress={() => addToCart(item, false, 1)}
+                    style={{ marginTop: safeSpacingXs }}
+                  />
+                </Card>
+              ))}
+            </ScrollView>
+          </>
+        )}
 
         {/* Section: Direct Bulk Farm Harvests (Tons) */}
         <View style={styles.sectionHeaderRow}>
